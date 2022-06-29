@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title th:text="${title}">Inquiry home.</title>
+	
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" crossorigin="anonymous">
+
+    <!-- Custom styles for this template -->
+    <link href="starter-template.css"  th:href="@{/css/starter-template.css}" rel="stylesheet" crossorigin="anonymous">
+    
+    <link href="starter-template.css"  th:href="@{/css/chat/chat_index.css}" rel="stylesheet" crossorigin="anonymous">
+    
+    <!--  Jquery core  -->
+    <script th:src="@{/js/jquery-3.5.1.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    
+    <script th:src="@{/js/chat/chat_index.js}"></script>
+    
+</head>
+<body>
+	 
+	<!-- メイン画面 -->
+	<main role="main" class="container">
+		<div class="starter-template">
+		    <!-- タイトル -->
+	 		<h1 th:text="${title}">example</h1><br>
+	 		<p class="lead" th:text="${cont}">context</p>
+	 		
+	 		<!-- ルーム欄 -->
+	 		<div class="room-layout">
+	 			<!-- ルーム名 -->
+	 			<div class="room-name">
+	 				<label for="roomName">ルーム名</label>
+ 					<ul class="list-group">
+				  		<li th:text="${roomModel.name}" class="list-group-item"></li>
+				  	</ul>
+	 			</div>
+	 			<!-- 作成者 -->
+		  		<div class="host-name">
+		  			<label for="hostName">管理者</label>
+			  		<ul class="list-group">
+			  			<li th:text="${hostModel.name}" class="list-group-item"></li>
+			  		</ul>
+		  		</div>
+		  		<!-- 入室名 -->
+		  		<div class="user-name">
+		  			<label for="userName">入室名</label>
+			  		<ul class="list-group">
+			  			<li th:text="${userModel.name}" class="list-group-item"></li>
+			  		</ul>
+		  		</div>
+		  		
+		  		<!-- 参加人数 / 最大人数 -->
+		  		<div class="user-name">
+		  			<label for="countName">参加人数 / 最大人数</label>
+			  		<ul class="list-group">
+			  			<li th:text="${roomModel.enterCnt + ' / ' + roomModel.max_roomsum + '人'}" class="list-group-item"></li>
+			  		</ul>
+		  		</div>
+		  		
+		  		<!-- ホスト -->
+		  		<div class="host-out" th:if="${userModel.id == hostModel.id}">
+		  			<div class="host-out-child">
+		  				
+		  				<!-- 強制退室 -->
+			  			<form th:if="${roomModel.enterCnt ge 2}" class="gest-close" method="post" th:action="@{/chat/userclose}" th:object="${roomLeaveForm}">
+			  				<select th:field="*{in_id}">
+			  					<option th:each="lnModel: ${loginModelList}" th:unless="${lnModel.user_id == hostModel.id}"  th:value="${lnModel.id}" th:text="${lnModel.userName}"></option>
+			  				</select>
+			  				<input type="hidden" name="enter_id" th:value="${enter_id}" />
+			  				<button class="btn btn-primary">強制退室</button>
+			  			</form>
+			  			
+			  			<!-- 閉鎖 -->
+			  			<form class="host-close" method="post" th:action="@{/chat/closeroom}" th:object="${roomOutForm}">
+			  				<input type="hidden" name="enter_id" th:value="${enter_id}" />
+			  				<button class="btn btn-primary">閉鎖</button>
+			  			</form>
+		  			</div>
+		  		</div>
+		  		
+		  		<!-- ゲスト -->
+		  		<div class="gest-out" th:unless="${userModel.id == hostModel.id}">
+		  			<!-- 退室フォーム -->
+		  			<form method="post" th:action="@{/chat/outroom}" th:object="${roomOutForm}">
+		  				<input type="hidden" name="enter_id" th:value="${enter_id}" />
+		  				<button class="btn btn-primary">退室</button>
+		  			</form>
+		  		</div>
+		  		
+	 		</div>
+	 		
+	 		<!-- 投稿欄 -->
+	 		<div class="chat-layout">
+	 			<form method="post" th:action="@{/chat/speech}" th:object="${userSpeechForm}">
+	 				<!-- ユーザ名 -->
+			  		<label for="userName" th:text="${userModel.name}"></label>
+	 				<div class="input-group mb-3">
+						<input type="text" name="comment" class="form-control" placeholder="---" aria-label="Recipient's username" aria-describedby="button-addon2">
+						<div class="input-group-append">
+							<input type="hidden" name="enter_id" th:value="${enter_id}" />
+							<input type="hidden" name="user_id" th:value="${userModel.id}" />
+							<input type="hidden" name="room_id" th:value="${roomModel.id}" />
+							<button class="btn btn-primary" type="submit" id="button-addon2">投稿</button>
+						</div>
+					</div>
+	 			</form>
+	 		</div>
+	 		
+	 		<!-- チャット欄 -->
+	 		<div class="comment-layout" th:each="commentModel : ${commentModelList}">
+				<div th:if="${userModel.id == commentModel.user_id}" class="comment-host-name" th:text="${commentModel.userName}">ユーザ名</div>
+	 			<div th:unless="${userModel.id == commentModel.user_id}" class="comment-name" th:text="${commentModel.userName}">ユーザ名</div>
+	 			<div class="comment-cont" th:text="${commentModel.comment}"></div>
+	 			<div class="comment-time">
+	 				<div th:text="${commentModel.created}"></div>
+	 			</div>
+	 		</div>
+	 		
+	 	</div>	 	
+	</main>
+</body>
+</html>

@@ -1,0 +1,18 @@
+@charset "UTF-8";
+
+.signup-confirm{
+	padding: 20px;	
+}
+
+.signup-form-button{
+	overflow: hidden;
+}
+
+.goback-form{
+	float: left;
+	padding-right: 20px;
+}
+
+.signup-conplete{
+	float: left;
+}

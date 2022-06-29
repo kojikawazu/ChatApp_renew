@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title th:text="${title}">Inquiry home.</title>
+	
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" crossorigin="anonymous">
+
+    <!-- Custom styles for this template -->
+    <link href="starter-template.css"  th:href="@{/css/starter-template.css}" rel="stylesheet" crossorigin="anonymous">
+    
+    <link href="starter-template.css"  th:href="@{/css/room/create_room.css}" rel="stylesheet" crossorigin="anonymous">
+    
+    <!--  Jquery core  -->
+    <script th:src="@{/js/jquery-3.5.1.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    
+    
+</head>
+<body>
+	 
+	<!-- メイン画面 -->
+	<main role="main" class="container">
+		<div class="starter-template">
+		    <!-- タイトル -->
+	 		<h1 th:text="${title}">example</h1><br>
+	 		<p class="lead" th:text="${cont}">context</p>
+	 		
+	 		<!-- ルーム作成フォーム -->
+	 		<div class="forgot-form">
+	 			<form method="post" th:action="@{/room_complete}" th:object="${roomCreateForm}">
+	 				<!-- ルーム名 -->
+	 				<div class="form-group">
+			    		<label for="name">ルーム名</label>
+			    		<input type="text" name="name" class="form-control" th:value="*{name}">
+			  		</div>
+			  		<div class="text-danger mb-4" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+			  		
+			  		<!-- ルームコメント -->
+			  		<div class="form-group">
+			    		<label for="comment">ルームコメント</label>
+			    		<input type="text" name="comment" class="form-control" th:value="*{comment}">
+			  		</div>
+			  		<div class="text-danger mb-4" th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}"></div>
+			  		
+			  		<!-- タグ -->
+			  		<div class="form-group">
+			    		<label for="new_passwd">タグ</label>
+			    		<input type="text" name="tag" class="form-control" th:value="*{tag}">
+			  		</div>
+			  		<div class="text-danger mb-4" th:if="${#fields.hasErrors('tag')}" th:errors="*{tag}"></div>
+			  		
+			  		
+			  		<!-- 最大人数 -->
+			  		<div class="form-group">
+			    		<label for="max_sum">最大人数</label>
+			    		<input type="number" name="max_roomsum" class="form-control" th:value="*{max_roomsum}">
+			  		</div>
+			  		<div class="text-danger mb-4" th:if="${#fields.hasErrors('max_roomsum')}" th:errors="*{max_roomsum}"></div>
+			  		
+			  		<a th:href="@{'/room/?login_id=' + ${login_id}}" class="btn btn-primary">ルーム選択画面へ戻る</a>
+			  		<input type="hidden" name="login_id" th:value="${login_id}" />
+			  		<button type="submit" class="btn btn-primary">ルーム作成</button>
+	 			</form>
+	 			
+	 			<!-- アラート -->
+				<div th:unless="${#strings.isEmpty(noticeError)}">
+					<div th:text="${noticeError}"class="alert alert-danger"></div>
+				</div>
+	 		</div>
+	 	</div>	 	
+	</main>
+</body>
+</html>

@@ -1,0 +1,131 @@
+@charset "UTF-8";
+
+.room-layout{
+	border: solid 1px black;
+	padding: 20px;
+	margin-bottom: 30px;
+	
+	overflow: hidden;
+}
+
+.room-name{
+	overflow: hidden;
+}
+
+.room-name label{
+	float: left;
+	padding-left: 10px;
+	padding-top: 10px;
+	margin-right: 20px;
+}
+
+.room-name ul{
+	float: left;
+}
+
+.host-name{
+	overflow: hidden;
+}
+
+.host-name label{
+	float: left;
+	padding-left: 10px;
+	padding-top: 10px;
+	margin-right: 35px;
+}
+
+.host-name ul{
+	float: left;
+}
+
+.user-name{
+	overflow: hidden;
+}
+
+.user-name label{
+	float: left;
+	padding-left: 10px;
+	padding-top: 10px;
+	margin-right: 35px;
+}
+
+.user-name ul{
+	float: left;
+}
+
+.host-out{
+	overflow: hidden;
+}
+
+.host-out-child{
+	overflow: hidden;
+	float: right;
+}
+
+.gest-close{
+	float: left;
+	margin-right: 20px;
+}
+
+.gest-close select{
+	padding: 5px;
+}
+
+.host-close{
+	float: right;
+}
+
+.gest-out{
+	overflow: hidden;
+}
+
+.gest-out form{
+	float: right;
+}
+
+.chat-layout{
+	border: solid 1px black;
+	padding: 20px;
+	margin-bottom: 30px;
+	
+	overflow: hidden;
+}
+
+.chat-layout label{
+	padding: 5px;
+}
+
+.comment-layout{
+	border: solid 1px black;
+	padding: 20px;
+	margin-bottom: 30px;
+	
+	background-color: white;
+	
+	overflow: hidden;
+}
+
+.comment-name{
+	float: left;
+	margin-right: 20px;
+}
+
+.comment-host-name{
+	float: left;
+	margin-right: 20px;
+	color: red;
+}
+
+.comment-cont{
+	float: left;
+}
+
+.comment-time{
+	clear: both;
+	overflow: hidden;
+}
+
+.comment-time div{
+	float: right;
+	color: gray;
+}

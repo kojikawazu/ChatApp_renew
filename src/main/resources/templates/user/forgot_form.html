@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title th:text="${title}">Inquiry home.</title>
+	
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" crossorigin="anonymous">
+
+    <!-- Custom styles for this template -->
+    <link href="starter-template.css"  th:href="@{/css/starter-template.css}" rel="stylesheet" crossorigin="anonymous">
+    
+    <link href="starter-template.css"  th:href="@{/css/user/forgot_form.css}" rel="stylesheet" crossorigin="anonymous">
+    
+    <!--  Jquery core  -->
+    <script th:src="@{/js/jquery-3.5.1.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    
+    
+</head>
+<body>
+	 
+	<!-- メイン画面 -->
+	<main role="main" class="container">
+		<div class="starter-template">
+		    <!-- タイトル -->
+	 		<h1 th:text="${title}">example</h1><br>
+	 		<p class="lead" th:text="${cont}">context</p>
+	 		
+	 		<!-- ログインフォーム -->
+	 		<div class="forgot-form">
+	 			<form method="post" th:action="@{/forgot_confirm}" th:object="${userForgotForm}">
+	 				<!-- ユーザ名 -->
+	 				<div class="form-group">
+			    		<label for="name">ユーザ名</label>
+			    		<input type="text" name="name" class="form-control" th:value="*{name}">
+			  		</div>
+			  		<div class="text-danger mb-4" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+			  		
+			  		<!-- メールアドレス -->
+			  		<div class="form-group">
+			    		<label for="email">メールアドレス</label>
+			    		<input type="text" name="email" class="form-control" th:value="*{email}">
+			  		</div>
+			  		<div class="text-danger mb-4" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+			  		
+			  		<!-- 忘れた時のパスワード -->
+			  		<div class="form-group">
+			    		<label for="forgot_passwd">忘れた時用のパスワード</label>
+			    		<input type="password" name="forgot_passwd" class="form-control" th:value="*{forgot_passwd}">
+			  		</div>
+			  		<div class="text-danger mb-4" th:if="${#fields.hasErrors('forgot_passwd')}" th:errors="*{forgot_passwd}"></div>
+			  		
+			  		<!-- 新しいパスワード -->
+			  		<div class="form-group">
+			    		<label for="new_passwd">新しいパスワード</label>
+			    		<input type="password" name="new_passwd" class="form-control" th:value="*{new_passwd}">
+			  		</div>
+			  		<div class="text-danger mb-4" th:if="${#fields.hasErrors('new_passwd')}" th:errors="*{new_passwd}"></div>
+			  		
+			  		<!-- パスワード(確認用) -->
+			  		<div class="form-group">
+			    		<label for="confirmNew_passwd">パスワード(確認用)</label>
+			    		<input type="password" name="confirmNew_passwd" class="form-control" th:value="*{confirmNew_passwd}">
+			  		</div>
+			  		<a th:href="@{/room/}" class="btn btn-primary">ルーム選択画面へ戻る</a>
+			  		<button type="submit" class="btn btn-primary">パスワード変更する</button>
+	 			</form>
+	 			
+	 			<!-- アラート -->
+				<div th:unless="${#strings.isEmpty(noticeError)}">
+					<div th:text="${noticeError}"class="alert alert-danger"></div>
+				</div>
+	 		</div>
+	 	</div>	 	
+	</main>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title th:text="${title}">Inquiry home.</title>
+	
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" crossorigin="anonymous">
+
+    <!-- Custom styles for this template -->
+    <link href="starter-template.css"  th:href="@{/css/starter-template.css}" rel="stylesheet" crossorigin="anonymous">
+    
+    <link href="starter-template.css"  th:href="@{/css/user/forgot_confirm.css}" rel="stylesheet" crossorigin="anonymous">
+    
+    <!--  Jquery core  -->
+    <script th:src="@{/js/jquery-3.5.1.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    
+    
+</head>
+<body>
+	 
+	<!-- メイン画面 -->
+	<main role="main" class="container">
+		<div class="starter-template">
+		    <!-- タイトル -->
+	 		<h1 th:text="${title}">example</h1><br>
+	 		<p class="lead" th:text="${cont}">context</p>
+	 		
+	 		<!-- ログインフォーム -->
+	 		<div class="forgot-confirm">
+	 			<!-- ユーザ名 -->
+		  		<label for="name">ユーザ名</label>
+		  		<ul class="list-group">
+		  			<li th:text="${userForgotForm.name}" class="list-group-item"></li>
+		  		</ul>
+		  		<!-- メールアドレス -->
+		  		<label for="email">メールアドレス</label>
+		  		<ul class="list-group">
+		  			<li th:text="${userForgotForm.email}" class="list-group-item"></li>
+		  		</ul>
+		  		<!-- 新しいパスワード -->
+		  		<label for="new_passwd">新しいパスワード</label>
+		  		<ul class="list-group">
+		  			<!-- <li th:text="${userForgotForm.new_passwd}" class="list-group-item"></li> -->
+		  			<li class="list-group-item">●●●●</li>
+		  		</ul>
+		  		
+		  		<div class="forgot-form-button">
+		  			<!-- 戻る -->
+			  		<form class="goback-form" method="post" th:action="@{/forgot_form}" th:object="${userForgotForm}">
+		 				<input type="hidden" name="name" th:value="*{name}" />
+		 				<input type="hidden" name="email" th:value="*{email}" />
+		 				<input type="hidden" name="forgot_passwd" th:value="*{forgot_passwd}" />
+		 				<input type="hidden" name="new_passwd" th:value="*{new_passwd}" />
+		 				<input type="hidden" name="confirmNew_passwd" th:value="*{confirmNew_passwd}" />
+				  		<button type="submit" class="btn btn-primary">戻る</button>
+		 			</form>
+		 			<!-- パスワード変更 -->
+		 			<form class="forgot-conplete" method="post" th:action="@{/forgot_complete}" th:object="${userForgotForm}">
+		 				<input type="hidden" name="name" th:value="*{name}" />
+		 				<input type="hidden" name="email" th:value="*{email}" />
+		 				<input type="hidden" name="forgot_passwd" th:value="*{forgot_passwd}" />
+		 				<input type="hidden" name="new_passwd" th:value="*{new_passwd}" />
+		 				<input type="hidden" name="confirmNew_passwd" th:value="*{confirmNew_passwd}" />
+				  		<button type="submit" class="btn btn-primary">パスワード変更</button>
+		 			</form>
+		  		</div>
+		  		
+	 		</div>
+	 	</div>	 	
+	</main>
+</body>
+</html>
