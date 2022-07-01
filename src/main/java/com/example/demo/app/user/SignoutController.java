@@ -10,7 +10,6 @@ import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.form.UserLogoutForm;
 import com.example.demo.app.service.LoginService;
 import com.example.demo.common.status.LoginIdStatus;
-import com.example.demo.common.status.UserIdStatus;
 
 /**
  * ---------------------------------------------------------------------------

@@ -13,7 +13,7 @@ public class UserNameEmailPassword implements SuperUserInterface{
 	private NameWord 		name;			/** 名前		*/
 	private EmailWord 		email;			/** Eメール	*/
 	private PasswordWord 	password;		/** パスワード */
-	
+
 	/**
 	 * コンストラクタ
 	 * @param name 名前
@@ -25,7 +25,7 @@ public class UserNameEmailPassword implements SuperUserInterface{
 		this.email 		= email;
 		this.password 	= password;
 	}
-	
+
 	/**
 	 * コンストラクタ
 	 * @param name 名前
@@ -37,7 +37,7 @@ public class UserNameEmailPassword implements SuperUserInterface{
 		this.email 		= new EmailWord(email);
 		this.password 	= new PasswordWord(password);
 	}
-	
+
 	/**
 	 * 名前の取得
 	 * return 名前
@@ -64,5 +64,4 @@ public class UserNameEmailPassword implements SuperUserInterface{
 	public String getPassword() {
 		return password.getString();
 	}
-
 }

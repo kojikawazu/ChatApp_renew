@@ -166,7 +166,4 @@ public class UserServiceUse implements UserService {
 		// 有無確認
 		return this.dao.isSelect_byNameEmailPass(user);
 	}
-
-
-
 }

@@ -6,18 +6,18 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * 名前クラステスト
+ * ルームタグクラステスト
  * @author nanai
  *
  */
-class NameWordTest {
+class RoomTagWordTest {
 
 	/**
 	 * 初期化テスト
 	 */
 	@Test
 	void initTest() {
-		NameWord test = new NameWord("test");
+		RoomTagWord test = new RoomTagWord("test");
 		Assertions.assertEquals(test.getString(), "test");
 	}
 
@@ -26,7 +26,7 @@ class NameWordTest {
 	 */
 	@Test
 	void isBlankTest_false() {
-		NameWord test = new NameWord("test");
+		RoomTagWord test = new RoomTagWord("test");
 		Assertions.assertEquals(test.isBlank(), false);
 	}
 
@@ -35,7 +35,7 @@ class NameWordTest {
 	 */
 	@Test
 	void isBlankTest_true() {
-		NameWord test = new NameWord("");
+		RoomTagWord test = new RoomTagWord("");
 		Assertions.assertEquals(test.isBlank(), true);
 	}
 
@@ -44,7 +44,7 @@ class NameWordTest {
 	 */
 	@Test
 	void superInitTest() {
-		SuperWord test = new NameWord("test");
+		SuperWord test = new RoomTagWord("test");
 		Assertions.assertEquals(test.getString(), "test");
 	}
 
@@ -53,7 +53,7 @@ class NameWordTest {
 	 */
 	@Test
 	void superIsBlankTest_false() {
-		SuperWord test = new NameWord("test");
+		SuperWord test = new RoomTagWord("test");
 		Assertions.assertEquals(test.isBlank(), false);
 	}
 
@@ -62,7 +62,7 @@ class NameWordTest {
 	 */
 	@Test
 	void superIsBlankTest_true() {
-		SuperWord test = new NameWord("");
+		SuperWord test = new RoomTagWord("");
 		Assertions.assertEquals(test.isBlank(), true);
 	}
 }

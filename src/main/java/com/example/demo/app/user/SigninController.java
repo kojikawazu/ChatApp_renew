@@ -17,6 +17,7 @@ import com.example.demo.app.form.UserLoginForm;
 import com.example.demo.app.service.LoginService;
 import com.example.demo.app.service.UserService;
 import com.example.demo.common.status.LoginIdStatus;
+import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 import com.example.demo.common.word.UserNameEmailPassword;
 
@@ -153,9 +154,9 @@ public class SigninController {
 	private LoginIdStatus addSignin(UserIdStatus userStatus) {
 		// サインイン情報登録
 		LoginModel loginModel = new LoginModel(
-				 0,
-				 0,
-				 userStatus.getId(),
+				 new LoginIdStatus(0),
+				 new RoomIdStatus(0),
+				 userStatus,
 				 LocalDateTime.now());
 		return new LoginIdStatus(loginService.save_returnId(loginModel));
 	}

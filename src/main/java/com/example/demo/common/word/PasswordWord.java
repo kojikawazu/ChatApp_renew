@@ -8,17 +8,17 @@ package com.example.demo.common.word;
 public class PasswordWord implements SuperWord {
 
 	/**
-	 * 名前フィールド
+	 * フィールド
 	 */
-	private String password;
-	
+	private String password;		/** パスワード */
+
 	/**
 	 * コンストラクタ
 	 */
 	public PasswordWord(String password) {
 		this.password = password;
 	}
-	
+
 	/**
 	 * ブランクかどうか確認
 	 * return true ブランク false ブランクじゃない
@@ -36,5 +36,4 @@ public class PasswordWord implements SuperWord {
 	public String getString() {
 		return this.password;
 	}
-
 }

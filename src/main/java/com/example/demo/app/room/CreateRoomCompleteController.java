@@ -21,8 +21,13 @@ import com.example.demo.app.service.CommentService;
 import com.example.demo.app.service.EnterService;
 import com.example.demo.app.service.LoginService;
 import com.example.demo.app.service.RoomService;
+import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
+import com.example.demo.common.status.UserIdStatus;
+import com.example.demo.common.word.RoomCommentWord;
+import com.example.demo.common.word.RoomNameWord;
+import com.example.demo.common.word.RoomTagWord;
 
 /**
  * ---------------------------------------------------------------------------
@@ -115,14 +120,15 @@ public class CreateRoomCompleteController {
 	 */
 	private int setRoom(LoginModel loginModel, RoomCreateForm roomCreateForm) {
 		// ルームの追加
-		RoomModel roomModel = new RoomModel();
-		roomModel.setName(roomCreateForm.getName());
-		roomModel.setComment(roomCreateForm.getComment());
-		roomModel.setMax_roomsum(roomCreateForm.getMax_roomsum());
-		roomModel.setTag(roomCreateForm.getTag());
-		roomModel.setUser_id(loginModel.getUser_id());
-		roomModel.setCreated(LocalDateTime.now());
-		roomModel.setUpdated(LocalDateTime.now());
+		RoomModel roomModel = new RoomModel(
+				new RoomIdStatus(0),
+				new RoomNameWord(roomCreateForm.getName()),
+				new RoomCommentWord(roomCreateForm.getComment()),
+				new RoomTagWord(roomCreateForm.getTag()),
+				new RoomMaxNumber(roomCreateForm.getMax_roomsum()),
+				new UserIdStatus(loginModel.getUser_id()),
+				LocalDateTime.now(),
+				LocalDateTime.now());
 		return this.roomService.save_returnId(roomModel);
 	}
 	

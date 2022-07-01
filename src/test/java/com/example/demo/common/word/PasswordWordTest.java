@@ -20,7 +20,7 @@ class PasswordWordTest {
 		PasswordWord test = new PasswordWord("password");
 		Assertions.assertEquals(test.getString(), "password");
 	}
-	
+
 	/**
 	 * ブランクテスト_ブランクパターン
 	 */
@@ -29,7 +29,7 @@ class PasswordWordTest {
 		PasswordWord test = new PasswordWord("password");
 		Assertions.assertEquals(test.isBlank(), false);
 	}
-	
+
 	/**
 	 * ブランクテスト_ブランクなしパターン
 	 */
@@ -38,7 +38,7 @@ class PasswordWordTest {
 		PasswordWord test = new PasswordWord("");
 		Assertions.assertEquals(test.isBlank(), true);
 	}
-	
+
 	/**
 	 * ブランクテスト(super)
 	 */
@@ -47,7 +47,7 @@ class PasswordWordTest {
 		SuperWord test = new PasswordWord("password");
 		Assertions.assertEquals(test.getString(), "password");
 	}
-	
+
 	/**
 	 * ブランクテスト_ブランクパターン(super)
 	 */
@@ -56,7 +56,7 @@ class PasswordWordTest {
 		SuperWord test = new PasswordWord("password");
 		Assertions.assertEquals(test.isBlank(), false);
 	}
-	
+
 	/**
 	 * ブランクテスト_ブランクなしパターン(super)
 	 */
@@ -65,5 +65,4 @@ class PasswordWordTest {
 		SuperWord test = new PasswordWord("");
 		Assertions.assertEquals(test.isBlank(), true);
 	}
-
 }

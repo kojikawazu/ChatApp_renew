@@ -1,22 +1,22 @@
 package com.example.demo.common.word;
 
 /**
- * 名前クラス
+ * ルームタグクラス
  * @author nanai
  *
  */
-public class NameWord implements SuperWord {
+public class RoomTagWord implements SuperWord {
 
 	/**
 	 * フィールド
 	 */
-	private String name;		/** 名前 */
+	private String tag;		/** タグ */
 
 	/**
 	 * コンストラクタ
 	 */
-	public NameWord(String name) {
-		this.name = name;
+	public RoomTagWord(String tag) {
+		this.tag = tag;
 	}
 
 	/**
@@ -25,15 +25,15 @@ public class NameWord implements SuperWord {
 	 */
 	@Override
 	public boolean isBlank() {
-		return ( this.name == "" );
+		return ( this.tag == "" );
 	}
 
 	/**
 	 * 文字列の取得
-	 * return 名前
+	 * return タグ
 	 */
 	@Override
 	public String getString() {
-		return this.name;
+		return this.tag;
 	}
 }
