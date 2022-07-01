@@ -1,21 +1,21 @@
 package com.example.demo.common.word;
 
 /**
- * 名前クラス
+ * ルーム名クラス
  * @author nanai
  *
  */
-public class NameWord implements SuperWord {
+public class RoomNameWord implements SuperWord {
 
 	/**
 	 * フィールド
 	 */
-	private String name;		/** 名前 */
+	private String name;		/** ルーム名 */
 
 	/**
 	 * コンストラクタ
 	 */
-	public NameWord(String name) {
+	public RoomNameWord(String name) {
 		this.name = name;
 	}
 

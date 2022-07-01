@@ -5,8 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.example.demo.common.status.LoginIdStatus;
-
 /**
  * emailクラステスト
  * @author nanai
@@ -22,7 +20,7 @@ class EmailWordTest {
 		EmailWord test = new EmailWord("test@example.com");
 		Assertions.assertEquals(test.getString(), "test@example.com");
 	}
-	
+
 	/**
 	 * ブランクテスト_ブランクパターン
 	 */
@@ -31,7 +29,7 @@ class EmailWordTest {
 		EmailWord test = new EmailWord("test@example.com");
 		Assertions.assertEquals(test.isBlank(), false);
 	}
-	
+
 	/**
 	 * ブランクテスト_ブランクなしパターン
 	 */
@@ -40,7 +38,7 @@ class EmailWordTest {
 		EmailWord test = new EmailWord("");
 		Assertions.assertEquals(test.isBlank(), true);
 	}
-	
+
 	/**
 	 * ブランクテスト(super)
 	 */
@@ -49,7 +47,7 @@ class EmailWordTest {
 		SuperWord test = new EmailWord("test@example.com");
 		Assertions.assertEquals(test.getString(), "test@example.com");
 	}
-	
+
 	/**
 	 * ブランクテスト_ブランクパターン(super)
 	 */
@@ -58,7 +56,7 @@ class EmailWordTest {
 		SuperWord test = new EmailWord("test@example.com");
 		Assertions.assertEquals(test.isBlank(), false);
 	}
-	
+
 	/**
 	 * ブランクテスト_ブランクなしパターン(super)
 	 */
@@ -67,5 +65,4 @@ class EmailWordTest {
 		SuperWord test = new EmailWord("");
 		Assertions.assertEquals(test.isBlank(), true);
 	}
-
 }

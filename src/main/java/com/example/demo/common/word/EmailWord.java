@@ -8,9 +8,9 @@ package com.example.demo.common.word;
 public class EmailWord implements SuperWord {
 
 	/**
-	 * 名前フィールド
+	 * フィールド
 	 */
-	private String email;
+	private String email;			/** Eメールアドレス */
 	
 	/**
 	 * コンストラクタ
@@ -18,7 +18,7 @@ public class EmailWord implements SuperWord {
 	public EmailWord(String email) {
 		this.email = email;
 	}
-	
+
 	/**
 	 * ブランクかどうか確認
 	 * return true ブランク false ブランクじゃない
@@ -36,5 +36,4 @@ public class EmailWord implements SuperWord {
 	public String getString() {
 		return this.email;
 	}
-
 }

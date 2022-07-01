@@ -19,6 +19,9 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.app.entity.UserModel;
 import com.example.demo.common.status.UserIdStatus;
+import com.example.demo.common.word.EmailWord;
+import com.example.demo.common.word.NameWord;
+import com.example.demo.common.word.PasswordWord;
 import com.example.demo.common.word.UserNameEmail;
 import com.example.demo.common.word.UserNameEmailPassword;
 
@@ -147,14 +150,14 @@ public class UserDaoSql implements UserDao {
 		List<UserModel> list = new ArrayList<UserModel>();
 		
 		for( Map<String, Object> result : resultList ) {
-			UserModel model = new UserModel();
-			model.setId((int)result.get("id"));
-			model.setName((String)result.get("name"));
-			model.setEmail((String)result.get("email"));
-			model.setPasswd((String)result.get("passwd"));
-			model.setForgot_passwd((String)result.get("forgot_passwd"));
-			model.setCreated(((Timestamp)result.get("created")).toLocalDateTime());
-			model.setUpdated(((Timestamp)result.get("updated")).toLocalDateTime());
+			UserModel model = new UserModel(
+					new UserIdStatus((int)result.get("id")),
+					new NameWord((String)result.get("name")),
+					new EmailWord((String)result.get("email")),
+					new PasswordWord((String)result.get("passwd")),
+					new PasswordWord((String)result.get("forgot_passwd")),
+					((Timestamp)result.get("created")).toLocalDateTime(),
+					((Timestamp)result.get("updated")).toLocalDateTime());
 			list.add(model);
 		}
 		return list;
@@ -171,15 +174,14 @@ public class UserDaoSql implements UserDao {
 		String sql = "SELECT id, name, email, passwd, forgot_passwd, created, updated FROM chat_user WHERE id = ?";
 		Map<String, Object> result = jdbcTemp.queryForMap(sql, id.getId());
 		
-		UserModel model = new UserModel();
-		model.setId((int)result.get("id"));
-		model.setName((String)result.get("name"));
-		model.setEmail((String)result.get("email"));
-		model.setPasswd((String)result.get("passwd"));
-		model.setForgot_passwd((String)result.get("forgot_passwd"));
-		model.setCreated(((Timestamp)result.get("created")).toLocalDateTime());
-		model.setUpdated(((Timestamp)result.get("updated")).toLocalDateTime());
-		
+		UserModel model = new UserModel(
+				new UserIdStatus((int)result.get("id")),
+				new NameWord((String)result.get("name")),
+				new EmailWord((String)result.get("email")),
+				new PasswordWord((String)result.get("passwd")),
+				new PasswordWord((String)result.get("forgot_passwd")),
+				((Timestamp)result.get("created")).toLocalDateTime(),
+				((Timestamp)result.get("updated")).toLocalDateTime());
 		return model;
 	}
 	
@@ -277,5 +279,4 @@ public class UserDaoSql implements UserDao {
 				}
 		);
 	}
-
 }

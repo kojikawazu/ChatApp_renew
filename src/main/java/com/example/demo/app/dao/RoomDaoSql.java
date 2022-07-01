@@ -16,6 +16,12 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.app.entity.RoomModel;
+import com.example.demo.common.number.RoomMaxNumber;
+import com.example.demo.common.status.RoomIdStatus;
+import com.example.demo.common.status.UserIdStatus;
+import com.example.demo.common.word.RoomCommentWord;
+import com.example.demo.common.word.RoomNameWord;
+import com.example.demo.common.word.RoomTagWord;
 
 /**
  * ルームDaoパターン
@@ -142,15 +148,15 @@ public class RoomDaoSql implements RoomDao {
 		List<RoomModel> list = new ArrayList<RoomModel>();
 		
 		for( Map<String, Object> result : resultList ) {
-			RoomModel model = new RoomModel();
-			model.setId((int)result.get("id"));
-			model.setName((String)result.get("name"));
-			model.setComment((String)result.get("comment"));
-			model.setTag((String)result.get("tag"));
-			model.setMax_roomsum((int)result.get("max_roomsum"));
-			model.setUser_id((int)result.get("user_id"));
-			model.setCreated(((Timestamp)result.get("created")).toLocalDateTime());
-			model.setUpdated(((Timestamp)result.get("updated")).toLocalDateTime());
+			RoomModel model = new RoomModel(
+					new RoomIdStatus((int)result.get("id")),
+					new RoomNameWord((String)result.get("name")),
+					new RoomCommentWord((String)result.get("comment")),
+					new RoomTagWord((String)result.get("tag")),
+					new RoomMaxNumber((int)result.get("max_roomsum")),
+					new UserIdStatus((int)result.get("user_id")),
+					((Timestamp)result.get("created")).toLocalDateTime(),
+					((Timestamp)result.get("updated")).toLocalDateTime());
 			list.add(model);
 		}
 		return list;
@@ -167,16 +173,15 @@ public class RoomDaoSql implements RoomDao {
 		String sql = "SELECT id, name, comment, tag, max_roomsum, user_id, created, updated FROM chat_room WHERE id = ?";
 		Map<String, Object> result = jdbcTemp.queryForMap(sql, id);
 			
-		RoomModel model = new RoomModel();
-		model.setId((int)result.get("id"));
-		model.setName((String)result.get("name"));
-		model.setComment((String)result.get("comment"));
-		model.setTag((String)result.get("tag"));
-		model.setMax_roomsum((int)result.get("max_roomsum"));
-		model.setUser_id((int)result.get("user_id"));
-		model.setCreated(((Timestamp)result.get("created")).toLocalDateTime());
-		model.setUpdated(((Timestamp)result.get("updated")).toLocalDateTime());
-		
+		RoomModel model = new RoomModel(
+				new RoomIdStatus((int)result.get("id")),
+				new RoomNameWord((String)result.get("name")),
+				new RoomCommentWord((String)result.get("comment")),
+				new RoomTagWord((String)result.get("tag")),
+				new RoomMaxNumber((int)result.get("max_roomsum")),
+				new UserIdStatus((int)result.get("user_id")),
+				((Timestamp)result.get("created")).toLocalDateTime(),
+				((Timestamp)result.get("updated")).toLocalDateTime());
 		return model;
 	}
 

@@ -1,45 +1,80 @@
 package com.example.demo.app.entity;
 
+import com.example.demo.common.number.RoomEnterCntNumber;
+import com.example.demo.common.word.NameWord;
+
 /**
  * ルームモデル拡張版
  *
  */
 public class RoomModelEx extends RoomModel {
 
-	private String userName;			// ユーザ名
-	
-	private int enterCnt;				// 入室数
+	/**
+	 * フィールド
+	 * 
+	 */
+	private NameWord userName;				/** ユーザ名 */
+	private RoomEnterCntNumber enterCnt;	/** 入室数 */
 
-	public RoomModelEx() {
-		super();
+	/**
+	 * コンストラクタ
+	 * @param roomModel ルームモデルクラス
+	 */
+	public RoomModelEx(RoomModel model) {
+		super(model);
+		
+		this.userName = new NameWord("");
+		this.enterCnt = new RoomEnterCntNumber(0);
 	}
 	
-	public RoomModelEx(RoomModel roomModel) {
-		super();
-		this.setId(roomModel.getId());
-		this.setName(roomModel.getName());
-		this.setTag(roomModel.getTag());
-		this.setComment(roomModel.getComment());
-		this.setMax_roomsum(roomModel.getMax_roomsum());
-		this.setUser_id(roomModel.getUser_id());
-		this.setCreated(roomModel.getCreated());
-		this.setUpdated(roomModel.getUpdated());
+	/**
+	 * コンストラクタ
+	 * @param roomModel ルームモデルクラス
+	 */
+	public RoomModelEx(
+			RoomModel model,
+			NameWord userName,
+			RoomEnterCntNumber enterCnt) {
+		super(model);
+		
+		this.userName = (userName == null ?
+				new NameWord("") :
+				new NameWord(userName.getString()));
+		this.enterCnt = (enterCnt == null ?
+				new RoomEnterCntNumber(0) :
+				new RoomEnterCntNumber(enterCnt.getNumber()));
 	}
 
+	/**
+	 * コンストラクタ
+	 * @param roomModel ルームモデルクラス
+	 */
+	public RoomModelEx(
+			RoomModelEx model) {
+		super(model);
+
+		if ( model == null ) {
+			this.userName = new NameWord("");
+			this.enterCnt = new RoomEnterCntNumber(0);
+		} else {
+			this.userName = new NameWord(model.getUserName());
+			this.enterCnt = new RoomEnterCntNumber(model.getEnterCnt());
+		}
+	}
+	
 	public String getUserName() {
-		return userName;
+		return userName.getString();
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	protected void setUserName(String userName) {
+		this.userName = new NameWord(userName);
 	}
 
 	public int getEnterCnt() {
-		return enterCnt;
+		return enterCnt.getNumber();
 	}
 
-	public void setEnterCnt(int enterCnt) {
-		this.enterCnt = enterCnt;
+	protected void setEnterCnt(int enterCnt) {
+		this.enterCnt = new RoomEnterCntNumber(enterCnt);
 	}
-	
 }

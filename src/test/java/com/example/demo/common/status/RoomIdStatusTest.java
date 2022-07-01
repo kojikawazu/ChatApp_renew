@@ -5,9 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.example.demo.common.status.RoomIdStatus;
-import com.example.demo.common.status.SuperStatus;
-
 /**
  * ルームIDテスト
  * @author nanai
@@ -23,7 +20,7 @@ class RoomIdStatusTest {
 		RoomIdStatus test = new RoomIdStatus(0);
 		Assertions.assertEquals(test.getId(), 0);
 	}
-	
+
 	/**
 	 * エラー判定のテスト(true)
 	 */
@@ -32,7 +29,7 @@ class RoomIdStatusTest {
 		RoomIdStatus test = new RoomIdStatus(-1);
 		Assertions.assertEquals(test.isError(), true);
 	}
-	
+
 	/**
 	 * エラー判定のテスト(false)
 	 */
@@ -41,7 +38,7 @@ class RoomIdStatusTest {
 		RoomIdStatus test = new RoomIdStatus(0);
 		Assertions.assertEquals(test.isError(), false);
 	}
-	
+
 	/**
 	 * ユーザーID取得テスト(superクラス)
 	 */
@@ -50,7 +47,7 @@ class RoomIdStatusTest {
 		SuperStatus test = new RoomIdStatus(0);
 		Assertions.assertEquals(test.getId(), 0);
 	}
-	
+
 	/**
 	 * エラー判定のテスト(true)(superクラス)
 	 */
@@ -59,7 +56,7 @@ class RoomIdStatusTest {
 		SuperStatus test = new RoomIdStatus(-1);
 		Assertions.assertEquals(test.isError(), true);
 	}
-	
+
 	/**
 	 * エラー判定のテスト(false)(superクラス)
 	 */
@@ -68,5 +65,4 @@ class RoomIdStatusTest {
 		SuperStatus test = new RoomIdStatus(0);
 		Assertions.assertEquals(test.isError(), false);
 	}
-
 }

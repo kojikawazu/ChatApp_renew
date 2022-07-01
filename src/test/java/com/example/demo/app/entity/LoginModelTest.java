@@ -7,27 +7,64 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.example.demo.app.config.WebFunctions;
+import com.example.demo.common.status.LoginIdStatus;
+import com.example.demo.common.status.RoomIdStatus;
+import com.example.demo.common.status.UserIdStatus;
 
+/**
+ * ログインモデルクラスのテスト
+ * @author nanai
+ *
+ */
 class LoginModelTest {
-
+	
 	/**
-	 * コンストラクタテスト(各値割り当て)
+	 * コンストラクタテスト(null割り当て)
 	 */
 	@Test
-	void initTest() {
-		LocalDateTime now = LocalDateTime.now();
-		
-		LoginModel test = new LoginModel(
-				0,
-				0,
-				0,
-				now);
+	void initTestNull() {
+		LoginModel test = new LoginModel(null);
 		
 		Assertions.assertEquals(test.getId(), 0);
 		Assertions.assertEquals(test.getRoom_id(), 0);
 		Assertions.assertEquals(test.getUser_id(), 0);
-		Assertions.assertEquals(test.getCreated(), now);
+		Assertions.assertNotNull(test.getCreated());
+	}
+	
+	/**
+	 * コンストラクタテスト(各クラス割り当て)
+	 */
+	@Test
+	void initTest1() {
+		LocalDateTime now = LocalDateTime.now();
+		LoginModel test = new LoginModel(
+						new LoginIdStatus(0), 
+						new RoomIdStatus(0), 
+						new UserIdStatus(0), 
+						now);
+		
+		Assertions.assertEquals(test.getId(), 0);
+		Assertions.assertEquals(test.getRoom_id(), 0);
+		Assertions.assertEquals(test.getUser_id(), 0);
+		Assertions.assertNotNull(test.getCreated());
+	}
+	
+	/**
+	 * コンストラクタテスト(null割り当て)
+	 */
+	@Test
+	void initTest3_null() {
+		LocalDateTime now = LocalDateTime.now();
+		LoginModel test = new LoginModel(
+						null, 
+						null, 
+						null, 
+						now);
+		
+		Assertions.assertEquals(test.getId(), 0);
+		Assertions.assertEquals(test.getRoom_id(), 0);
+		Assertions.assertEquals(test.getUser_id(), 0);
+		Assertions.assertNotNull(test.getCreated());
 	}
 	
 	/**
@@ -38,10 +75,11 @@ class LoginModelTest {
 		LocalDateTime now = LocalDateTime.now();
 		
 		LoginModel dummy = new LoginModel(
-				0,
-				0,
-				0,
+				new LoginIdStatus(0), 
+				new RoomIdStatus(0), 
+				new UserIdStatus(0), 
 				now);
+		
 		LoginModel test = new LoginModel(dummy);
 		
 		Assertions.assertEquals(test.getId(), 0);
@@ -49,19 +87,4 @@ class LoginModelTest {
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertEquals(test.getCreated(), now);
 	}
-	
-	/**
-	 * コンストラクタテスト(null割り当て)
-	 */
-	@Test
-	void initTestNull() {
-		LocalDateTime now = LocalDateTime.now();
-		LoginModel test = new LoginModel(null);
-		
-		Assertions.assertEquals(test.getId(), 0);
-		Assertions.assertEquals(test.getRoom_id(), 0);
-		Assertions.assertEquals(test.getUser_id(), 0);
-		Assertions.assertNotNull(test.getCreated());
-	}
-
 }

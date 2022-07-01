@@ -1,24 +1,17 @@
 package com.example.demo.app.room;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.app.config.WebConsts;
-import com.example.demo.app.entity.CommentModel;
-import com.example.demo.app.entity.EnterModel;
 import com.example.demo.app.entity.LoginModel;
 import com.example.demo.app.entity.RoomModel;
 import com.example.demo.app.entity.RoomModelEx;
@@ -28,8 +21,10 @@ import com.example.demo.app.service.EnterService;
 import com.example.demo.app.service.LoginService;
 import com.example.demo.app.service.RoomService;
 import com.example.demo.app.service.UserService;
+import com.example.demo.common.number.RoomEnterCntNumber;
 import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.UserIdStatus;
+import com.example.demo.common.word.NameWord;
 
 /**
  * ルームコントローラ
@@ -115,13 +110,14 @@ public class RoomController {
 		List<RoomModel> roomModelList = this.roomService.getAll();
 		List<RoomModelEx> roomModelListExList = new ArrayList<RoomModelEx>();
 		for( RoomModel roomModel : roomModelList){
-			RoomModelEx newModelEx = new RoomModelEx(roomModel);
 			UserModel uModel =  this.userService.select(new UserIdStatus(roomModel.getUser_id()));
-			// ユーザ名取得
-			newModelEx.setUserName(uModel.getName());
 			// 入室数取得
 			int count = this.enterService.getCount_roomId(roomModel.getId());
-			newModelEx.setEnterCnt(count);
+			RoomModelEx newModelEx = new RoomModelEx(
+					roomModel,
+					new NameWord(uModel.getName()),
+					new RoomEnterCntNumber(count)
+					);
 			roomModelListExList.add(newModelEx);
 		}
 		roomModelList.clear();

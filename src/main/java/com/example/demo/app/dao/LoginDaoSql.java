@@ -15,7 +15,6 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 
 import com.example.demo.app.entity.LoginModel;
 import com.example.demo.common.status.LoginIdStatus;
@@ -164,9 +163,9 @@ public class LoginDaoSql implements LoginDao {
 		
 		for( Map<String, Object> result : resultList ) {
 			LoginModel model = new LoginModel(
-					(int)result.get("id"),
-					(int)result.get("room_id"),
-					(int)result.get("user_id"),
+					new LoginIdStatus((int)result.get("id")),
+					new RoomIdStatus((int)result.get("room_id")),
+					new UserIdStatus((int)result.get("user_id")),
 					((Timestamp)result.get("created")).toLocalDateTime()
 					);
 			list.add(model);
@@ -188,9 +187,9 @@ public class LoginDaoSql implements LoginDao {
 		
 		for( Map<String, Object> result : resultList ) {
 			LoginModel model = new LoginModel(
-					(int)result.get("id"),
-					(int)result.get("room_id"),
-					(int)result.get("user_id"),
+					new LoginIdStatus((int)result.get("id")),
+					new RoomIdStatus((int)result.get("room_id")),
+					new UserIdStatus((int)result.get("user_id")),
 					((Timestamp)result.get("created")).toLocalDateTime());
 			list.add(model);
 		}
@@ -209,9 +208,9 @@ public class LoginDaoSql implements LoginDao {
 		Map<String, Object> result = jdbcTemp.queryForMap(sql, id.getId());
 			
 		LoginModel model = new LoginModel(
-				(int)result.get("id"),
-				(int)result.get("room_id"),
-				(int)result.get("user_id"),
+				new LoginIdStatus((int)result.get("id")),
+				new RoomIdStatus((int)result.get("room_id")),
+				new UserIdStatus((int)result.get("user_id")),
 				((Timestamp)result.get("created")).toLocalDateTime());
 		
 		return model;
@@ -244,9 +243,9 @@ public class LoginDaoSql implements LoginDao {
 		Map<String, Object> result = jdbcTemp.queryForMap(sql, userId.getId());
 			
 		LoginModel model = new LoginModel(
-				(int)result.get("id"),
-				(int)result.get("room_id"),
-				(int)result.get("user_id"),
+				new LoginIdStatus((int)result.get("id")),
+				new RoomIdStatus((int)result.get("room_id")),
+				new UserIdStatus((int)result.get("user_id")),
 				((Timestamp)result.get("created")).toLocalDateTime());
 		return model;
 	}
@@ -301,6 +300,4 @@ public class LoginDaoSql implements LoginDao {
 			return rs.next() ? true : false;	
 		});
 	}
-	
-
 }

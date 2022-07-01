@@ -1,12 +1,14 @@
 package com.example.demo.app.entity;
 
+import com.example.demo.common.word.NameWord;
+
 /**
  * ログインモデル拡張版
  *
  */
 public class LoginModelEx extends LoginModel{
 
-	private String userName;			// ユーザ名
+	private NameWord userName;			/** ユーザ名 */
 	
 	/**
 	 * コンストラクタ
@@ -14,7 +16,7 @@ public class LoginModelEx extends LoginModel{
 	 */
 	public LoginModelEx(LoginModel model) {
 		super(model);
-		this.userName = "";
+		this.userName = new NameWord("");
 	}
 	
 	/**
@@ -22,9 +24,13 @@ public class LoginModelEx extends LoginModel{
 	 * @param model LoginModelクラス
 	 * @param userName ユーザー名
 	 */
-	public LoginModelEx(LoginModel model, String userName) {
+	public LoginModelEx(LoginModel model, NameWord userName) {
 		super(model);
-		this.userName = userName;
+		if ( userName == null ) {
+			this.userName = new NameWord("");
+		} else {
+			this.userName = userName;
+		}
 	}
 	
 	/**
@@ -34,20 +40,17 @@ public class LoginModelEx extends LoginModel{
 	public LoginModelEx(LoginModelEx model) {
 		super(model);
 		if( model == null ) {
-			this.userName = "";
+			this.userName =  new NameWord("");
 		} else {
-			this.userName = model.getUserName();
+			this.userName =  new NameWord(model.getUserName());
 		}
 	}
 
 	public String getUserName() {
-		return userName;
+		return userName.getString();
 	}
 
 	protected void setUserName(String userName) {
-		this.userName = userName;
+		this.userName = new NameWord(userName);
 	}
-	
-	
-	
 }

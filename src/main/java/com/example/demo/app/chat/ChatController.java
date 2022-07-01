@@ -30,9 +30,11 @@ import com.example.demo.app.service.EnterService;
 import com.example.demo.app.service.LoginService;
 import com.example.demo.app.service.RoomService;
 import com.example.demo.app.service.UserService;
+import com.example.demo.common.number.RoomEnterCntNumber;
 import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
+import com.example.demo.common.word.NameWord;
 
 /**
  * 【チャットコントローラー】
@@ -264,9 +266,11 @@ public class ChatController {
 	 */
 	public RoomModelEx changeRoomModel(RoomModel roomModel) {
 		// TODO ルームモデル拡張版へ変換
-		RoomModelEx roomModelEx = new RoomModelEx(roomModel);
 		int count = this.enterService.getCount_roomId(roomModel.getId());
-		roomModelEx.setEnterCnt(count);
+		RoomModelEx roomModelEx = new RoomModelEx(
+				roomModel,
+				new NameWord(""),
+				new RoomEnterCntNumber(count));
 		return roomModelEx;
 	}
 	
@@ -306,7 +310,9 @@ public class ChatController {
 		// 拡張版へ移行
 		for( LoginModel lnModel : loginModelList) {
 			UserModel usModel = this.userService.select(new UserIdStatus(lnModel.getUser_id()));
-			LoginModelEx ex = new LoginModelEx(lnModel, usModel.getName());
+			LoginModelEx ex = new LoginModelEx(
+					lnModel, 
+					new NameWord(usModel.getName()));
 			loginModelExList.add(ex);
 		}
 		

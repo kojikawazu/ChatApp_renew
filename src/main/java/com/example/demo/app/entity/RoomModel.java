@@ -2,78 +2,164 @@ package com.example.demo.app.entity;
 
 import java.time.LocalDateTime;
 
+import com.example.demo.common.number.RoomMaxNumber;
+import com.example.demo.common.status.RoomIdStatus;
+import com.example.demo.common.status.UserIdStatus;
+import com.example.demo.common.word.RoomCommentWord;
+import com.example.demo.common.word.RoomNameWord;
+import com.example.demo.common.word.RoomTagWord;
+
 /**
  * ルームモデル
  *
  */
 public class RoomModel {
 	
-	private int id;					// ルームID
-	private String name;				// ルーム名
-	private String comment;			// コメント
-	private String tag;				// タグ
-	private int max_roomsum;			// 入室最大数
-	private int user_id;				// ホストID
-	private LocalDateTime created;		// 生成日時
-	private LocalDateTime updated;		// 更新日時
-	
-	public RoomModel() {
+	private RoomIdStatus id;			/** ルームID    */
+	private RoomNameWord name;			/** ルーム名    */
+	private RoomCommentWord comment;	/** コメント     */
+	private RoomTagWord tag;			/** タグ       */
+	private RoomMaxNumber max_roomsum;	/** 入室最大数 */
+	private UserIdStatus user_id;		/** ホストID    */
+	private LocalDateTime created;		/** 生成日時   */
+	private LocalDateTime updated;		/** 更新日時   */
+ 	
+	/**
+	 * コンストラクタ
+	 * @param model: ルームモデルクラス
+	 */
+	public RoomModel(RoomModel model) {
 		super();
+
+		if( model == null ) {
+			this.id 				= new RoomIdStatus(0);
+			this.name 				= new RoomNameWord("");
+			this.comment 			= new RoomCommentWord("");
+			this.tag 				= new RoomTagWord("");
+			this.max_roomsum 		= new RoomMaxNumber(0);
+			this.user_id			= new UserIdStatus(0);
+			this.created 			= LocalDateTime.now();
+			this.updated 			= LocalDateTime.now();
+		} else {
+			this.id 				= new RoomIdStatus(model.getId());
+			this.name 				= new RoomNameWord(model.getName());
+			this.comment 			= new RoomCommentWord(model.getComment());
+			this.tag 				= new RoomTagWord(model.getTag());
+			this.max_roomsum 		= new RoomMaxNumber(model.getMax_roomsum());
+			this.user_id			= new UserIdStatus(model.getUser_id());
+			this.created 			= model.getCreated();
+			this.updated 			= model.getUpdated();
+		}
+	}
+	
+	/**
+	 * コンストラクタ
+	 * @param id ID
+	 * @param name ルーム名
+	 * @param comment ルームコメント
+	 * @param tag ルームタグ
+	 * @param max_roomsum ルーム最大人数
+	 * @param user_id ホストID
+	 * @param created 生成日時
+	 * @param updated　更新日時
+	 */
+	public RoomModel(
+			RoomIdStatus id,
+			RoomNameWord name,
+			RoomCommentWord comment,
+			RoomTagWord tag,
+			RoomMaxNumber max_roomsum,
+			UserIdStatus user_id,
+			LocalDateTime created,
+			LocalDateTime updated) {
+		super();
+		
+		this.id = (id == null ? 
+				new RoomIdStatus(0) : 
+				new RoomIdStatus(id.getId()));
+		
+		this.name = (name == null ? 
+				new RoomNameWord("") : 
+				new RoomNameWord(name.getString()));
+		
+		this.comment = (comment == null ? 
+				new RoomCommentWord("") : 
+				new RoomCommentWord(comment.getString()));
+		
+		this.tag = (tag == null ? 
+				new RoomTagWord("") : 
+				new RoomTagWord(tag.getString()));
+		
+		this.max_roomsum = (max_roomsum == null ? 
+				new RoomMaxNumber(0) : 
+				new RoomMaxNumber(max_roomsum.getNumber()));
+		
+		this.user_id = (max_roomsum == null ? 
+				new UserIdStatus(0) : 
+				new UserIdStatus(user_id.getId()));
+		
+		this.created = (created == null ?
+				LocalDateTime.now() :
+				created);
+		
+		this.updated = (updated == null ?
+				LocalDateTime.now() :
+				updated);
 	}
 
 	public int getId() {
-		return id;
+		return id.getId();
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	protected void setId(int id) {
+		this.id = new RoomIdStatus(id);
 	}
 
 	public String getName() {
-		return name;
+		return name.getString();
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	protected void setName(String name) {
+		this.name = new RoomNameWord(name);
 	}
 
 	public String getComment() {
-		return comment;
+		return comment.getString();
 	}
 
-	public void setComment(String comment) {
-		this.comment = comment;
+	protected void setComment(String comment) {
+		this.comment = new RoomCommentWord(comment);
 	}
 
 	public String getTag() {
-		return tag;
+		return tag.getString();
 	}
 
-	public void setTag(String tag) {
-		this.tag = tag;
+	protected void setTag(String tag) {
+		this.tag = new RoomTagWord(tag);
 	}
 
 	public int getMax_roomsum() {
-		return max_roomsum;
+		return max_roomsum.getNumber();
 	}
 
-	public void setMax_roomsum(int max_roomsum) {
-		this.max_roomsum = max_roomsum;
+	protected void setMax_roomsum(int max_roomsum) {
+		this.max_roomsum = new RoomMaxNumber(max_roomsum);
 	}
 
 	public int getUser_id() {
-		return user_id;
+		return user_id.getId();
 	}
 
-	public void setUser_id(int user_id) {
-		this.user_id = user_id;
+	protected void setUser_id(int user_id) {
+		this.user_id = new UserIdStatus(user_id);
 	}
 
 	public LocalDateTime getCreated() {
 		return created;
 	}
 
-	public void setCreated(LocalDateTime created) {
+	protected void setCreated(LocalDateTime created) {
 		this.created = created;
 	}
 
@@ -81,11 +167,7 @@ public class RoomModel {
 		return updated;
 	}
 
-	public void setUpdated(LocalDateTime updated) {
+	protected void setUpdated(LocalDateTime updated) {
 		this.updated = updated;
 	}
-	
-	
-	
-
 }

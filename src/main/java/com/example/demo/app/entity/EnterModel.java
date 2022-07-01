@@ -8,10 +8,10 @@ import java.time.LocalDateTime;
  */
 public class EnterModel {
 	
-	private int id;					// 入室ID
+	private int id;						// 入室ID
 	private int room_id;				// ルームID
 	private int user_id;				// ユーザID
-	private int manager_id;			// ホストID
+	private int manager_id;				// ホストID
 	private int max_sum;				// 入室数
 	private LocalDateTime created;		// 生成日時
 	

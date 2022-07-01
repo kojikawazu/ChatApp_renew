@@ -5,6 +5,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+/**
+ * ユーザー、Eメールアドレス、パスワードクラスのテスト
+ * @author nanai
+ *
+ */
 class UserNameEmailPasswordTest {
 
 	/**
@@ -21,7 +26,7 @@ class UserNameEmailPasswordTest {
 		Assertions.assertEquals(test.getEmail(), "test@example.com");
 		Assertions.assertEquals(test.getPassword(), "password");
 	}
-	
+
 	/**
 	 * 初期化テスト(文字列)
 	 */
@@ -35,7 +40,7 @@ class UserNameEmailPasswordTest {
 		Assertions.assertEquals(test.getEmail(), "test@example.com");
 		Assertions.assertEquals(test.getPassword(), "password");
 	}
-	
+
 	/**
 	 * 初期化テスト(ブランク)
 	 */
@@ -64,7 +69,7 @@ class UserNameEmailPasswordTest {
 		Assertions.assertEquals(test.getEmail(), "test@example.com");
 		Assertions.assertEquals(test.getPassword(), "password");
 	}
-	
+
 	/**
 	 * 初期化テスト(文字列)(super)
 	 */
@@ -78,7 +83,7 @@ class UserNameEmailPasswordTest {
 		Assertions.assertEquals(test.getEmail(), "test@example.com");
 		Assertions.assertEquals(test.getPassword(), "password");
 	}
-	
+
 	/**
 	 * 初期化テスト(ブランク)(super)
 	 */
