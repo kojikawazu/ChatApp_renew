@@ -1,4 +1,4 @@
-package com.example.demo.app.status;
+package com.example.demo.common.status;
 
 /**
  * IDのインターフェース
@@ -7,6 +7,7 @@ package com.example.demo.app.status;
  */
 public interface SuperStatus {
 
-	boolean isError();
+	public boolean isError();
+	
 	public int getId();
 }

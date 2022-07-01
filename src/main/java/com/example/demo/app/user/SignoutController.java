@@ -9,6 +9,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.form.UserLogoutForm;
 import com.example.demo.app.service.LoginService;
+import com.example.demo.common.status.LoginIdStatus;
+import com.example.demo.common.status.UserIdStatus;
 
 /**
  * ---------------------------------------------------------------------------
@@ -49,7 +51,7 @@ public class SignoutController {
 		// サインアウト
 		
 		// ログイン情報削除
-		this.loginService.delete(userLogoutForm.getId());
+		this.loginService.delete(new LoginIdStatus(userLogoutForm.getId()));
 		redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, 0);
 		
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;

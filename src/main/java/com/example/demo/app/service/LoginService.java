@@ -3,9 +3,12 @@ package com.example.demo.app.service;
 import java.util.List;
 
 import com.example.demo.app.entity.LoginModel;
+import com.example.demo.common.status.LoginIdStatus;
+import com.example.demo.common.status.RoomIdStatus;
+import com.example.demo.common.status.UserIdStatus;
 
 /**
- * ログインサービス
+ * ログインサービス（インターフェース)
  *
  */
 public interface LoginService {
@@ -16,28 +19,28 @@ public interface LoginService {
 	
 	void update(LoginModel model);
 	
-	void updateRoomId_byId(int roomId, int id);
+	void updateRoomId_byId(RoomIdStatus roomId, LoginIdStatus id);
 	
-	void updateRoomId_byUserId(int roomId, int userId);
+	void updateRoomId_byUserId(RoomIdStatus roomId, UserIdStatus userId);
 	
-	void updateRoomId_byRoomId(int roomId, int changeId);
+	void updateRoomId_byRoomId(RoomIdStatus roomId, RoomIdStatus changeId);
 	
-	void delete(int id);
+	void delete(LoginIdStatus id);
 	
 	List<LoginModel> getAll();
 	
-	LoginModel select(int id);
+	LoginModel select(LoginIdStatus id);
 	
-	List<LoginModel> selectList_byRoomId(int roomId);
+	List<LoginModel> selectList_byRoomId(RoomIdStatus roomId);
 	
-	int selectId_byUserId(int userId);
+	int selectId_byUserId(UserIdStatus userId);
 	
-	LoginModel select_byUserId(int userId);
+	LoginModel select_byUserId(UserIdStatus userId);
 	
-	int selectRoomId_byUserId(int userId);
+	int selectRoomId_byUserId(UserIdStatus userId);
 	
-	boolean isSelect_byId(int id);
+	boolean isSelect_byId(LoginIdStatus id);
 	
-	boolean isSelect_byUserId(int userId);
+	boolean isSelect_byUserId(UserIdStatus userId);
 
 }

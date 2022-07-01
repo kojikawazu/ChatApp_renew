@@ -1,6 +1,6 @@
 package com.example.demo.app.config;
 
-import com.example.demo.app.status.SuperStatus;
+import com.example.demo.common.status.SuperStatus;
 
 /**
  * 共通メソッド群

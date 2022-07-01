@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import com.example.demo.app.dao.UserDao;
 import com.example.demo.app.entity.UserModel;
 import com.example.demo.app.exception.WebMvcConfig;
+import com.example.demo.common.status.UserIdStatus;
+import com.example.demo.common.word.UserNameEmail;
+import com.example.demo.common.word.UserNameEmailPassword;
 
 /**
  * ユーザサービス
@@ -17,75 +20,73 @@ import com.example.demo.app.exception.WebMvcConfig;
 public class UserServiceUse implements UserService {
 
 	/**
-	 * ユーザDao
+	 * ユーザDaoクラス
 	 */
 	private UserDao dao;
 	
 	/**
 	 * コンストラクタ
-	 * @param dao
+	 * @param dao ユーザDaoクラス
 	 */
 	@Autowired
 	public UserServiceUse(UserDao dao) {
-		// TODO コンストラクタ
+		// コンストラクタ
 		this.dao = dao;
 	}
 	
 	/**
 	 * 保存
-	 * @param model: ユーザモデル
+	 * @param model ユーザモデル
 	 */
 	@Override
 	public void save(UserModel model) {
-		// TODO 保存
+		// 保存
 		this.dao.insert(model);
 	}
 
 	/**
 	 * 保存
-	 * @param model: ユーザモデル
+	 * @param model ユーザモデル
 	 * return ユーザID
 	 */
 	@Override
 	public int save_returnId(UserModel model) {
-		// TODO 追加(返却ID)
+		// 追加(返却ID)
 		return this.dao.insert_byId(model);
 	}
 
 	/**
 	 * 更新
-	 * @param model: ユーザモデル
+	 * @param model ユーザモデル
 	 */
 	@Override
 	public void update(UserModel model) {
-		// TODO 更新
-		if(this.dao.update(model) == 0) {
+		// 更新
+		if( this.dao.update(model) == 0 ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
 	
 	/**
 	 * パスワード変更
-	 * @param name: ユーザ名
-	 * @param email: Eメール
-	 * @param passwd: パスワード
+	 * @param user ユーザ名, Eメール, パスワードクラス
 	 */
 	@Override
-	public void update_passwd(String name, String email, String passwd) {
-		// TODO パスワード更新
-		if(this.dao.update_passwd(name, email, passwd) == 0) {
+	public void update_passwd(UserNameEmailPassword user) {
+		// パスワード更新
+		if( this.dao.update_passwd(user) == 0 ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
 
 	/**
 	 * 削除
-	 * @param id: ユーザID
+	 * @param id ユーザID
 	 */
 	@Override
-	public void delete(int id) {
-		// TODO 削除
-		if(this.dao.delete(id) == 0) {
+	public void delete(UserIdStatus id) {
+		// 削除
+		if( this.dao.delete(id) == 0 ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
@@ -96,81 +97,74 @@ public class UserServiceUse implements UserService {
 	 */
 	@Override
 	public List<UserModel> getAll() {
-		// TODO 全選択
+		// 全選択
 		return this.dao.getAll();
 	}
 
 	/**
 	 * 選択
-	 * @param id: ユーザID
+	 * @param id ユーザID
 	 * return ユーザモデル
 	 */
 	@Override
-	public UserModel select(int id) {
-		// TODO IDによる選択
+	public UserModel select(UserIdStatus id) {
+		// IDによる選択
 		return this.dao.select(id);
 	}
 	
 	/**
 	 * ユーザID取得
-	 * @param name: ユーザ名
-	 * @param email: Eメール
-	 * @param passwd: パスワード
+	 * @param user ユーザ名, Eメール, パスワードクラス
 	 * return ユーザID
 	 */
 	@Override
-	public int selectId_byNameEmailPasswd(String name, String email, String passwd) {
-		// TODO IDの取得
-		return this.dao.selectId_byNameEmailPass(name, email, passwd);
+	public int selectId_byNameEmailPasswd(UserNameEmailPassword user) {
+		// IDの取得
+		return this.dao.selectId_byNameEmailPass(user);
 	}
 
 	/**
 	 * ユーザモデルの有無確認
-	 * @param id: ユーザID
+	 * @param id ユーザID
 	 * return true あり false なし
 	 */
 	@Override
-	public boolean isSelect_byId(int id) {
-		// TODO IDによる有無の確認
+	public boolean isSelect_byId(UserIdStatus id) {
+		// IDによる有無の確認
 		return this.dao.isSelect_byId(id);
 	}
 
 	/**
 	 * ユーザモデルの有無確認
-	 * @param name: ユーザ名
-	 * @param email: Eメール
+	 * @param user ユーザ名, Eメールクラス
 	 * return true あり false なし
 	 */
 	@Override
-	public boolean isSelect_byNameEmail(String name, String email) {
-		// TODO 有無確認
-		return this.dao.isSelect_byNameEmail(name, email);
+	public boolean isSelect_byNameEmail(UserNameEmail user) {
+		// 有無確認
+		return this.dao.isSelect_byNameEmail(user);
 	}
 
 	/**
 	 * ユーザモデルの有無確認
-	 * @param name: ユーザ名
-	 * @param email: Eメール
-	 * @param forgot: 忘れたとき用パスワード
+	 * @param user ユーザ名, Eメール, パスワードクラス
 	 * return true あり false なし
 	 */
 	@Override
-	public boolean isSelect_byNameEmailForgotPW(String name, String email, String forgot) {
-		// TODO 有無確認
-		return this.dao.isSelect_byNameEmailForgotPW(name, email, forgot);
+	public boolean isSelect_byNameEmailForgotPW(UserNameEmailPassword user) {
+		// 有無確認
+		return this.dao.isSelect_byNameEmailForgotPW(user);
 	}
 
 	/**
 	 * ユーザモデルの有無確認
-	 * @param name: ユーザ名
-	 * @param email: Eメール
-	 * @param passwd: パスワード
+	 * @param user ユーザ名, Eメール, パスワードクラス
 	 * return true あり false なし
 	 */
 	@Override
-	public boolean isSelect_byNameEmailPasswd(String name, String email, String passwd) {
-		// TODO 有無確認
-		return this.dao.isSelect_byNameEmailPass(name, email, passwd);
+	public boolean isSelect_byNameEmailPasswd(UserNameEmailPassword user) {
+		// 有無確認
+		return this.dao.isSelect_byNameEmailPass(user);
 	}
 
 

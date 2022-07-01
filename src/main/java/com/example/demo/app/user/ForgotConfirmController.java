@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.form.UserForgotForm;
 import com.example.demo.app.service.UserService;
+import com.example.demo.common.word.UserNameEmailPassword;
 
 /**
  * ---------------------------------------------------------------------------
@@ -87,7 +88,11 @@ public class ForgotConfirmController {
 			this.setForgot_form(model);
 			return false;
 		}
-		if( !this.userService.isSelect_byNameEmailForgotPW(userForgotForm.getName(), userForgotForm.getEmail(), userForgotForm.getForgot_passwd() ) ) {
+		if( !this.userService.isSelect_byNameEmailForgotPW(
+				new UserNameEmailPassword(
+						userForgotForm.getName(), 
+						userForgotForm.getEmail(), 
+						userForgotForm.getForgot_passwd() ) ) ) {
 			// ユーザ名、Eメール、忘れたとき用パスワード一致しない
 			model.addAttribute(WebConsts.BIND_NOTICE_ERROR, WebConsts.ERROR_FORGOTPASSWD);
 			this.setForgot_form(model);

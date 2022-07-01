@@ -19,6 +19,8 @@ import com.example.demo.app.service.CommentService;
 import com.example.demo.app.service.EnterService;
 import com.example.demo.app.service.LoginService;
 import com.example.demo.app.service.RoomService;
+import com.example.demo.common.status.LoginIdStatus;
+import com.example.demo.common.status.RoomIdStatus;
 
 /**
  * ---------------------------------------------------------------------------
@@ -81,7 +83,7 @@ public class EnterController {
 		// 入室情報登録
 		int room_id = userEnterForm.getRoom_id();
 		int login_id = userEnterForm.getLogin_id();
-		LoginModel loginModel =  this.loginService.select(login_id);
+		LoginModel loginModel =  this.loginService.select(new LoginIdStatus(login_id));
 		if(this.enterService.isSelect_byUserId(loginModel.getUser_id())) {
 			// 既に入室している
 			RoomModel roomModel = this.roomService.select(room_id);
@@ -95,7 +97,9 @@ public class EnterController {
 		}
 		
 		// ログイン情報のルーム番号更新
-		this.loginService.updateRoomId_byId(room_id, login_id);
+		this.loginService.updateRoomId_byId(
+				new RoomIdStatus(room_id), 
+				new LoginIdStatus(login_id));
 		
 		return WebConsts.URL_REDIRECT_CHAT_INDEX;
 	}
@@ -152,7 +156,7 @@ public class EnterController {
 		
 		// 情報取得
 		RoomModel roomModel = this.roomService.select(room_id);
-		LoginModel loginModel = this.loginService.select(login_id);
+		LoginModel loginModel = this.loginService.select(new LoginIdStatus(login_id));
 		
 		EnterModel enterModel = new EnterModel();
 		enterModel.setRoom_id(room_id);

@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.form.UserForgotForm;
 import com.example.demo.app.service.UserService;
+import com.example.demo.common.word.UserNameEmailPassword;
 
 /**
  * ---------------------------------------------------------------------------
@@ -61,7 +62,11 @@ public class ForgotCompleteController {
 		}
 		
 		// パスワード変更
-		this.userService.update_passwd(userForgotForm.getName(), userForgotForm.getEmail(), userForgotForm.getNew_passwd());
+		this.userService.update_passwd(
+				new UserNameEmailPassword(
+						userForgotForm.getName(), 
+						userForgotForm.getEmail(), 
+						userForgotForm.getNew_passwd()));
 		redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_SUCCESS, "パスワードを変更しました。");
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
 	}

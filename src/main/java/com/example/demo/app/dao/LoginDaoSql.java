@@ -18,6 +18,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import com.example.demo.app.entity.LoginModel;
+import com.example.demo.common.status.LoginIdStatus;
+import com.example.demo.common.status.RoomIdStatus;
+import com.example.demo.common.status.UserIdStatus;
 
 /**
  * ログインDaoパターン
@@ -33,7 +36,7 @@ public class LoginDaoSql implements LoginDao {
 	
 	/**
 	 * コンストラクタ
-	 * @param jdbcTemp
+	 * @param jdbcTemp jdbcドライバー
 	 */
 	@Autowired
 	public LoginDaoSql(JdbcTemplate jdbcTemp) {
@@ -42,11 +45,11 @@ public class LoginDaoSql implements LoginDao {
 	
 	/**
 	 * 追加処理
-	 * @param model: ログインモデル
+	 * @param model ログインモデル
 	 */
 	@Override
 	public void insert(LoginModel model) {
-		// TODO 追加
+		// 追加
 		this.jdbcTemp.update("INSERT INTO chat_login(room_id, user_id, created) VALUES(?,?,?)",
 				model.getRoom_id(),
 				model.getUser_id(),
@@ -55,14 +58,14 @@ public class LoginDaoSql implements LoginDao {
 
 	/**
 	 * 追加処理
-	 * @param model: ログインモデル
+	 * @param model ログインモデル
 	 * return ログインID
 	 */
 	@Override
-	public int insert_byId(LoginModel model) {
-		// TODO 追加(return id)
+	public int insert_returnId(LoginModel model) {
+		// 追加(return id)
 		KeyHolder keyHolder = new GeneratedKeyHolder();
-		String sql = "INSERT INTO chat_login(room_id, user_id, created) VALUES(?,?,?)";
+		String sql          = "INSERT INTO chat_login(room_id, user_id, created) VALUES(?,?,?)";
 		Timestamp timestamp = Timestamp.valueOf(model.getCreated());
 		
        jdbcTemp.update(new PreparedStatementCreator() {
@@ -81,12 +84,12 @@ public class LoginDaoSql implements LoginDao {
 
 	/**
 	 * 更新処理
-	 * @param model: ログインモデル
-	 * return 0: 失敗 それ以外: 成功
+	 * @param model ログインモデル
+	 * return 0 失敗 それ以外 成功
 	 */
 	@Override
 	public int update(LoginModel model) {
-		// TODO 更新
+		// 更新
 		return jdbcTemp.update("UPDATE chat_login SET room_id = ?, user_id = ?, created = ? WHERE id = ?",
 				model.getRoom_id(),
 				model.getUser_id(),
@@ -96,52 +99,56 @@ public class LoginDaoSql implements LoginDao {
 	
 	/**
 	 * ログインIDからルームID更新処理
-	 * @param roomId: ルームID
-	 * @param id: ログインID
-	 * return 0: 失敗 それ以外: 成功
+	 * @param roomId ルームID
+	 * @param id ログインID
+	 * return 0 失敗 それ以外 成功
 	 */
 	@Override
-	public int updateRoomId_byId(int roomId, int id) {
-		// TODO ルームIDの更新
+	public int updateRoomId_byId(RoomIdStatus roomId, LoginIdStatus id) {
+		// ルームIDの更新
 		return jdbcTemp.update("UPDATE chat_login SET room_id = ? WHERE id = ?",
-				roomId, id);
+				roomId.getId(), 
+				id.getId());
 	}
 	
 	/**
 	 * ユーザIDからルームID更新処理
-	 * @param roomId: ルームID
-	 * @param userId: ユーザID
-	 * return 0: 失敗 それ以外: 成功
+	 * @param roomId ルームID
+	 * @param userId ユーザID
+	 * return 0 失敗 それ以外 成功
 	 */
 	@Override
-	public int updateRoomId_byUserId(int roomId, int userId) {
-		// TODO ユーザIDによるルームIDの更新
+	public int updateRoomId_byUserId(RoomIdStatus roomId, UserIdStatus userId) {
+		// ユーザIDによるルームIDの更新
 		return this.jdbcTemp.update("UPDATE chat_login SET room_id = ? WHERE user_id = ?",
-				roomId, userId);
+				roomId.getId(), 
+				userId.getId());
 	}
 	
 	/**
 	 * ルームIDから新規ルームIDへ更新処理
-	 * @param roomId: ルームID
-	 * @param changeId: 新規ルームID
-	 * return 0: 失敗 それ以外: 成功
+	 * @param roomId ルームID
+	 * @param changeId 新規ルームID
+	 * return 0 失敗 それ以外 成功
 	 */
 	@Override
-	public int updateRoomId_byRoomId(int roomId, int changeId) {
-		// TODO ルームIDによるルームIDの初期化
+	public int updateRoomId_byRoomId(RoomIdStatus roomId, RoomIdStatus changeId) {
+		// ルームIDによるルームIDの初期化
 		return this.jdbcTemp.update("UPDATE chat_login SET room_id = ? WHERE room_id = ?",
-				changeId, roomId);
+				changeId.getId(), 
+				roomId.getId());
 	}
 
 	/**
 	 * 削除処理
-	 * @param id: ログインID
-	 * return 0: 失敗 それ以外: 成功
+	 * @param id ログインID
+	 * return 0 失敗 それ以外 成功
 	 */
 	@Override
-	public int delete(int id) {
-		// TODO 削除
-		return this.jdbcTemp.update("DELETE FROM chat_login WHERE id = ?", id);
+	public int delete(LoginIdStatus id) {
+		// 削除
+		return this.jdbcTemp.update("DELETE FROM chat_login WHERE id = ?",
+				id.getId());
 	}
 
 	/**
@@ -150,7 +157,7 @@ public class LoginDaoSql implements LoginDao {
 	 */
 	@Override
 	public List<LoginModel> getAll() {
-		// TODO 全選択
+		// 全選択
 		String sql = "SELECT id, room_id, user_id, created FROM chat_login";
 		List<Map<String, Object>> resultList = jdbcTemp.queryForList(sql);
 		List<LoginModel> list = new ArrayList<LoginModel>();
@@ -169,14 +176,14 @@ public class LoginDaoSql implements LoginDao {
 	
 	/**
 	 * ルームIDから選択
-	 * @param roomId: ルームID
+	 * @param roomId ルームID
 	 * return ログインモデルリスト
 	 */
 	@Override
-	public List<LoginModel> selectList_byRoomId(int roomId) {
-		// TODO ルームIDによる選択
+	public List<LoginModel> selectList_byRoomId(RoomIdStatus roomId) {
+		// ルームIDによる選択
 		String sql = "SELECT id, room_id, user_id, created FROM chat_login WHERE room_id = ?";
-		List<Map<String, Object>> resultList = jdbcTemp.queryForList(sql, roomId);
+		List<Map<String, Object>> resultList = jdbcTemp.queryForList(sql, roomId.getId());
 		List<LoginModel> list = new ArrayList<LoginModel>();
 		
 		for( Map<String, Object> result : resultList ) {
@@ -192,14 +199,14 @@ public class LoginDaoSql implements LoginDao {
 
 	/**
 	 * ログインIDから選択
-	 * @param roomId: ログインID
+	 * @param roomId ログインID
 	 * return ログインモデル
 	 */
 	@Override
-	public LoginModel select(int id) {
-		// TODO IDによるデータ取得
+	public LoginModel select(LoginIdStatus id) {
+		// IDによるデータ取得
 		String sql = "SELECT id, room_id, user_id, created FROM chat_login WHERE id = ?";
-		Map<String, Object> result = jdbcTemp.queryForMap(sql, id);
+		Map<String, Object> result = jdbcTemp.queryForMap(sql, id.getId());
 			
 		LoginModel model = new LoginModel(
 				(int)result.get("id"),
@@ -212,29 +219,29 @@ public class LoginDaoSql implements LoginDao {
 	
 	/**
 	 * ユーザIDからログインID選択
-	 * @param userId: ユーザID
+	 * @param userId ユーザID
 	 * return ログインID
 	 */
 	@Override
-	public int selectId_byUserId(int userId) {
-		// TODO ユーザIDによるIDの選択
+	public int selectId_byUserId(UserIdStatus userId) {
+		// ユーザIDによるIDの選択
 		if( !this.isSelect_byUserId(userId) ) return -1;
 		String sql = "SELECT id FROM chat_login WHERE user_id = ?";
-		Map<String, Object> result = jdbcTemp.queryForMap(sql, userId);
+		Map<String, Object> result = jdbcTemp.queryForMap(sql, userId.getId());
 		int id = (int)result.get("id");
 		return id;
 	}
 	
 	/**
 	 * ユーザIDから選択
-	 * @param userId: ユーザID
+	 * @param userId ユーザID
 	 * return ログインモデル
 	 */
 	@Override
-	public LoginModel select_byuserId(int userId) {
-		// TODO ユーザIDによるデータ取得
+	public LoginModel select_byuserId(UserIdStatus userId) {
+		// ユーザIDによるデータ取得
 		String sql = "SELECT id, room_id, user_id, created FROM chat_login WHERE user_id = ?";
-		Map<String, Object> result = jdbcTemp.queryForMap(sql, userId);
+		Map<String, Object> result = jdbcTemp.queryForMap(sql, userId.getId());
 			
 		LoginModel model = new LoginModel(
 				(int)result.get("id"),
@@ -246,32 +253,32 @@ public class LoginDaoSql implements LoginDao {
 	
 	/**
 	 * ユーザIDからルームID選択
-	 * @param userId: ユーザID
+	 * @param userId ユーザID
 	 * return ルームID
 	 */
 	@Override
-	public int selectRoomId_byUserId(int userId) {
-		// TODO ユーザIDによるルームIDの選択
+	public int selectRoomId_byUserId(UserIdStatus userId) {
+		// ユーザIDによるルームIDの選択
 		if( !this.isSelect_byUserId(userId) ) return -1;
 		String sql = "SELECT room_id FROM chat_login WHERE user_id = ?";
-		Map<String, Object> result = jdbcTemp.queryForMap(sql, userId);
+		Map<String, Object> result = jdbcTemp.queryForMap(sql, userId.getId());
 		int room_id = (int)result.get("room_id");
 		return room_id;
 	}
 
 	/**
 	 * ログインIDからログイン有無チェック
-	 * @param id: ログインID
-	 * return true: あり false: なし
+	 * @param id ログインID
+	 * return true あり false なし
 	 */
 	@Override
-	public boolean isSelect_byId(int id) {
-		// TODO IDによる有無チェック
+	public boolean isSelect_byId(LoginIdStatus id) {
+		// IDによる有無チェック
 		String sql = "SELECT id FROM chat_login WHERE id = ?";
 		return jdbcTemp.query(
 				sql, 
-				new Object[]{ id },
-				new int[] {Types.INTEGER},
+				new Object[]{ id.getId() },
+				new int[] { Types.INTEGER },
 				rs -> {
 			return rs.next() ? true : false;	
 		});
@@ -279,17 +286,17 @@ public class LoginDaoSql implements LoginDao {
 
 	/**
 	 * ユーザIDからログイン有無チェック
-	 * @param userId: ユーザID
-	 * return true: あり false: なし
+	 * @param userId ユーザID
+	 * return true あり false なし
 	 */
 	@Override
-	public boolean isSelect_byUserId(int userId) {
-		// TODO ユーザIDによるIDの有無確認
+	public boolean isSelect_byUserId(UserIdStatus userId) {
+		// ユーザIDによるIDの有無確認
 		String sql = "SELECT id FROM chat_login WHERE user_id = ?";
 		return jdbcTemp.query(
 				sql, 
-				new Object[]{ userId },
-				new int[] {Types.VARCHAR},
+				new Object[]{ userId.getId() },
+				new int[] {	Types.INTEGER },
 				rs -> {
 			return rs.next() ? true : false;	
 		});

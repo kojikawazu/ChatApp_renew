@@ -30,6 +30,9 @@ import com.example.demo.app.service.EnterService;
 import com.example.demo.app.service.LoginService;
 import com.example.demo.app.service.RoomService;
 import com.example.demo.app.service.UserService;
+import com.example.demo.common.status.LoginIdStatus;
+import com.example.demo.common.status.RoomIdStatus;
+import com.example.demo.common.status.UserIdStatus;
 
 /**
  * 【チャットコントローラー】
@@ -150,13 +153,15 @@ public class ChatController {
 		int enter_id = roomOutForm.getEnter_id();
 		EnterModel enterModel = this.enterService.select(enter_id);
 		int user_id = enterModel.getUser_id();
-		int login_id = this.loginService.selectId_byUserId(user_id);
+		int login_id = this.loginService.selectId_byUserId(new UserIdStatus(user_id));
 		
 		// 退室情報の通知
 		this.setComment(user_id, enterModel.getRoom_id());
 		
 		// ログイン情報のルームIDの初期化
-		this.loginService.updateRoomId_byUserId(0, user_id);
+		this.loginService.updateRoomId_byUserId(
+				new RoomIdStatus(0), 
+				new UserIdStatus(user_id));
 		
 		// 入室情報の削除
 		this.enterService.delete(enter_id);
@@ -184,11 +189,13 @@ public class ChatController {
 		int enter_id = roomOutForm.getEnter_id();
 		EnterModel enterModel = this.enterService.select(enter_id);
 		int user_id = enterModel.getUser_id();
-		int login_id = this.loginService.selectId_byUserId(user_id);
+		int login_id = this.loginService.selectId_byUserId(new UserIdStatus(user_id));
 		int room_id = enterModel.getRoom_id();
 		
 		// ログイン情報のルームIDの初期化
-		this.loginService.updateRoomId_byRoomId(room_id, 0);
+		this.loginService.updateRoomId_byRoomId(
+				new RoomIdStatus(room_id), 
+				new RoomIdStatus(0));
 		
 		// コメント情報の削除(ルームID)
 		this.commentService.delete_byRoomId(room_id);
@@ -227,8 +234,8 @@ public class ChatController {
 		
 		// 情報取得
 		EnterModel enterModel = this.enterService.select(roomLeaveForm.getEnter_id());
-		LoginModel loginModel = this.loginService.select(roomLeaveForm.getIn_id());
-		UserModel userModel = this.userService.select(loginModel.getUser_id());
+		LoginModel loginModel = this.loginService.select(new LoginIdStatus(roomLeaveForm.getIn_id()));
+		UserModel userModel = this.userService.select(new UserIdStatus(loginModel.getUser_id()));
 		
 		// 強制退室通知
 		CommentModel commentModel = new CommentModel();
@@ -239,7 +246,9 @@ public class ChatController {
 		this.commentService.save(commentModel);
 		
 		// ログイン情報のルーム番号の初期化
-		this.loginService.updateRoomId_byId(0, roomLeaveForm.getIn_id());
+		this.loginService.updateRoomId_byId(
+				new RoomIdStatus(0), 
+				new LoginIdStatus(roomLeaveForm.getIn_id()));
 		
 		// チャットリダイレクト
 		redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, roomLeaveForm.getEnter_id());
@@ -274,7 +283,7 @@ public class ChatController {
 		for( CommentModel commentModel : commentModelList) {
 			CommentModelEx ex = new CommentModelEx(commentModel);
 			
-			UserModel userModel =  this.userService.select(commentModel.getUser_id());
+			UserModel userModel =  this.userService.select(new UserIdStatus(commentModel.getUser_id()));
 			ex.setUserName(userModel.getName());
 			list.add(ex);
 		}
@@ -296,7 +305,7 @@ public class ChatController {
 		
 		// 拡張版へ移行
 		for( LoginModel lnModel : loginModelList) {
-			UserModel usModel = this.userService.select(lnModel.getUser_id());
+			UserModel usModel = this.userService.select(new UserIdStatus(lnModel.getUser_id()));
 			LoginModelEx ex = new LoginModelEx(lnModel, usModel.getName());
 			loginModelExList.add(ex);
 		}
@@ -322,7 +331,7 @@ public class ChatController {
 			// 既に閉鎖されている
 			
 			// ユーザIDからログインIDを取得
-			int login_id = this.loginService.selectId_byUserId(enterModel.getUser_id());
+			int login_id = this.loginService.selectId_byUserId(new UserIdStatus(enterModel.getUser_id()));
 			
 			// ログインIDをリダイレクト
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, "部屋が閉鎖されました。");
@@ -330,7 +339,7 @@ public class ChatController {
 			return false;
 		}
 		
-		int room_id = this.loginService.selectRoomId_byUserId(enterModel.getUser_id());
+		int room_id = this.loginService.selectRoomId_byUserId(new UserIdStatus(enterModel.getUser_id()));
 		if( room_id == 0) {
 			// 強制退室された
 			
@@ -338,7 +347,7 @@ public class ChatController {
 			this.enterService.delete(enterModel.getId());
 			
 			// ユーザIDからログインIDを取得
-			int login_id = this.loginService.selectId_byUserId(enterModel.getUser_id());
+			int login_id = this.loginService.selectId_byUserId(new UserIdStatus(enterModel.getUser_id()));
 			
 			// ログインIDをリダイレクト
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, "強制退室されました。");
@@ -360,7 +369,7 @@ public class ChatController {
 		// TODO チャットルーム設定
 		
 		// ホストユーザチェック
-		LoginModel lnModel = this.loginService.select_byUserId(enterModel.getManager_id());
+		LoginModel lnModel = this.loginService.select_byUserId(new UserIdStatus(enterModel.getManager_id()));
 		if(lnModel.getRoom_id() != enterModel.getRoom_id()) {
 			// 既にホストが変更されている場合
 			
@@ -372,11 +381,11 @@ public class ChatController {
 		
 		// ルーム情報を取得
 		RoomModel roomModel = this.roomService.select(enterModel.getRoom_id());
-		UserModel userModel = this.userService.select(enterModel.getUser_id());
-		UserModel hostModel = this.userService.select(enterModel.getManager_id());
-		int room_id = this.loginService.selectRoomId_byUserId(enterModel.getUser_id());
+		UserModel userModel = this.userService.select(new UserIdStatus(enterModel.getUser_id()));
+		UserModel hostModel = this.userService.select(new UserIdStatus(enterModel.getManager_id()));
+		int room_id = this.loginService.selectRoomId_byUserId(new UserIdStatus(enterModel.getUser_id()));
 		List<CommentModel> commentModelList = this.commentService.select_byRoomId(enterModel.getRoom_id());
-		List<LoginModel> loginModelList = this.loginService.selectList_byRoomId(room_id);
+		List<LoginModel> loginModelList = this.loginService.selectList_byRoomId(new RoomIdStatus(room_id));
 		
 		// 拡張版変換
 		RoomModelEx roomModelEx = this.changeRoomModel(roomModel);
