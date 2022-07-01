@@ -28,6 +28,8 @@ import com.example.demo.app.service.EnterService;
 import com.example.demo.app.service.LoginService;
 import com.example.demo.app.service.RoomService;
 import com.example.demo.app.service.UserService;
+import com.example.demo.common.status.LoginIdStatus;
+import com.example.demo.common.status.UserIdStatus;
 
 /**
  * ルームコントローラ
@@ -87,8 +89,8 @@ public class RoomController {
 		model.addAttribute(WebConsts.BIND_LOGIN_ID, login_id);
 		if( login_id > 0) {
 			// ログイン情報設定
-			LoginModel loginModel = this.loginService.select(login_id);
-			UserModel userModel = this.userService.select(loginModel.getUser_id());
+			LoginModel loginModel = this.loginService.select(new LoginIdStatus(login_id));
+			UserModel userModel = this.userService.select(new UserIdStatus(loginModel.getUser_id()));
 			model.addAttribute(WebConsts.BIND_USER_MODEL, userModel);
 		}
 		
@@ -114,7 +116,7 @@ public class RoomController {
 		List<RoomModelEx> roomModelListExList = new ArrayList<RoomModelEx>();
 		for( RoomModel roomModel : roomModelList){
 			RoomModelEx newModelEx = new RoomModelEx(roomModel);
-			UserModel uModel =  this.userService.select(roomModel.getUser_id());
+			UserModel uModel =  this.userService.select(new UserIdStatus(roomModel.getUser_id()));
 			// ユーザ名取得
 			newModelEx.setUserName(uModel.getName());
 			// 入室数取得

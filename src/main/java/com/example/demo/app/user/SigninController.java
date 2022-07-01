@@ -16,8 +16,9 @@ import com.example.demo.app.entity.LoginModel;
 import com.example.demo.app.form.UserLoginForm;
 import com.example.demo.app.service.LoginService;
 import com.example.demo.app.service.UserService;
-import com.example.demo.app.status.LoginIdStatus;
-import com.example.demo.app.status.UserIdStatus;
+import com.example.demo.common.status.LoginIdStatus;
+import com.example.demo.common.status.UserIdStatus;
+import com.example.demo.common.word.UserNameEmailPassword;
 
 /**
  * ---------------------------------------------------------------------------
@@ -36,9 +37,18 @@ public class SigninController {
 	private LoginService loginService;
 	
 	/**
+	 * メッセージ
+	 */
+	/** ログインに失敗した時のメッセージ */
+	private static final String SIGNIN_MESSAGE_ERROR_LOGIN = "ログインに失敗しました。";
+	
+	/** 既にログイン中のメッセージ */
+	private static final String SIGNIN_MESSAGE_ERROR_ALREADY_LOGIN = "既にログインされています。";
+	
+	/**
 	 * コンストラクタ
-	 * @param userService
-	 * @param loginService
+	 * @param userService ユーザーサービス
+	 * @param loginService ログインサービス
 	 */
 	@Autowired
 	public SigninController(
@@ -51,9 +61,9 @@ public class SigninController {
 	
 	/**
 	 * サインイン受信
-	 * @param userLoginForm: サインインフォーム
-	 * @param result: 結果
-	 * @param redirectAttributes: リダイレクト
+	 * @param userLoginForm サインインフォーム
+	 * @param result 結果
+	 * @param redirectAttributes リダイレクト
 	 * @return Webパス(redirect:/room)
 	 */
 	@PostMapping
@@ -68,59 +78,66 @@ public class SigninController {
 			LoginIdStatus loginIdStatus = new LoginIdStatus(0);
 			
 			// エラーチェック
-			userIdStatus = this.check_signin(userLoginForm, result, redirectAttributes);
+			userIdStatus = this.checkSignin(userLoginForm, result, redirectAttributes);
 			if( WebFunctions.isNotNull(userIdStatus) && userIdStatus.isError() ) {
-				// 何もしない
+				// エラーの場合何もしない
 				return WebConsts.URL_REDIRECT_ROOM_INDEX;
 			}
 			
 			// サインイン情報登録
 			loginIdStatus = this.addSignin(userIdStatus);
 			if( WebFunctions.isNotNull(loginIdStatus) && !loginIdStatus.isError() ) {
+				// ログインIDをWebに登録
 				redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, loginIdStatus.getId());
 			}
 		} catch(Exception ex) {
 			ex.printStackTrace();
 		}
 		
+		// room画面表示
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
 	}
 	
 	/**
 	 * サインインチェック
-	 * @param userLoginForm: ログインフォーム
-	 * @param result: 結果
-	 * @param redirectAttributes: リダイレクト
-	 * @return
+	 * @param userLoginForm ログインフォーム
+	 * @param result 結果
+	 * @param redirectAttributes リダイレクト
+	 * @return ログインIDクラス
 	 */
-	private UserIdStatus check_signin(
+	private UserIdStatus checkSignin(
 			UserLoginForm userLoginForm,
 			BindingResult result,
 			RedirectAttributes redirectAttributes) {
 		// サインインエラーチェック
-		UserIdStatus userIdStatus = new UserIdStatus(0);
-		
 		if( result.hasErrors() ) {
 			// エラーあり
-			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, "ログインに失敗しました。");
+			redirectAttributes.addFlashAttribute(
+					WebConsts.BIND_NOTICE_ERROR, SIGNIN_MESSAGE_ERROR_LOGIN);
 			return new UserIdStatus(WebConsts.ERROR_NUMBER);
 		}
 		
-		userIdStatus = new UserIdStatus(
+		// エラーなし
+		UserIdStatus userIdStatus = new UserIdStatus(
 				this.userService.selectId_byNameEmailPasswd(
+						new UserNameEmailPassword(
 						userLoginForm.getName(), 
 						userLoginForm.getEmail(), 
 						userLoginForm.getPasswd())
-				);
+				));
+		
+		// サインイン内容チェック
 		if( userIdStatus.isError() ) {
-			// ユーザ名、Eメール、パスワード一致しない
-			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, "ログインに失敗しました。");
+			// ユーザ名、Eメール、パスワード一致しない[ERROR]
+			redirectAttributes.addFlashAttribute(
+					WebConsts.BIND_NOTICE_ERROR, SIGNIN_MESSAGE_ERROR_LOGIN);
 			return new UserIdStatus(WebConsts.ERROR_NUMBER);
 		}
 		
-		if( this.loginService.isSelect_byUserId(userIdStatus.getId()) ) {
-			// ログイン情報が既に存在する
-			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, "既にログインされています。");
+		if( this.loginService.isSelect_byUserId(userIdStatus) ) {
+			// ログイン情報が既に存在する[ERROR]
+			redirectAttributes.addFlashAttribute(
+					WebConsts.BIND_NOTICE_ERROR, SIGNIN_MESSAGE_ERROR_ALREADY_LOGIN);
 			return new UserIdStatus(WebConsts.ERROR_NUMBER);
 		}
 		
@@ -130,8 +147,8 @@ public class SigninController {
 	
 	/**
 	 * サインイン情報登録処理
-	 * @param user_id: ユーザID
-	 * @return ログインID
+	 * @param user_id ユーザID
+	 * @return ログインIDクラス
 	 */
 	private LoginIdStatus addSignin(UserIdStatus userStatus) {
 		// サインイン情報登録

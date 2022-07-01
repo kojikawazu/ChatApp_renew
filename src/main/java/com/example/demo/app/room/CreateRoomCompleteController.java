@@ -21,6 +21,8 @@ import com.example.demo.app.service.CommentService;
 import com.example.demo.app.service.EnterService;
 import com.example.demo.app.service.LoginService;
 import com.example.demo.app.service.RoomService;
+import com.example.demo.common.status.LoginIdStatus;
+import com.example.demo.common.status.RoomIdStatus;
 
 /**
  * ---------------------------------------------------------------------------
@@ -86,11 +88,13 @@ public class CreateRoomCompleteController {
 		}
 		
 		// ルームの生成
-		LoginModel loginModel = this.loginService.select(roomCreateForm.getLogin_id());
+		LoginModel loginModel = this.loginService.select(new LoginIdStatus(roomCreateForm.getLogin_id()));
 		int room_id = this.setRoom(loginModel, roomCreateForm);
 		
 		// ログイン情報のルーム番号の更新
-		this.loginService.updateRoomId_byId(room_id, roomCreateForm.getLogin_id());
+		this.loginService.updateRoomId_byId(
+				new RoomIdStatus(room_id), 
+				new LoginIdStatus(roomCreateForm.getLogin_id()));
 		
 		// 入室情報の生成
 		int enter_id = this.setEnter_createroom(loginModel, roomCreateForm, room_id);

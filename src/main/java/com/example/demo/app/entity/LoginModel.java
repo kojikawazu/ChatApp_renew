@@ -15,10 +15,10 @@ public class LoginModel {
 	
 	/**
 	 * コンストラクタ
-	 * @param id
-	 * @param room_id
-	 * @param user_id
-	 * @param created
+	 * @param id: ログインID
+	 * @param room_id: ルームID
+	 * @param user_id: ユーザーID
+	 * @param created: 生成日付
 	 */
 	public LoginModel(
 			int id,
@@ -34,7 +34,7 @@ public class LoginModel {
 	
 	/**
 	 * コンストラクタ
-	 * @param model
+	 * @param model: ログインモデルクラス
 	 */
 	public LoginModel(LoginModel model) {
 		super();

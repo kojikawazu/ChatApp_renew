@@ -1,4 +1,4 @@
-package com.example.demo.app.status;
+package com.example.demo.common.status;
 
 import com.example.demo.app.config.WebConsts;
 
@@ -11,7 +11,7 @@ public class UserIdStatus implements SuperStatus {
 	
 	/**
 	 * コンストラクタ
-	 * @param userId
+	 * @param userId ユーザーID
 	 */
 	public UserIdStatus(int userId) {
 		this.userId = userId;
@@ -19,7 +19,7 @@ public class UserIdStatus implements SuperStatus {
 	
 	/**
 	 * エラーか判定する
-	 * @return True:エラー False: エラーでない
+	 * @return True エラー False エラーでない
 	 */
 	@Override
 	public boolean isError() {
@@ -28,7 +28,7 @@ public class UserIdStatus implements SuperStatus {
 	
 	/**
 	 * IDの取得
-	 * @return ID
+	 * @return ID ユーザーID
 	 */
 	@Override
 	public int getId() {

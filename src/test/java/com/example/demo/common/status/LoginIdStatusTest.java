@@ -1,18 +1,26 @@
-package com.example.demo.app.status;
+package com.example.demo.common.status;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class UserIdStatusTest {
+import com.example.demo.common.status.LoginIdStatus;
+import com.example.demo.common.status.SuperStatus;
+
+/**
+ * ログインIDテスト
+ * @author nanai
+ *
+ */
+class LoginIdStatusTest {
 
 	/**
 	 * ユーザーID取得テスト
 	 */
 	@Test
 	void initTest() {
-		UserIdStatus test = new UserIdStatus(0);
+		LoginIdStatus test = new LoginIdStatus(0);
 		Assertions.assertEquals(test.getId(), 0);
 	}
 	
@@ -21,7 +29,7 @@ class UserIdStatusTest {
 	 */
 	@Test
 	void errorNumbertest() {
-		UserIdStatus test = new UserIdStatus(-1);
+		LoginIdStatus test = new LoginIdStatus(-1);
 		Assertions.assertEquals(test.isError(), true);
 	}
 	
@@ -30,7 +38,7 @@ class UserIdStatusTest {
 	 */
 	@Test
 	void noErrorNumbertest() {
-		UserIdStatus test = new UserIdStatus(0);
+		LoginIdStatus test = new LoginIdStatus(0);
 		Assertions.assertEquals(test.isError(), false);
 	}
 	
@@ -39,7 +47,7 @@ class UserIdStatusTest {
 	 */
 	@Test
 	void superInitTest() {
-		SuperStatus test = new UserIdStatus(0);
+		SuperStatus test = new LoginIdStatus(0);
 		Assertions.assertEquals(test.getId(), 0);
 	}
 	
@@ -48,7 +56,7 @@ class UserIdStatusTest {
 	 */
 	@Test
 	void superErrorNumbertest() {
-		SuperStatus test = new UserIdStatus(-1);
+		SuperStatus test = new LoginIdStatus(-1);
 		Assertions.assertEquals(test.isError(), true);
 	}
 	
@@ -57,7 +65,7 @@ class UserIdStatusTest {
 	 */
 	@Test
 	void superNoErrorNumbertest() {
-		SuperStatus test = new UserIdStatus(0);
+		SuperStatus test = new LoginIdStatus(0);
 		Assertions.assertEquals(test.isError(), false);
 	}
 

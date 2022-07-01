@@ -3,9 +3,12 @@ package com.example.demo.app.dao;
 import java.util.List;
 
 import com.example.demo.app.entity.UserModel;
+import com.example.demo.common.status.UserIdStatus;
+import com.example.demo.common.word.UserNameEmail;
+import com.example.demo.common.word.UserNameEmailPassword;
 
 /**
- * ユーザDaoパターン
+ * ユーザDaoパターン(インターフェース)
  * @author nanai
  *
  */
@@ -17,22 +20,22 @@ public interface UserDao {
 	
 	int update(UserModel model);
 	
-	int update_passwd(String name, String email, String passwd);
+	int update_passwd(UserNameEmailPassword user);
 	
-	int delete(int id);
+	int delete(UserIdStatus id);
 	
 	List<UserModel> getAll();
 	
-	UserModel select(int id);
+	UserModel select(UserIdStatus id);
 	
-	int selectId_byNameEmailPass(String name, String email, String passwd);
+	int selectId_byNameEmailPass(UserNameEmailPassword user);
 	
-	boolean isSelect_byId(int id);
+	boolean isSelect_byId(UserIdStatus id);
 	
-	boolean isSelect_byNameEmail(String name, String email);
+	boolean isSelect_byNameEmail(UserNameEmail user);
 	
-	boolean isSelect_byNameEmailForgotPW(String name, String email, String forgot);
+	boolean isSelect_byNameEmailForgotPW(UserNameEmailPassword user);
 	
-	boolean isSelect_byNameEmailPass(String name, String email, String passwd);
+	boolean isSelect_byNameEmailPass(UserNameEmailPassword user);
 
 }
