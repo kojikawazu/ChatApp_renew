@@ -8,6 +8,7 @@ import com.example.demo.common.status.UserIdStatus;
 
 /**
  * ログインモデル
+ * @author nanai
  *
  */
 public class LoginModel {

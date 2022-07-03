@@ -11,6 +11,7 @@ import com.example.demo.common.word.RoomTagWord;
 
 /**
  * ルームモデル
+ * @author nanai
  *
  */
 public class RoomModel {

@@ -4,6 +4,8 @@ import com.example.demo.app.config.WebConsts;
 
 /**
  * コメントIDのステータス受け渡しクラス
+ * @author nanai
+ * 
  */
 public class CommentIdStatus implements SuperStatus {
 

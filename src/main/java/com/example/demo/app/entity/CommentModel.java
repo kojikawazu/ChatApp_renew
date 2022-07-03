@@ -2,15 +2,14 @@ package com.example.demo.app.entity;
 
 import java.time.LocalDateTime;
 
-import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.status.CommentIdStatus;
-import com.example.demo.common.status.EnterIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 import com.example.demo.common.word.ChatCommentWord;
 
 /**
  * コメントモデル
+ * @author nanai
  *
  */
 public class CommentModel {

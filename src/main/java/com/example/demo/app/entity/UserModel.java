@@ -9,6 +9,7 @@ import com.example.demo.common.word.PasswordWord;
 
 /**
  * ユーザモデル
+ * @author nanai
  *
  */
 public class UserModel {

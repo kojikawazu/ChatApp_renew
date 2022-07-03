@@ -4,6 +4,7 @@ import com.example.demo.common.word.NameWord;
 
 /**
  * コメントモデル拡張版
+ * @author nanai
  *
  */
 public class CommentModelEx extends CommentModel {

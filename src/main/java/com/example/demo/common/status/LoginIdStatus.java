@@ -4,6 +4,8 @@ import com.example.demo.app.config.WebConsts;
 
 /**
  * ログインIDのステータス受け渡しクラス
+ * @author nanai
+ * 
  */
 public class LoginIdStatus implements SuperStatus {
 

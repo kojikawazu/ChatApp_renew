@@ -9,6 +9,7 @@ import com.example.demo.common.status.UserIdStatus;
 
 /**
  * 入室モデル
+ * @author nanai
  *
  */
 public class EnterModel {
