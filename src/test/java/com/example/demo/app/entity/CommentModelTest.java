@@ -7,9 +7,7 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.status.CommentIdStatus;
-import com.example.demo.common.status.EnterIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 import com.example.demo.common.word.ChatCommentWord;
