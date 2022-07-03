@@ -13,6 +13,10 @@ import com.example.demo.common.word.PasswordWord;
  */
 public class UserModel {
 	
+	/**
+	 * フィールド
+	 * 
+	 */
 	private UserIdStatus id;			/** ユーザID */
 	private NameWord name;				/** ユーザ名 */
 	private EmailWord email;			/** Eメール  */

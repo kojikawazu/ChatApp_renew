@@ -15,6 +15,10 @@ import com.example.demo.common.word.RoomTagWord;
  */
 public class RoomModel {
 	
+	/**
+	 * フィールド
+	 * 
+	 */
 	private RoomIdStatus id;			/** ルームID    */
 	private RoomNameWord name;			/** ルーム名    */
 	private RoomCommentWord comment;	/** コメント     */

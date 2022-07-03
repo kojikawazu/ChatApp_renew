@@ -1,5 +1,10 @@
 package com.example.demo.common.word;
 
+/**
+ * ユーザー(インターフェース)
+ * @author nanai
+ *
+ */
 public interface SuperUserInterface {
 
 	public String getName();

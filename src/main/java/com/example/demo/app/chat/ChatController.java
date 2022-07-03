@@ -31,9 +31,13 @@ import com.example.demo.app.service.LoginService;
 import com.example.demo.app.service.RoomService;
 import com.example.demo.app.service.UserService;
 import com.example.demo.common.number.RoomEnterCntNumber;
+import com.example.demo.common.number.RoomMaxNumber;
+import com.example.demo.common.status.CommentIdStatus;
+import com.example.demo.common.status.EnterIdStatus;
 import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
+import com.example.demo.common.word.ChatCommentWord;
 import com.example.demo.common.word.NameWord;
 
 /**
@@ -240,11 +244,12 @@ public class ChatController {
 		UserModel userModel = this.userService.select(new UserIdStatus(loginModel.getUser_id()));
 		
 		// 強制退室通知
-		CommentModel commentModel = new CommentModel();
-		commentModel.setComment(userModel.getName() +  "さんを強制退室させました。");
-		commentModel.setRoom_id(enterModel.getRoom_id());
-		commentModel.setUser_id(enterModel.getUser_id());
-		commentModel.setCreated(LocalDateTime.now());
+		CommentModel commentModel = new CommentModel(
+				new CommentIdStatus(0),
+				new ChatCommentWord("userModel.getName()" +  "さんを強制退室させました。"),
+				new RoomIdStatus(enterModel.getRoom_id()),
+				new UserIdStatus(enterModel.getUser_id()),
+				LocalDateTime.now());
 		this.commentService.save(commentModel);
 		
 		// ログイン情報のルーム番号の初期化
@@ -285,10 +290,10 @@ public class ChatController {
 		
 		// 拡張版へ移行
 		for( CommentModel commentModel : commentModelList) {
-			CommentModelEx ex = new CommentModelEx(commentModel);
-			
 			UserModel userModel =  this.userService.select(new UserIdStatus(commentModel.getUser_id()));
-			ex.setUserName(userModel.getName());
+			CommentModelEx ex = new CommentModelEx(
+					commentModel,
+					new NameWord(userModel.getName()));
 			list.add(ex);
 		}
 		
@@ -382,7 +387,15 @@ public class ChatController {
 			// ホストユーザIDを変更
 			this.enterService.updateManagerId_byId(enterModel.getUser_id(), enterModel.getId());
 			this.roomService.updateUserId_byUserId(enterModel.getManager_id(), enterModel.getUser_id());
-			enterModel.setManager_id(enterModel.getUser_id());
+			//enterModel.setManager_id(enterModel.getUser_id());
+			
+			enterModel = new EnterModel(
+					new EnterIdStatus(enterModel.getId()),
+					new RoomIdStatus(enterModel.getRoom_id()),
+					new UserIdStatus(enterModel.getUser_id()),
+					new UserIdStatus(enterModel.getUser_id()),
+					new RoomMaxNumber(enterModel.getMax_sum()),
+					enterModel.getCreated());
 		}
 		
 		// ルーム情報を取得
@@ -416,11 +429,12 @@ public class ChatController {
 	 */
 	private void setComment(int user_id, int room_id) {
 		// TODO 退室コメント通知
-		CommentModel commentModel = new CommentModel();
-		commentModel.setUser_id(user_id);
-		commentModel.setRoom_id(room_id);
-		commentModel.setComment("退室されました。");
-		commentModel.setCreated(LocalDateTime.now());
+		CommentModel commentModel = new CommentModel(
+				new CommentIdStatus(0),
+				new ChatCommentWord("退室されました。"),
+				new RoomIdStatus(room_id),
+				new UserIdStatus(user_id),
+				LocalDateTime.now());
 		this.commentService.save(commentModel);
 	}
 	
@@ -430,11 +444,12 @@ public class ChatController {
 	 */
 	public void setSpeech(UserSpeechForm userSpeechForm) {
 		// TODO 投稿情報の追加
-		CommentModel commentModel = new CommentModel();
-		commentModel.setComment(userSpeechForm.getComment());
-		commentModel.setRoom_id(userSpeechForm.getRoom_id());
-		commentModel.setUser_id(userSpeechForm.getUser_id());
-		commentModel.setCreated(LocalDateTime.now());
+		CommentModel commentModel = new CommentModel(
+				new CommentIdStatus(0),
+				new ChatCommentWord(userSpeechForm.getComment()),
+				new RoomIdStatus(userSpeechForm.getRoom_id()),
+				new UserIdStatus(userSpeechForm.getUser_id()),
+				LocalDateTime.now());
 		this.commentService.save(commentModel);
 	}
 	

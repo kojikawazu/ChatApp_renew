@@ -7,11 +7,15 @@ import com.example.demo.app.config.WebConsts;
  */
 public class RoomIdStatus implements SuperStatus {
 
-	private int roomId;		// ルームID
+	/**
+	 * フィールド
+	 * 
+	 */
+	private int roomId;		/** ルームID */
 	
 	/**
 	 * コンストラクタ
-	 * @param userId ユーザーID
+	 * @param roomId ルームID
 	 */
 	public RoomIdStatus(int roomId) {
 		this.roomId = roomId;

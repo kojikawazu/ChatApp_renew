@@ -3,22 +3,22 @@ package com.example.demo.common.status;
 import com.example.demo.app.config.WebConsts;
 
 /**
- * ログインIDのステータス受け渡しクラス
+ * 入室IDのステータス受け渡しクラス
  */
-public class LoginIdStatus implements SuperStatus {
+public class EnterIdStatus implements SuperStatus {
 
 	/**
 	 * フィールド
 	 * 
 	 */
-	private int loginId;		/** ログインID */
+	private int enterId;		/** 入室ID */
 	
 	/**
 	 * コンストラクタ
-	 * @param loginId ログインID
+	 * @param enterId 入室ID
 	 */
-	public LoginIdStatus(int loginId) {
-		this.loginId = loginId;
+	public EnterIdStatus(int enterId) {
+		this.enterId = enterId;
 	}
 	
 	/**
@@ -27,15 +27,15 @@ public class LoginIdStatus implements SuperStatus {
 	 */
 	@Override
 	public boolean isError() {
-		return ( this.loginId == WebConsts.ERROR_NUMBER );
+		return ( this.enterId == WebConsts.ERROR_NUMBER );
 	}
 
 	/**
 	 * IDの取得
-	 * @return ID ログインID
+	 * @return ID 入室ID
 	 */
 	@Override
 	public int getId() {
-		return this.loginId;
+		return this.enterId;
 	}
 }

@@ -17,6 +17,10 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.app.entity.EnterModel;
+import com.example.demo.common.number.RoomMaxNumber;
+import com.example.demo.common.status.EnterIdStatus;
+import com.example.demo.common.status.RoomIdStatus;
+import com.example.demo.common.status.UserIdStatus;
 
 /**
  * 入室Daoパターン
@@ -157,13 +161,13 @@ public class EnterDaoSql implements EnterDao {
 		List<EnterModel> list = new ArrayList<EnterModel>();
 		
 		for( Map<String, Object> result : resultList ) {
-			EnterModel model = new EnterModel();
-			model.setId((int)result.get("id"));
-			model.setRoom_id((int)result.get("room_id"));
-			model.setUser_id((int)result.get("user_id"));
-			model.setManager_id((int)result.get("manager_id"));
-			model.setMax_sum((int)result.get("max_sum"));
-			model.setCreated(((Timestamp)result.get("created")).toLocalDateTime());
+			EnterModel model = new EnterModel(
+					new EnterIdStatus((int)result.get("id")),
+					new RoomIdStatus((int)result.get("room_id")),
+					new UserIdStatus((int)result.get("user_id")),
+					new UserIdStatus((int)result.get("manager_id")),
+					new RoomMaxNumber((int)result.get("max_sum")),
+					((Timestamp)result.get("created")).toLocalDateTime());
 			list.add(model);
 		}
 		return list;
@@ -180,13 +184,13 @@ public class EnterDaoSql implements EnterDao {
 		String sql = "SELECT id, room_id, user_id, manager_id, max_sum, created FROM chat_enter WHERE id = ?";
 		Map<String, Object> result = jdbcTemp.queryForMap(sql, id);
 			
-		EnterModel model = new EnterModel();
-		model.setId((int)result.get("id"));
-		model.setRoom_id((int)result.get("room_id"));
-		model.setUser_id((int)result.get("user_id"));
-		model.setManager_id((int)result.get("manager_id"));
-		model.setMax_sum((int)result.get("max_sum"));
-		model.setCreated(((Timestamp)result.get("created")).toLocalDateTime());
+		EnterModel model = new EnterModel(
+				new EnterIdStatus((int)result.get("id")),
+				new RoomIdStatus((int)result.get("room_id")),
+				new UserIdStatus((int)result.get("user_id")),
+				new UserIdStatus((int)result.get("manager_id")),
+				new RoomMaxNumber((int)result.get("max_sum")),
+				((Timestamp)result.get("created")).toLocalDateTime());
 		return model;
 	}
 	
