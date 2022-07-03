@@ -2,72 +2,138 @@ package com.example.demo.app.entity;
 
 import java.time.LocalDateTime;
 
+import com.example.demo.common.number.RoomMaxNumber;
+import com.example.demo.common.status.EnterIdStatus;
+import com.example.demo.common.status.RoomIdStatus;
+import com.example.demo.common.status.UserIdStatus;
+
 /**
  * 入室モデル
  *
  */
 public class EnterModel {
 	
-	private int id;						// 入室ID
-	private int room_id;				// ルームID
-	private int user_id;				// ユーザID
-	private int manager_id;				// ホストID
-	private int max_sum;				// 入室数
-	private LocalDateTime created;		// 生成日時
+	/**
+	 * フィールド
+	 * 
+	 */
+	private EnterIdStatus id;			/** 入室ID */
+	private RoomIdStatus room_id;		/** ルームID */
+	private UserIdStatus user_id;		/** ユーザID */
+	private UserIdStatus manager_id;	/** ホストID */
+	private RoomMaxNumber max_sum;		/** 入室数  */
+	private LocalDateTime created;		/** 生成日時 */
 	
-	public EnterModel() {
-		super();
+	/**
+	 * コンストラクタ
+	 * @param id 入室ID
+	 * @param room_id ルームID
+	 * @param user_id ユーザID
+	 * @param manager_id ホストID
+	 * @param max_sum 入室数
+	 * @param created 生成日時
+	 */
+	public EnterModel(
+			EnterIdStatus id,
+			RoomIdStatus room_id,
+			UserIdStatus user_id,
+			UserIdStatus manager_id,
+			RoomMaxNumber max_sum,
+			LocalDateTime created) {
+		
+		this.id = (id == null ?
+				new EnterIdStatus(0) :
+				new EnterIdStatus(id.getId()));
+		
+		this.room_id = (room_id == null ?
+				new RoomIdStatus(0) :
+				new RoomIdStatus(room_id.getId()));
+		
+		this.user_id = (user_id == null ?
+				new UserIdStatus(0) :
+				new UserIdStatus(user_id.getId()));
+		
+		this.manager_id = (manager_id == null ?
+				new UserIdStatus(0) :
+				new UserIdStatus(manager_id.getId()));
+		
+		this.max_sum = (max_sum == null ?
+				new RoomMaxNumber(0) :
+				new RoomMaxNumber(max_sum.getNumber()));
+		
+		this.created = (created == null ?
+				LocalDateTime.now() :
+				created);
+	}
+	
+	/**
+	 * コンストラクタ
+	 * @param model 入室モデル
+	 */
+	public EnterModel(EnterModel model) {
+		
+		if( model == null ) {
+			this.id 		= new EnterIdStatus(0);
+			this.room_id 	= new RoomIdStatus(0);
+			this.user_id 	= new UserIdStatus(0);
+			this.manager_id = new UserIdStatus(0);
+			this.max_sum 	= new RoomMaxNumber(0);
+			this.created 	= LocalDateTime.now();
+		} else {
+			this.id 		= new EnterIdStatus(model.getId());
+			this.room_id 	= new RoomIdStatus(model.getRoom_id());
+			this.user_id 	= new UserIdStatus(model.getUser_id());
+			this.manager_id = new UserIdStatus(model.getManager_id());
+			this.max_sum 	= new RoomMaxNumber(model.getMax_sum());
+			this.created 	= model.created;
+		}
 	}
 
 	public int getId() {
-		return id;
+		return id.getId();
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	protected void setId(int id) {
+		this.id = new EnterIdStatus(id);
 	}
 
 	public int getRoom_id() {
-		return room_id;
+		return room_id.getId();
 	}
 
-	public void setRoom_id(int room_id) {
-		this.room_id = room_id;
+	protected void setRoom_id(int room_id) {
+		this.room_id = new RoomIdStatus(room_id);
 	}
 
 	public int getUser_id() {
-		return user_id;
+		return user_id.getId();
 	}
 
-	public void setUser_id(int user_id) {
-		this.user_id = user_id;
+	protected void setUser_id(int user_id) {
+		this.user_id = new UserIdStatus(user_id);
 	}
 
 	public int getManager_id() {
-		return manager_id;
+		return manager_id.getId();
 	}
 
-	public void setManager_id(int manager_id) {
-		this.manager_id = manager_id;
+	protected void setManager_id(int manager_id) {
+		this.manager_id = new UserIdStatus(manager_id);
 	}
 
 	public int getMax_sum() {
-		return max_sum;
+		return max_sum.getNumber();
 	}
 
-	public void setMax_sum(int max_sum) {
-		this.max_sum = max_sum;
+	protected void setMax_sum(int max_sum) {
+		this.max_sum = new RoomMaxNumber(max_sum);
 	}
 
 	public LocalDateTime getCreated() {
 		return created;
 	}
 
-	public void setCreated(LocalDateTime created) {
+	protected void setCreated(LocalDateTime created) {
 		this.created = created;
 	}
-	
-	
-	
-
 }

@@ -12,6 +12,10 @@ import com.example.demo.common.status.UserIdStatus;
  */
 public class LoginModel {
 
+	/**
+	 * フィールド
+	 * 
+	 */
 	private LoginIdStatus id;				/** ログインID */
 	private RoomIdStatus room_id;			/** ルームID  */
 	private UserIdStatus user_id;			/** ユーザID  */

@@ -7,7 +7,11 @@ import com.example.demo.app.config.WebConsts;
  */
 public class UserIdStatus implements SuperStatus {
 
-	private int userId;		// ユーザーID
+	/**
+	 * フィールド
+	 * 
+	 */
+	private int userId;		/** ユーザーID */
 	
 	/**
 	 * コンストラクタ

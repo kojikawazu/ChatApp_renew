@@ -6,8 +6,12 @@ import com.example.demo.common.word.NameWord;
  * ログインモデル拡張版
  *
  */
-public class LoginModelEx extends LoginModel{
+public class LoginModelEx extends LoginModel {
 
+	/**
+	 * フィールド
+	 * 
+	 */
 	private NameWord userName;			/** ユーザ名 */
 	
 	/**
@@ -26,11 +30,10 @@ public class LoginModelEx extends LoginModel{
 	 */
 	public LoginModelEx(LoginModel model, NameWord userName) {
 		super(model);
-		if ( userName == null ) {
-			this.userName = new NameWord("");
-		} else {
-			this.userName = userName;
-		}
+		
+		userName = ( userName == null ?
+				new NameWord("") :
+				new NameWord(userName.getString()));
 	}
 	
 	/**

@@ -22,9 +22,12 @@ import com.example.demo.app.service.EnterService;
 import com.example.demo.app.service.LoginService;
 import com.example.demo.app.service.RoomService;
 import com.example.demo.common.number.RoomMaxNumber;
+import com.example.demo.common.status.CommentIdStatus;
+import com.example.demo.common.status.EnterIdStatus;
 import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
+import com.example.demo.common.word.ChatCommentWord;
 import com.example.demo.common.word.RoomCommentWord;
 import com.example.demo.common.word.RoomNameWord;
 import com.example.demo.common.word.RoomTagWord;
@@ -141,12 +144,13 @@ public class CreateRoomCompleteController {
 	 */
 	private int setEnter_createroom(LoginModel loginModel, RoomCreateForm roomCreateForm, int room_id) {
 		// 入室情報の追加
-		EnterModel enterModel = new EnterModel();
-		enterModel.setRoom_id(room_id);
-		enterModel.setUser_id(loginModel.getUser_id());
-		enterModel.setManager_id(loginModel.getUser_id());
-		enterModel.setMax_sum(roomCreateForm.getMax_roomsum());
-		enterModel.setCreated(LocalDateTime.now());
+		EnterModel enterModel = new EnterModel(
+				new EnterIdStatus(0),
+				new RoomIdStatus(room_id),
+				new UserIdStatus(loginModel.getUser_id()),
+				new UserIdStatus(loginModel.getUser_id()),
+				new RoomMaxNumber(roomCreateForm.getMax_roomsum()),
+				LocalDateTime.now());
 		return this.enterService.save_returnId(enterModel);
 	}
 	
@@ -157,11 +161,12 @@ public class CreateRoomCompleteController {
 	 */
 	private void setComment_createroom(LoginModel loginModel, int room_id) {
 		// 部屋生成コメントの追加
-		CommentModel commentModel = new CommentModel();
-		commentModel.setRoom_id(room_id);
-		commentModel.setUser_id(loginModel.getId());
-		commentModel.setComment("部屋が作られました。");
-		commentModel.setCreated(LocalDateTime.now());
+		CommentModel commentModel = new CommentModel(
+				new CommentIdStatus(0),
+				new ChatCommentWord("部屋が作られました。"),
+				new RoomIdStatus(room_id),
+				new UserIdStatus(loginModel.getId()),
+				LocalDateTime.now());
 		this.commentService.save(commentModel);
 	}
 	

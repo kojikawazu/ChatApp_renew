@@ -19,8 +19,13 @@ import com.example.demo.app.service.CommentService;
 import com.example.demo.app.service.EnterService;
 import com.example.demo.app.service.LoginService;
 import com.example.demo.app.service.RoomService;
+import com.example.demo.common.number.RoomMaxNumber;
+import com.example.demo.common.status.CommentIdStatus;
+import com.example.demo.common.status.EnterIdStatus;
 import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
+import com.example.demo.common.status.UserIdStatus;
+import com.example.demo.common.word.ChatCommentWord;
 
 /**
  * ---------------------------------------------------------------------------
@@ -158,20 +163,22 @@ public class EnterController {
 		RoomModel roomModel = this.roomService.select(room_id);
 		LoginModel loginModel = this.loginService.select(new LoginIdStatus(login_id));
 		
-		EnterModel enterModel = new EnterModel();
-		enterModel.setRoom_id(room_id);
-		enterModel.setUser_id(loginModel.getUser_id());
-		enterModel.setManager_id(roomModel.getUser_id());
-		enterModel.setMax_sum(roomModel.getMax_roomsum());
-		enterModel.setCreated(LocalDateTime.now());
+		EnterModel enterModel = new EnterModel(
+				new EnterIdStatus(0),
+				new RoomIdStatus(room_id),
+				new UserIdStatus(loginModel.getUser_id()),
+				new UserIdStatus(roomModel.getUser_id()),
+				new RoomMaxNumber(roomModel.getMax_roomsum()),
+				LocalDateTime.now());
 		int enter_id = this.enterService.save_returnId(enterModel);
 		
 		// 入室通知
-		CommentModel commentModel = new CommentModel();
-		commentModel.setUser_id(loginModel.getUser_id());
-		commentModel.setRoom_id(room_id);
-		commentModel.setComment("入室されました。");
-		commentModel.setCreated(LocalDateTime.now());
+		CommentModel commentModel = new CommentModel(
+				new CommentIdStatus(0),
+				new ChatCommentWord("入室されました。"),
+				new RoomIdStatus(room_id),
+				new UserIdStatus(loginModel.getUser_id()),
+				LocalDateTime.now());
 		this.commentService.save(commentModel);
 		
 		redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, enter_id);

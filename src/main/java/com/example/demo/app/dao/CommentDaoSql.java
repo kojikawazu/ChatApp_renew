@@ -16,6 +16,10 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.app.entity.CommentModel;
+import com.example.demo.common.status.CommentIdStatus;
+import com.example.demo.common.status.RoomIdStatus;
+import com.example.demo.common.status.UserIdStatus;
+import com.example.demo.common.word.ChatCommentWord;
 
 /**
  * 【コメントDaoパターン】
@@ -129,12 +133,12 @@ public class CommentDaoSql implements CommentDao {
 		List<CommentModel> list = new ArrayList<CommentModel>();
 		
 		for( Map<String, Object> result : resultList ) {
-			CommentModel model = new CommentModel();
-			model.setId((int)result.get("id"));
-			model.setRoom_id((int)result.get("room_id"));
-			model.setUser_id((int)result.get("user_id"));
-			model.setComment((String)result.get("comment"));
-			model.setCreated(((Timestamp)result.get("created")).toLocalDateTime());
+			CommentModel model = new CommentModel(
+					new CommentIdStatus((int)result.get("id")),
+					new ChatCommentWord((String)result.get("comment")),
+					new RoomIdStatus((int)result.get("room_id")),
+					new UserIdStatus((int)result.get("user_id")),
+					((Timestamp)result.get("created")).toLocalDateTime());
 			list.add(model);
 		}
 		return list;
@@ -151,13 +155,12 @@ public class CommentDaoSql implements CommentDao {
 		String sql = "SELECT id, comment, room_id, user_id, created FROM chat_comment WHERE id = ? ORDER BY created DESC";
 		Map<String, Object> result = jdbcTemp.queryForMap(sql, id);
 			
-		CommentModel model = new CommentModel();
-		model.setId((int)result.get("id"));
-		model.setRoom_id((int)result.get("room_id"));
-		model.setUser_id((int)result.get("user_id"));
-		model.setComment((String)result.get("comment"));
-		model.setCreated(((Timestamp)result.get("created")).toLocalDateTime());
-		
+		CommentModel model = new CommentModel(
+				new CommentIdStatus((int)result.get("id")),
+				new ChatCommentWord((String)result.get("comment")),
+				new RoomIdStatus((int)result.get("room_id")),
+				new UserIdStatus((int)result.get("user_id")),
+				((Timestamp)result.get("created")).toLocalDateTime());		
 		return model;
 	}
 	
@@ -174,12 +177,12 @@ public class CommentDaoSql implements CommentDao {
 		List<CommentModel> list = new ArrayList<CommentModel>();
 		
 		for( Map<String, Object> result : resultList ) {
-			CommentModel model = new CommentModel();
-			model.setId((int)result.get("id"));
-			model.setRoom_id((int)result.get("room_id"));
-			model.setUser_id((int)result.get("user_id"));
-			model.setComment((String)result.get("comment"));
-			model.setCreated(((Timestamp)result.get("created")).toLocalDateTime());
+			CommentModel model = new CommentModel(
+					new CommentIdStatus((int)result.get("id")),
+					new ChatCommentWord((String)result.get("comment")),
+					new RoomIdStatus((int)result.get("room_id")),
+					new UserIdStatus((int)result.get("user_id")),
+					((Timestamp)result.get("created")).toLocalDateTime());
 			list.add(model);
 		}
 		return list;
