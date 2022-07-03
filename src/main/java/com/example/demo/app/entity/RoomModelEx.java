@@ -5,6 +5,7 @@ import com.example.demo.common.word.NameWord;
 
 /**
  * ルームモデル拡張版
+ * @author nanai
  *
  */
 public class RoomModelEx extends RoomModel {

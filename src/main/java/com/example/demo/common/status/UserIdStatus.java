@@ -4,6 +4,8 @@ import com.example.demo.app.config.WebConsts;
 
 /**
  * ユーザーIDのステータス受け渡しクラス
+ * @author nanai
+ * 
  */
 public class UserIdStatus implements SuperStatus {
 

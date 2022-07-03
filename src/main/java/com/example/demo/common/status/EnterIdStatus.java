@@ -4,6 +4,8 @@ import com.example.demo.app.config.WebConsts;
 
 /**
  * 入室IDのステータス受け渡しクラス
+ * @author nanai
+ * 
  */
 public class EnterIdStatus implements SuperStatus {
 

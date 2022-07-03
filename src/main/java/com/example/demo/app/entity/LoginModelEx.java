@@ -4,6 +4,7 @@ import com.example.demo.common.word.NameWord;
 
 /**
  * ログインモデル拡張版
+ * @author nanai
  *
  */
 public class LoginModelEx extends LoginModel {
