@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.status.EnterIdStatus;
-import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 
