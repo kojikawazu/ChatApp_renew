@@ -3,9 +3,11 @@ package com.example.demo.app.service;
 import java.util.List;
 
 import com.example.demo.app.entity.CommentModel;
+import com.example.demo.common.status.CommentIdStatus;
+import com.example.demo.common.status.RoomIdStatus;
 
 /**
- * コメントサービス
+ * コメントサービス(インターフェース
  *
  */
 public interface CommentService {
@@ -16,16 +18,15 @@ public interface CommentService {
 	
 	void update(CommentModel model);
 	
-	void delete(int id);
+	void delete(CommentIdStatus id);
 	
-	void delete_byRoomId(int roomId);
+	void delete_byRoomId(RoomIdStatus roomId);
 	
 	List<CommentModel> getAll();
 	
-	List<CommentModel> select_byRoomId(int roomId);
+	List<CommentModel> select_byRoomId(RoomIdStatus roomId);
 	
-	CommentModel select(int id);
+	CommentModel select(CommentIdStatus id);
 	
-	boolean isSelect_byId(int id);
-	
+	boolean isSelect_byId(CommentIdStatus id);
 }

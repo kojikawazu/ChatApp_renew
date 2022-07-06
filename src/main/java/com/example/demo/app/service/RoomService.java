@@ -3,9 +3,11 @@ package com.example.demo.app.service;
 import java.util.List;
 
 import com.example.demo.app.entity.RoomModel;
+import com.example.demo.common.status.RoomIdStatus;
+import com.example.demo.common.status.UserIdStatus;
 
 /**
- * ルームサービス
+ * ルームサービス(インターフェース)
  *
  */
 public interface RoomService {
@@ -16,14 +18,13 @@ public interface RoomService {
 	
 	void update(RoomModel model);
 	
-	void updateUserId_byUserId(int userId, int newId);
+	void updateUserId_byUserId(UserIdStatus userId, UserIdStatus newId);
 	
-	void delete(int id);
+	void delete(RoomIdStatus id);
 	
 	List<RoomModel> getAll();
 	
-	RoomModel select(int id);
+	RoomModel select(RoomIdStatus id);
 	
-	boolean isSelect_byId(int id);
-	
+	boolean isSelect_byId(RoomIdStatus id);
 }

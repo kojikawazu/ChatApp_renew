@@ -23,6 +23,7 @@ import com.example.demo.app.service.RoomService;
 import com.example.demo.app.service.UserService;
 import com.example.demo.common.number.RoomEnterCntNumber;
 import com.example.demo.common.status.LoginIdStatus;
+import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 import com.example.demo.common.word.NameWord;
 
@@ -112,7 +113,7 @@ public class RoomController {
 		for( RoomModel roomModel : roomModelList){
 			UserModel uModel =  this.userService.select(new UserIdStatus(roomModel.getUser_id()));
 			// 入室数取得
-			int count = this.enterService.getCount_roomId(roomModel.getId());
+			int count = this.enterService.getCount_roomId(new RoomIdStatus(roomModel.getId()));
 			RoomModelEx newModelEx = new RoomModelEx(
 					roomModel,
 					new NameWord(uModel.getName()),

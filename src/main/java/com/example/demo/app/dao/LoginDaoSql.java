@@ -10,12 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.LoginModel;
 import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
@@ -49,10 +52,17 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public void insert(LoginModel model) {
 		// 追加
-		this.jdbcTemp.update("INSERT INTO chat_login(room_id, user_id, created) VALUES(?,?,?)",
-				model.getRoom_id(),
-				model.getUser_id(),
-				model.getCreated());	
+		if(model == null)	return;
+		
+		try {
+			this.jdbcTemp.update(
+					"INSERT INTO chat_login(room_id, user_id, created) VALUES(?,?,?)",
+					model.getRoom_id(),
+					model.getUser_id(),
+					model.getCreated());
+		} catch(DataAccessException ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	/**
@@ -63,21 +73,30 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public int insert_returnId(LoginModel model) {
 		// 追加(return id)
+		if(model == null)	return WebConsts.ERROR_NUMBER;
+		
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		String sql          = "INSERT INTO chat_login(room_id, user_id, created) VALUES(?,?,?)";
 		Timestamp timestamp = Timestamp.valueOf(model.getCreated());
+		int return_key = 0;
 		
-       jdbcTemp.update(new PreparedStatementCreator() {
-           public PreparedStatement createPreparedStatement(
-               Connection connection) throws SQLException {
-                   PreparedStatement ps = connection.prepareStatement(
-                       sql, new String[] { "id" });
-                   ps.setInt(1, model.getRoom_id());
-                   ps.setInt(2, model.getUser_id());
-                   ps.setTimestamp(3, timestamp);
-                   return ps;
-               }
-           }, keyHolder);
+		try {
+			jdbcTemp.update(new PreparedStatementCreator() {
+			   public PreparedStatement createPreparedStatement(
+			       Connection connection) throws SQLException {
+			           PreparedStatement ps = connection.prepareStatement(
+			               sql, new String[] { "id" });
+			           ps.setInt(1, model.getRoom_id());
+			           ps.setInt(2, model.getUser_id());
+			           ps.setTimestamp(3, timestamp);
+			           return ps;
+			       }
+			   }, keyHolder);
+			return_key = keyHolder.getKey().intValue();
+		} catch(DataAccessException ex) {
+			ex.printStackTrace();
+			return_key = WebConsts.ERROR_NUMBER;
+		}
 		return keyHolder.getKey().intValue();
 	}
 
@@ -89,7 +108,10 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public int update(LoginModel model) {
 		// 更新
-		return jdbcTemp.update("UPDATE chat_login SET room_id = ?, user_id = ?, created = ? WHERE id = ?",
+		if(model == null)	return WebConsts.ERROR_NUMBER;
+		
+		return jdbcTemp.update(
+				"UPDATE chat_login SET room_id = ?, user_id = ?, created = ? WHERE id = ?",
 				model.getRoom_id(),
 				model.getUser_id(),
 				model.getCreated(),
@@ -105,7 +127,10 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public int updateRoomId_byId(RoomIdStatus roomId, LoginIdStatus id) {
 		// ルームIDの更新
-		return jdbcTemp.update("UPDATE chat_login SET room_id = ? WHERE id = ?",
+		if(roomId == null || id == null)	return WebConsts.ERROR_NUMBER;
+		
+		return jdbcTemp.update(
+				"UPDATE chat_login SET room_id = ? WHERE id = ?",
 				roomId.getId(), 
 				id.getId());
 	}
@@ -119,7 +144,10 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public int updateRoomId_byUserId(RoomIdStatus roomId, UserIdStatus userId) {
 		// ユーザIDによるルームIDの更新
-		return this.jdbcTemp.update("UPDATE chat_login SET room_id = ? WHERE user_id = ?",
+		if(roomId == null || userId == null)	return WebConsts.ERROR_NUMBER;
+		
+		return this.jdbcTemp.update(
+				"UPDATE chat_login SET room_id = ? WHERE user_id = ?",
 				roomId.getId(), 
 				userId.getId());
 	}
@@ -133,7 +161,10 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public int updateRoomId_byRoomId(RoomIdStatus roomId, RoomIdStatus changeId) {
 		// ルームIDによるルームIDの初期化
-		return this.jdbcTemp.update("UPDATE chat_login SET room_id = ? WHERE room_id = ?",
+		if(roomId == null || changeId == null)	return WebConsts.ERROR_NUMBER;
+		
+		return this.jdbcTemp.update(
+				"UPDATE chat_login SET room_id = ? WHERE room_id = ?",
 				changeId.getId(), 
 				roomId.getId());
 	}
@@ -146,7 +177,10 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public int delete(LoginIdStatus id) {
 		// 削除
-		return this.jdbcTemp.update("DELETE FROM chat_login WHERE id = ?",
+		if(id == null)	return WebConsts.ERROR_NUMBER;
+		
+		return this.jdbcTemp.update(
+				"DELETE FROM chat_login WHERE id = ?",
 				id.getId());
 	}
 
@@ -157,18 +191,23 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public List<LoginModel> getAll() {
 		// 全選択
-		String sql = "SELECT id, room_id, user_id, created FROM chat_login";
-		List<Map<String, Object>> resultList = jdbcTemp.queryForList(sql);
 		List<LoginModel> list = new ArrayList<LoginModel>();
-		
-		for( Map<String, Object> result : resultList ) {
-			LoginModel model = new LoginModel(
-					new LoginIdStatus((int)result.get("id")),
-					new RoomIdStatus((int)result.get("room_id")),
-					new UserIdStatus((int)result.get("user_id")),
-					((Timestamp)result.get("created")).toLocalDateTime()
-					);
-			list.add(model);
+		try {
+			String sql = "SELECT id, room_id, user_id, created FROM chat_login";
+			List<Map<String, Object>> resultList = jdbcTemp.queryForList(sql);
+			
+			for( Map<String, Object> result : resultList ) {
+				LoginModel model = new LoginModel(
+						new LoginIdStatus((int)result.get("id")),
+						new RoomIdStatus((int)result.get("room_id")),
+						new UserIdStatus((int)result.get("user_id")),
+						((Timestamp)result.get("created")).toLocalDateTime()
+						);
+				list.add(model);
+			}
+		} catch(DataAccessException ex) {
+			ex.printStackTrace();
+			list.clear();
 		}
 		return list;
 	}
@@ -181,17 +220,22 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public List<LoginModel> selectList_byRoomId(RoomIdStatus roomId) {
 		// ルームIDによる選択
-		String sql = "SELECT id, room_id, user_id, created FROM chat_login WHERE room_id = ?";
-		List<Map<String, Object>> resultList = jdbcTemp.queryForList(sql, roomId.getId());
 		List<LoginModel> list = new ArrayList<LoginModel>();
-		
-		for( Map<String, Object> result : resultList ) {
-			LoginModel model = new LoginModel(
-					new LoginIdStatus((int)result.get("id")),
-					new RoomIdStatus((int)result.get("room_id")),
-					new UserIdStatus((int)result.get("user_id")),
-					((Timestamp)result.get("created")).toLocalDateTime());
-			list.add(model);
+		try {
+			String sql = "SELECT id, room_id, user_id, created FROM chat_login WHERE room_id = ?";
+			List<Map<String, Object>> resultList = jdbcTemp.queryForList(sql, roomId.getId());
+			
+			for( Map<String, Object> result : resultList ) {
+				LoginModel model = new LoginModel(
+						new LoginIdStatus((int)result.get("id")),
+						new RoomIdStatus((int)result.get("room_id")),
+						new UserIdStatus((int)result.get("user_id")),
+						((Timestamp)result.get("created")).toLocalDateTime());
+				list.add(model);
+			}
+		} catch(EmptyResultDataAccessException ex) {
+			ex.printStackTrace();
+			list.clear();
 		}
 		return list;
 	}
@@ -204,15 +248,20 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public LoginModel select(LoginIdStatus id) {
 		// IDによるデータ取得
-		String sql = "SELECT id, room_id, user_id, created FROM chat_login WHERE id = ?";
-		Map<String, Object> result = jdbcTemp.queryForMap(sql, id.getId());
+		LoginModel model = new LoginModel(null);
+		try {
+			String sql = "SELECT id, room_id, user_id, created FROM chat_login WHERE id = ?";
+			Map<String, Object> result = jdbcTemp.queryForMap(sql, id.getId());
 			
-		LoginModel model = new LoginModel(
-				new LoginIdStatus((int)result.get("id")),
-				new RoomIdStatus((int)result.get("room_id")),
-				new UserIdStatus((int)result.get("user_id")),
-				((Timestamp)result.get("created")).toLocalDateTime());
-		
+			model = new LoginModel(
+					new LoginIdStatus((int)result.get("id")),
+					new RoomIdStatus((int)result.get("room_id")),
+					new UserIdStatus((int)result.get("user_id")),
+					((Timestamp)result.get("created")).toLocalDateTime());
+		} catch(EmptyResultDataAccessException ex) {
+			ex.printStackTrace();
+			model = new LoginModel(null);
+		}
 		return model;
 	}
 	
@@ -224,10 +273,16 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public int selectId_byUserId(UserIdStatus userId) {
 		// ユーザIDによるIDの選択
-		if( !this.isSelect_byUserId(userId) ) return -1;
-		String sql = "SELECT id FROM chat_login WHERE user_id = ?";
-		Map<String, Object> result = jdbcTemp.queryForMap(sql, userId.getId());
-		int id = (int)result.get("id");
+		if( !this.isSelect_byUserId(userId) ) return WebConsts.ERROR_NUMBER;
+		int id = 0;
+		try {
+			String sql = "SELECT id FROM chat_login WHERE user_id = ?";
+			Map<String, Object> result = jdbcTemp.queryForMap(sql, userId.getId());
+			id = (int)result.get("id");
+		} catch(EmptyResultDataAccessException ex) {
+			ex.printStackTrace();
+			id = WebConsts.ERROR_NUMBER;
+		}
 		return id;
 	}
 	
@@ -239,14 +294,22 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public LoginModel select_byuserId(UserIdStatus userId) {
 		// ユーザIDによるデータ取得
-		String sql = "SELECT id, room_id, user_id, created FROM chat_login WHERE user_id = ?";
-		Map<String, Object> result = jdbcTemp.queryForMap(sql, userId.getId());
-			
-		LoginModel model = new LoginModel(
-				new LoginIdStatus((int)result.get("id")),
-				new RoomIdStatus((int)result.get("room_id")),
-				new UserIdStatus((int)result.get("user_id")),
-				((Timestamp)result.get("created")).toLocalDateTime());
+		if( !this.isSelect_byUserId(userId) ) return new LoginModel(null);
+		
+		LoginModel model = new LoginModel(null);
+		try {
+			String sql = "SELECT id, room_id, user_id, created FROM chat_login WHERE user_id = ?";
+			Map<String, Object> result = jdbcTemp.queryForMap(sql, userId.getId());
+				
+			model = new LoginModel(
+					new LoginIdStatus((int)result.get("id")),
+					new RoomIdStatus((int)result.get("room_id")),
+					new UserIdStatus((int)result.get("user_id")),
+					((Timestamp)result.get("created")).toLocalDateTime());
+		} catch(EmptyResultDataAccessException ex) {
+			ex.printStackTrace();
+			model = new LoginModel(null);
+		}
 		return model;
 	}
 	
@@ -258,10 +321,17 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public int selectRoomId_byUserId(UserIdStatus userId) {
 		// ユーザIDによるルームIDの選択
-		if( !this.isSelect_byUserId(userId) ) return -1;
-		String sql = "SELECT room_id FROM chat_login WHERE user_id = ?";
-		Map<String, Object> result = jdbcTemp.queryForMap(sql, userId.getId());
-		int room_id = (int)result.get("room_id");
+		if( !this.isSelect_byUserId(userId) ) return WebConsts.ERROR_NUMBER;
+		
+		int room_id = 0;
+		try {
+			String sql = "SELECT room_id FROM chat_login WHERE user_id = ?";
+			Map<String, Object> result = jdbcTemp.queryForMap(sql, userId.getId());
+			room_id = (int)result.get("room_id");
+		} catch(EmptyResultDataAccessException ex) {
+			ex.printStackTrace();
+			room_id = WebConsts.ERROR_NUMBER;
+		}
 		return room_id;
 	}
 
@@ -273,6 +343,8 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public boolean isSelect_byId(LoginIdStatus id) {
 		// IDによる有無チェック
+		if(id == null)	return false;
+		
 		String sql = "SELECT id FROM chat_login WHERE id = ?";
 		return jdbcTemp.query(
 				sql, 
@@ -291,6 +363,8 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public boolean isSelect_byUserId(UserIdStatus userId) {
 		// ユーザIDによるIDの有無確認
+		if(userId == null)	return false;
+		
 		String sql = "SELECT id FROM chat_login WHERE user_id = ?";
 		return jdbcTemp.query(
 				sql, 

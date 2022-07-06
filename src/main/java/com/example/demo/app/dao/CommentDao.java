@@ -3,9 +3,12 @@ package com.example.demo.app.dao;
 import java.util.List;
 
 import com.example.demo.app.entity.CommentModel;
+import com.example.demo.common.status.CommentIdStatus;
+import com.example.demo.common.status.RoomIdStatus;
 
 /**
- * 【コメントDaoパターン】
+ * 【コメントDaoパターン】(インターフェース)
+ * 
  */
 public interface CommentDao {
 	
@@ -15,16 +18,15 @@ public interface CommentDao {
 	
 	int update(CommentModel model);
 	
-	int delete(int id);
+	int delete(CommentIdStatus id);
 	
-	int delete_byRoomId(int roomId);
+	int delete_byRoomId(RoomIdStatus roomId);
 	
 	List<CommentModel> getAll();
 	
-	CommentModel select(int id);
+	CommentModel select(CommentIdStatus id);
 	
-	List<CommentModel> select_byRoomId(int roomId);
+	List<CommentModel> select_byRoomId(RoomIdStatus roomId);
 	
-	boolean isSelect_byId(int id);
-
+	boolean isSelect_byId(CommentIdStatus id);
 }

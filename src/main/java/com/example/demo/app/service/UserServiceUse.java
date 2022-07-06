@@ -52,7 +52,7 @@ public class UserServiceUse implements UserService {
 	@Override
 	public int save_returnId(UserModel model) {
 		// 追加(返却ID)
-		return this.dao.insert_byId(model);
+		return this.dao.insert_returnId(model);
 	}
 
 	/**

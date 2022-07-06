@@ -21,7 +21,7 @@ public class RoomNameWord implements SuperWord {
 
 	/**
 	 * ブランクかどうか確認
-	 * return true ブランク false ブランクじゃない
+	 * @return true ブランク false ブランクじゃない
 	 */
 	@Override
 	public boolean isBlank() {
@@ -30,7 +30,7 @@ public class RoomNameWord implements SuperWord {
 
 	/**
 	 * 文字列の取得
-	 * return 名前
+	 * @return 名前
 	 */
 	@Override
 	public String getString() {

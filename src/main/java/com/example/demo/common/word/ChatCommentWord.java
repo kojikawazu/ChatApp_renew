@@ -21,7 +21,7 @@ public class ChatCommentWord implements SuperWord {
 
 	/**
 	 * ブランクかどうか確認
-	 * return true ブランク false ブランクじゃない
+	 * @return true ブランク false ブランクじゃない
 	 */
 	@Override
 	public boolean isBlank() {
@@ -30,7 +30,7 @@ public class ChatCommentWord implements SuperWord {
 
 	/**
 	 * 文字列の取得
-	 * return コメント
+	 * @return コメント
 	 */
 	@Override
 	public String getString() {
