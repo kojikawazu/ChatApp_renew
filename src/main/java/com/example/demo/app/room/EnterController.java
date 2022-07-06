@@ -89,11 +89,15 @@ public class EnterController {
 		int room_id = userEnterForm.getRoom_id();
 		int login_id = userEnterForm.getLogin_id();
 		LoginModel loginModel =  this.loginService.select(new LoginIdStatus(login_id));
-		if(this.enterService.isSelect_byUserId(loginModel.getUser_id())) {
+		if(this.enterService.isSelect_byUserId(new UserIdStatus(loginModel.getUser_id()))) {
 			// 既に入室している
-			RoomModel roomModel = this.roomService.select(room_id);
-			this.enterService.update_byUserId(room_id, roomModel.getUser_id(), roomModel.getMax_roomsum(), loginModel.getUser_id());	
-			int out_enterId = this.enterService.selectId_byUserId(loginModel.getUser_id());
+			RoomModel roomModel = this.roomService.select(new RoomIdStatus(room_id));
+			this.enterService.update_byUserId(
+					new RoomIdStatus(room_id), 
+					new UserIdStatus(roomModel.getUser_id()), 
+					new RoomMaxNumber(roomModel.getMax_roomsum()), 
+					new UserIdStatus(loginModel.getUser_id()));	
+			int out_enterId = this.enterService.selectId_byUserId(new UserIdStatus(loginModel.getUser_id()));
 			redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, out_enterId);
 		}else {
 			// 入室情報なし
@@ -134,7 +138,7 @@ public class EnterController {
 			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id);
 			return false;
 		}
-		if(!this.roomService.isSelect_byId(room_id)) {
+		if(!this.roomService.isSelect_byId(new RoomIdStatus(room_id))) {
 			// ルームがない
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, "部屋が既に閉鎖された可能性があります。");
 			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id);
@@ -160,7 +164,7 @@ public class EnterController {
 		int login_id = userEnterForm.getLogin_id();
 		
 		// 情報取得
-		RoomModel roomModel = this.roomService.select(room_id);
+		RoomModel roomModel = this.roomService.select(new RoomIdStatus(room_id));
 		LoginModel loginModel = this.loginService.select(new LoginIdStatus(login_id));
 		
 		EnterModel enterModel = new EnterModel(

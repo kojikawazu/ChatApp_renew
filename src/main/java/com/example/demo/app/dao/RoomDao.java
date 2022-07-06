@@ -3,9 +3,12 @@ package com.example.demo.app.dao;
 import java.util.List;
 
 import com.example.demo.app.entity.RoomModel;
+import com.example.demo.common.status.RoomIdStatus;
+import com.example.demo.common.status.UserIdStatus;
 
 /**
- * ルームDaoパターン
+ * ルームDaoパターン(インターフェース)
+ * @author nanai
  *
  */
 public interface RoomDao {
@@ -16,14 +19,13 @@ public interface RoomDao {
 	
 	int update(RoomModel model);
 	
-	int updateUserId_byUserId(int userId, int newId);
+	int updateUserId_byUserId(UserIdStatus userId, UserIdStatus newId);
 	
-	int delete(int id);
+	int delete(RoomIdStatus id);
 	
 	List<RoomModel> getAll();
 	
-	RoomModel select(int id);
+	RoomModel select(RoomIdStatus id);
 	
-	boolean isSelect_byId(int id);
-
+	boolean isSelect_byId(RoomIdStatus id);
 }

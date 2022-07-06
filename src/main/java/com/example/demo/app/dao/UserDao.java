@@ -16,7 +16,7 @@ public interface UserDao {
 	
 	void insert(UserModel model);
 		
-	int insert_byId(UserModel model);
+	int insert_returnId(UserModel model);
 	
 	int update(UserModel model);
 	

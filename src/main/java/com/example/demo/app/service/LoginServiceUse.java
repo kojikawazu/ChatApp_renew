@@ -47,7 +47,7 @@ public class LoginServiceUse implements LoginService {
 	/**
 	 * 保存
 	 * @param model ログインモデル
-	 * return ログインID
+	 * @return ログインID
 	 */
 	@Override
 	public int save_returnId(LoginModel model) {
@@ -121,7 +121,7 @@ public class LoginServiceUse implements LoginService {
 
 	/**
 	 * 全て選択
-	 * return ログインモデルリスト
+	 * @return ログインモデルリスト
 	 */
 	@Override
 	public List<LoginModel> getAll() {
@@ -132,7 +132,7 @@ public class LoginServiceUse implements LoginService {
 	/**
 	 * 選択
 	 * @param id ログインID
-	 * return ログインモデル
+	 * @return ログインモデル
 	 */
 	@Override
 	public LoginModel select(LoginIdStatus id) {
@@ -143,7 +143,7 @@ public class LoginServiceUse implements LoginService {
 	/**
 	 * 選択
 	 * @param roomId ルームID
-	 * return ログインモデルリスト
+	 * @return ログインモデルリスト
 	 */
 	@Override
 	public List<LoginModel> selectList_byRoomId(RoomIdStatus roomId) {
@@ -154,7 +154,7 @@ public class LoginServiceUse implements LoginService {
 	/**
 	 * 選択
 	 * @param userId ユーザID
-	 * return ログインID
+	 * @return ログインID
 	 */
 	@Override
 	public int selectId_byUserId(UserIdStatus userId) {
@@ -165,7 +165,7 @@ public class LoginServiceUse implements LoginService {
 	/**
 	 * 選択
 	 * @param userId ユーザID
-	 * return ログインモデル
+	 * @return ログインモデル
 	 */
 	@Override
 	public LoginModel select_byUserId(UserIdStatus userId) {
@@ -176,7 +176,7 @@ public class LoginServiceUse implements LoginService {
 	/**
 	 * 選択
 	 * @param userId ユーザID
-	 * return ログインID
+	 * @return ログインID
 	 */
 	@Override
 	public int selectRoomId_byUserId(UserIdStatus userId) {
@@ -187,7 +187,7 @@ public class LoginServiceUse implements LoginService {
 	/**
 	 * ログインモデルの有無確認
 	 * @param id ログインID
-	 * return true あり false なし
+	 * @return true あり false なし
 	 */
 	@Override
 	public boolean isSelect_byId(LoginIdStatus id) {
@@ -198,7 +198,7 @@ public class LoginServiceUse implements LoginService {
 	/**
 	 * ログインモデルの有無確認
 	 * @param userId ユーザID
-	 * return true あり false なし
+	 * @return true あり false なし
 	 */
 	@Override
 	public boolean isSelect_byUserId(UserIdStatus userId) {

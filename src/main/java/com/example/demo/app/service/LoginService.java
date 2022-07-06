@@ -42,5 +42,4 @@ public interface LoginService {
 	boolean isSelect_byId(LoginIdStatus id);
 	
 	boolean isSelect_byUserId(UserIdStatus userId);
-
 }

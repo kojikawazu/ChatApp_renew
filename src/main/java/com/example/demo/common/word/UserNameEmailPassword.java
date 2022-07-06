@@ -40,7 +40,7 @@ public class UserNameEmailPassword implements SuperUserInterface{
 
 	/**
 	 * 名前の取得
-	 * return 名前
+	 * @return 名前
 	 */
 	@Override
 	public String getName() {
@@ -49,7 +49,7 @@ public class UserNameEmailPassword implements SuperUserInterface{
 
 	/**
 	 * Eメールアドレスの取得
-	 * return Eメールアドレス
+	 * @return Eメールアドレス
 	 */
 	@Override
 	public String getEmail() {
@@ -58,7 +58,7 @@ public class UserNameEmailPassword implements SuperUserInterface{
 
 	/**
 	 * パスワードの取得
-	 * return パスワード
+	 * @return パスワード
 	 */
 	@Override
 	public String getPassword() {

@@ -21,7 +21,7 @@ public class RoomEnterCntNumber implements SuperNumber {
 	
 	/**
 	 * 数値の取得
-	 * return ルーム入室人数
+	 * @return ルーム入室人数
 	 */
 	@Override
 	public int getNumber() {

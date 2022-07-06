@@ -21,7 +21,7 @@ public class RoomMaxNumber implements SuperNumber {
 	
 	/**
 	 * 数値の取得
-	 * return ルーム最大人数
+	 * @return ルーム最大人数
 	 */
 	@Override
 	public int getNumber() {

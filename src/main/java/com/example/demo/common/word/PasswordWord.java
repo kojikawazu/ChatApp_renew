@@ -21,7 +21,7 @@ public class PasswordWord implements SuperWord {
 
 	/**
 	 * ブランクかどうか確認
-	 * return true ブランク false ブランクじゃない
+	 * @return true ブランク false ブランクじゃない
 	 */
 	@Override
 	public boolean isBlank() {
@@ -30,7 +30,7 @@ public class PasswordWord implements SuperWord {
 
 	/**
 	 * 文字列の取得
-	 * return パスワード
+	 * @return パスワード
 	 */
 	@Override
 	public String getString() {

@@ -3,9 +3,13 @@ package com.example.demo.app.dao;
 import java.util.List;
 
 import com.example.demo.app.entity.EnterModel;
+import com.example.demo.common.number.RoomMaxNumber;
+import com.example.demo.common.status.EnterIdStatus;
+import com.example.demo.common.status.RoomIdStatus;
+import com.example.demo.common.status.UserIdStatus;
 
 /**
- * 入室Daoパターン
+ * 入室Daoパターン(インターフェース)
  *
  */
 public interface EnterDao {
@@ -16,22 +20,21 @@ public interface EnterDao {
 	
 	int update(EnterModel model);
 	
-	int update_byUserId(int room_id, int manager_id, int sum, int user_id);
+	int update_byUserId(RoomIdStatus room_id, UserIdStatus manager_id, RoomMaxNumber sum, UserIdStatus user_id);
 	
-	int updateManagerId_byId(int managerId, int id);
+	int updateManagerId_byId(UserIdStatus managerId, EnterIdStatus id);
 	
-	int delete(int id);
+	int delete(EnterIdStatus id);
 	
 	List<EnterModel> getAll();
 	
-	EnterModel select(int id);
+	EnterModel select(EnterIdStatus id);
 	
-	int selectId_byUserId(int userId);
+	int selectId_byUserId(UserIdStatus userId);
 
-	boolean isSelect_byId(int id);
+	boolean isSelect_byId(EnterIdStatus id);
 	
-	boolean isSelect_byUserId(int userId);
+	boolean isSelect_byUserId(UserIdStatus userId);
 
-	int getCount_roomId(int roomId);
-	
+	int getCount_roomId(RoomIdStatus roomId);
 }
