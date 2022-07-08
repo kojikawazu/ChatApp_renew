@@ -20,7 +20,7 @@ import com.example.demo.app.form.UserSignupForm;
  */
 @Controller
 @RequestMapping("/signup_confirm")
-public class SignupConfirmController {
+public class SignupConfirmController implements SuperUserController {
 
 	/**
 	 * フィールド 

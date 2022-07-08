@@ -30,7 +30,7 @@ import com.example.demo.common.word.UserNameEmailPassword;
  */
 @Controller
 @RequestMapping("/signin")
-public class SigninController {
+public class SigninController implements SuperUserController {
 
 	/**
 	 * サービス

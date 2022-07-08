@@ -20,7 +20,7 @@ import com.example.demo.common.status.LoginIdStatus;
  */
 @Controller
 @RequestMapping("/logout")
-public class SignoutController {
+public class SignoutController implements SuperUserController {
 
 	/**
 	 * サービス

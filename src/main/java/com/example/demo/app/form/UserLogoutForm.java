@@ -2,13 +2,17 @@ package com.example.demo.app.form;
 
 /**
  * ログアウトフォーム
+ * @author nanai
  *
  */
-public class UserLogoutForm {
+public class UserLogoutForm implements SuperForm {
 
-	// ユーザID
+	/** ユーザID */
 	private int id;
 
+	/**
+	 * コンストラクタ
+	 */
 	public UserLogoutForm() {
 		super();
 	}
@@ -20,6 +24,4 @@ public class UserLogoutForm {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
-	
 }

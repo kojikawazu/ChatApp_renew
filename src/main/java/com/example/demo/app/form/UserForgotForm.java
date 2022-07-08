@@ -2,41 +2,63 @@ package com.example.demo.app.form;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import com.example.demo.app.config.Confirm;
 
 /**
  * パスワード変更入力フォーム
- *
+ * @author nanai
+ * 
  */
 @Confirm(field = "new_passwd")
-public class UserForgotForm {
+public class UserForgotForm implements SuperUserForm {
 	
-	// ユーザ名
+	/** ユーザ名 */
 	@NotNull
-	@Size(min = 1, max =20, message = "20文字を超えています。")
+	@Size(min       = 0, 
+			max     = USER_NAME_MAX_VALUE, 
+			message = ERROR_USER_NAME_MAX_MESSAGE)
 	private String name;
 	
-	// Eメール
+	/** Eメール */
 	@NotNull
 	@Email
-	@Size(min = 1, max =20, message = "20文字を超えています。")
+	@Size(min       = 0, 
+			max     = EMAIL_NAME_MAX_VALUE, 
+			message = ERROR_EMAIL_NAME_MAX_MESSAGE)
 	private String email;
 	
-	// 忘れたとき用パスワード
+	/** 忘れたとき用パスワード */
 	@NotNull
-	@Size(min = 1, max =20, message = "20文字を超えています。")
+	@Size(min           = 0, 
+			max         = FORGOT_PASSWD_NAME_MAX_VALUE, 
+			message     = ERROR_FORGOT_PASSWD_NAME_MAX_MESSAGE)
 	private String forgot_passwd;
 	
-	// 新しいパスワード
+	/** 新しいパスワード */
 	@NotNull
-	@Size(min = 1, max =20, message = "20文字を超えています。")
+	@Size(min           = PASSWD_NAME_MIN_VALUE, 
+			max         = PASSWD_NAME_MAX_VALUE, 
+			message     = ERROR_PASSWD_NAME_MAX_MESSAGE)
+	@Pattern(regexp     = MATCH_SMALL_BIG_NUMBER,
+				message = ERROR_MATCH_SMALL_BIG_NUMBER_MESSAGE)
 	private String new_passwd;
 	
-	// 確認用パスワード
+	/** 確認用パスワード */
+	@NotNull
+	@Size(min           = PASSWD_NAME_MIN_VALUE, 
+			max         = PASSWD_NAME_MAX_VALUE, 
+			message     = ERROR_PASSWD_NAME_MAX_MESSAGE)
+	@Pattern(regexp     = MATCH_SMALL_BIG_NUMBER,
+				message = ERROR_MATCH_SMALL_BIG_NUMBER_MESSAGE)
 	private String confirmNew_passwd;
 
+	/**
+	 * コンストラクタ
+	 * 
+	 */
 	public UserForgotForm() {
 		super();
 	}
@@ -80,5 +102,4 @@ public class UserForgotForm {
 	public void setConfirmNew_passwd(String confirmNew_passwd) {
 		this.confirmNew_passwd = confirmNew_passwd;
 	}
-
 }

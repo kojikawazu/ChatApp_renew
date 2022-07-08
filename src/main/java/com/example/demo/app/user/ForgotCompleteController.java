@@ -23,7 +23,7 @@ import com.example.demo.common.word.UserNameEmailPassword;
  */
 @Controller
 @RequestMapping("/forgot_complete")
-public class ForgotCompleteController {
+public class ForgotCompleteController implements SuperUserController {
 
 	/**
 	 * フィールド 

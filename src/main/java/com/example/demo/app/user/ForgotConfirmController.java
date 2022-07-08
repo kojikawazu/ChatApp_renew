@@ -23,12 +23,13 @@ import com.example.demo.common.word.UserNameEmailPassword;
  */
 @Controller
 @RequestMapping("/forgot_confirm")
-public class ForgotConfirmController {
+public class ForgotConfirmController implements SuperUserController {
 
 	/**
 	 * フィールド 
 	 * 
 	 */
+	
 	/** パスワード変更確認画面タイトル */
 	public static String FORGOT_PASSWORD_CONFIRM_TITTLE = "パスワード変更確認";
 	
@@ -36,17 +37,42 @@ public class ForgotConfirmController {
 	public static String FORGOT_PASSWORD_CONFIRM_MESSAGE = "これでよろしいですか？";
 	
 	/**
+	 * bind関係
+	 */
+	
+	/** ユーザー名の入力エラー(bindキー) */
+	private static final String BIND_ERROR_MESSAGE_NAME = "error_message_user_name";
+	
+	/** Emailの入力エラー(bindキー) */
+	private static final String BIND_ERROR_MESSAGE_EMAIL = "error_message_email";
+	
+	/** 忘れた時用のパスワードの入力エラー(bindキー) */
+	private static final String BIND_ERROR_MESSAGE_FORGOT_PASSWD = "error_message_forgot_passwd";
+	
+	/**
 	 * エラーメッセージ
 	 */
+	
 	/** DBに登録データなし */
 	public static final String ERROR_FORGOTPASSWD_NAMEEMAIL = "登録している名前とメールアドレスがありません。";
 	
 	/** DBと忘れた時用のパスワード不一致 */
 	public static final String ERROR_FORGOTPASSWD = "忘れた時のパスワードが違います。";
 	
+	/** ユーザー名の入力エラー */
+	private static final String ERROR_MESSAGE_NAME = "正しい名前を入力してください。";
+	
+	/** Emailの入力エラー */
+	private static final String ERROR_MESSAGE_EMAIL = "正しいメールアドレスを入力してください。";
+	
+	/** 忘れた時用のパスワードの入力エラー */
+	private static final String ERROR_MESSAGE_FORGOT_PASSWD = "正しいパスワードを入力してください。";
+	
 	/**
 	 * フォームクラス
 	 */
+	
+	/** 忘れた時用の入力フォームクラス */
 	private static final String USER_FORGOT_FORM_NAME = "userForgotForm";
 	
 	/**
@@ -105,6 +131,7 @@ public class ForgotConfirmController {
 		// パスワード変更確認チェック
 		if(result.hasErrors()) {
 			// エラーあり
+			this.setErrorMessage(result, model);
 			this.setForgot_form(model);
 			return WebConsts.CHECK_COMMON_NG;
 		}
@@ -132,6 +159,35 @@ public class ForgotConfirmController {
 		// パスワード確認OK
 		return WebConsts.CHECK_COMMON_OK;
 	}
+	
+	/**
+	 * エラー時の文字を設定
+	 * @param restult 結果クラス
+	 * @param model モデル
+	 */
+	private void setErrorMessage(BindingResult result, Model model) {
+		// 入力エラー設定
+		
+		// 名前のエラーチェック
+		if( result.hasFieldErrors(USER_FORM_NAME) ) {
+			// 名前入力エラー
+			model.addAttribute(BIND_ERROR_MESSAGE_NAME, ERROR_MESSAGE_NAME);
+		}
+		
+		// Emailのエラーチェック
+		if( result.hasFieldErrors(USER_FORM_EMAIL) ) {
+			// 名前入力エラー
+			model.addAttribute(BIND_ERROR_MESSAGE_EMAIL, ERROR_MESSAGE_EMAIL);
+		}
+		
+		// 忘れた時用のエラーチェック
+		if( result.hasFieldErrors(USER_FORM_FORGOT_PASSWD) ) {
+			// 名前入力エラー
+			model.addAttribute(BIND_ERROR_MESSAGE_FORGOT_PASSWD, ERROR_MESSAGE_FORGOT_PASSWD);
+		}
+		
+	}
+	
 	
 	/**
 	 * パスワード変更画面へ

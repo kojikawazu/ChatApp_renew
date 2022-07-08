@@ -19,7 +19,7 @@ import com.example.demo.app.form.UserForgotForm;
  */
 @Controller
 @RequestMapping("/forgot_form")
-public class ForgotFormController {
+public class ForgotFormController implements SuperUserController {
 
 	/** パスワード変更フォーム画面タイトル */
 	public static String FORGOT_PASSWORD_FORM_TITTLE = "パスワード変更";
