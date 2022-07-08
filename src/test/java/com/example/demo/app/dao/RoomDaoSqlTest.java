@@ -20,6 +20,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.example.demo.app.entity.RoomModel;
 import com.example.demo.app.entity.UserModel;
+import com.example.demo.common.dao.RoomDaoSql;
 import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;

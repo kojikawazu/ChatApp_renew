@@ -41,6 +41,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import com.example.demo.app.entity.UserModel;
+import com.example.demo.common.dao.UserDaoSql;
 import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.status.UserIdStatus;
 import com.example.demo.common.word.EmailWord;

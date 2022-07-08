@@ -109,4 +109,27 @@ class UserModelTest {
 		Assertions.assertNotNull(test.getCreated());
 		Assertions.assertNotNull(test.getUpdated());
 	}
+	
+	/**
+	 * コンストラクタテスト(6パラメータ割り当て)
+	 */
+	@Test
+	void initTest3() {
+		LocalDateTime now = LocalDateTime.now();
+		UserModel test = new UserModel(
+						new NameWord("name"),
+						new EmailWord("test@example.com"), 
+						new PasswordWord("password"), 
+						new PasswordWord("forgot_passwd"), 
+						now, 
+						now);
+		
+		Assertions.assertEquals(test.getId(), 0);
+		Assertions.assertEquals(test.getName(), "name");
+		Assertions.assertEquals(test.getEmail(), "test@example.com");
+		Assertions.assertEquals(test.getPasswd(), "password");
+		Assertions.assertEquals(test.getForgot_passwd(), "forgot_passwd");
+		Assertions.assertNotNull(test.getCreated());
+		Assertions.assertNotNull(test.getUpdated());
+	}
 }

@@ -13,6 +13,7 @@ import com.example.demo.app.form.UserSignupForm;
 /**
  * ---------------------------------------------------------------------------
  * 【ユーザサインアップフォームコントローラ】
+ * @author nanai
  * ---------------------------------------------------------------------------
  * 
  */
@@ -33,8 +34,8 @@ public class SignupFormController {
 	
 	/**
 	 * サインアップ受信
-	 * @param userSignupForm: サインアップフォーム
-	 * @param model: モデル
+	 * @param userSignupForm サインアップフォーム
+	 * @param model モデル
 	 * @return Webパス(signup_form/index)
 	 */
 	@PostMapping
@@ -48,8 +49,8 @@ public class SignupFormController {
 	
 	/**
 	 * サインアップ戻り受信
-	 * @param userSignupForm: サインアップフォーム
-	 * @param model: モデル
+	 * @param userSignupForm サインアップフォーム
+	 * @param model モデル
 	 * @return Webパス(user/signup_form)
 	 */
 	@GetMapping
@@ -67,7 +68,7 @@ public class SignupFormController {
 	 */
 	private void setSignup_form(Model model) {
 		// サインアップ画面設定
-		model.addAttribute(WebConsts.BIND_TITLE, "サインアップ");
-		model.addAttribute(WebConsts.BIND_CONT, "各項目を入力してください。");
+		model.addAttribute(WebConsts.BIND_TITLE, WebConsts.SIGNUP_FORM_TITTLE);
+		model.addAttribute(WebConsts.BIND_CONT,  WebConsts.SIGNUP_FORM_MESSAGE);
 	}
 }

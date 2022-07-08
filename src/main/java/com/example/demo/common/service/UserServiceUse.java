@@ -1,19 +1,20 @@
-package com.example.demo.app.service;
+package com.example.demo.common.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.app.dao.UserDao;
 import com.example.demo.app.entity.UserModel;
 import com.example.demo.app.exception.WebMvcConfig;
+import com.example.demo.common.dao.UserDao;
 import com.example.demo.common.status.UserIdStatus;
 import com.example.demo.common.word.UserNameEmail;
 import com.example.demo.common.word.UserNameEmailPassword;
 
 /**
  * ユーザサービス
+ * @author nanai
  *
  */
 @Service

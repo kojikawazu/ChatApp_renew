@@ -1,4 +1,4 @@
-package com.example.demo.app.dao;
+package com.example.demo.common.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,6 +27,7 @@ import com.example.demo.common.word.ChatCommentWord;
 
 /**
  * 【コメントDaoパターン】
+ * @author nanai
  */
 @Repository
 public class CommentDaoSql implements CommentDao {

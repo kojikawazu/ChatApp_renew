@@ -87,4 +87,22 @@ class LoginModelTest {
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertEquals(test.getCreated(), now);
 	}
+	
+	/**
+	 * コンストラクタテスト(3パラメータ割り当て)
+	 */
+	@Test
+	void initTest3() {
+		LocalDateTime now = LocalDateTime.now();
+		
+		LoginModel test = new LoginModel(
+				new RoomIdStatus(0), 
+				new UserIdStatus(0), 
+				now);
+		
+		Assertions.assertEquals(test.getId(), 0);
+		Assertions.assertEquals(test.getRoom_id(), 0);
+		Assertions.assertEquals(test.getUser_id(), 0);
+		Assertions.assertEquals(test.getCreated(), now);
+	}
 }
