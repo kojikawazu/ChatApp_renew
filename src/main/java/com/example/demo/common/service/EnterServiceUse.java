@@ -1,13 +1,13 @@
-package com.example.demo.app.service;
+package com.example.demo.common.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.app.dao.EnterDao;
 import com.example.demo.app.entity.EnterModel;
 import com.example.demo.app.exception.WebMvcConfig;
+import com.example.demo.common.dao.EnterDao;
 import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.status.EnterIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
@@ -15,6 +15,7 @@ import com.example.demo.common.status.UserIdStatus;
 
 /**
  * 入室サービス
+ * @author nanai
  *
  */
 @Service

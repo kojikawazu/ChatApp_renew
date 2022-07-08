@@ -10,13 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.form.UserForgotForm;
-import com.example.demo.app.service.UserService;
+import com.example.demo.common.service.UserService;
 import com.example.demo.common.word.UserNameEmail;
 import com.example.demo.common.word.UserNameEmailPassword;
 
 /**
  * ---------------------------------------------------------------------------
  * 【パスワード変更確認コントローラ】
+ * @author nanai
  * ---------------------------------------------------------------------------
  * 
  */
@@ -42,17 +43,18 @@ public class ForgotConfirmController {
 	
 	/**
 	 * パスワード変更確認受信
-	 * @param userForgotForm: パスワード変更フォーム
-	 * @param result: 結果
-	 * @param model: モデル
-	 * @return: Webパス(user/forgot_form, user/forgot_confirm)
+	 * @param userForgotForm パスワード変更フォーム
+	 * @param result 結果
+	 * @param model モデル
+	 * @return: Webパス(user/forgot_form, 
+	 * 				   user/forgot_confirm)
 	 */
 	@PostMapping
 	public String index(
 			@Validated UserForgotForm userForgotForm,
 			BindingResult result,
 			Model model) {
-		// TODO パスワード変更確認
+		// パスワード変更確認
 		
 		// エラーチェック
 		if(!isCheck_changepasswd(userForgotForm, result, model)) {
@@ -67,20 +69,20 @@ public class ForgotConfirmController {
 	
 	/**
 	 * パスワード変更確認チェック
-	 * @param userForgotForm: パスワード変更フォーム
-	 * @param result: 結果
-	 * @param model: モデル
-	 * @return true: OK false: NG
+	 * @param userForgotForm パスワード変更フォーム
+	 * @param result 結果
+	 * @param model モデル
+	 * @return true OK false NG
 	 */
 	private boolean isCheck_changepasswd(
 			UserForgotForm userForgotForm,
 			BindingResult result,
 			Model model) {
-		// TODO パスワード変更確認チェック
+		// パスワード変更確認チェック
 		if(result.hasErrors()) {
 			// エラーあり
 			this.setForgot_form(model);
-			return false;
+			return WebConsts.CHECK_COMMON_NG;
 		}
 		
 		if( !this.userService.isSelect_byNameEmail(
@@ -90,7 +92,7 @@ public class ForgotConfirmController {
 			// ユーザ名、Eメール一致しない
 			model.addAttribute(WebConsts.BIND_NOTICE_ERROR, WebConsts.ERROR_FORGOTPASSWD_NAMEEMAIL);
 			this.setForgot_form(model);
-			return false;
+			return WebConsts.CHECK_COMMON_NG;
 		}
 		if( !this.userService.isSelect_byNameEmailForgotPW(
 				new UserNameEmailPassword(
@@ -100,32 +102,32 @@ public class ForgotConfirmController {
 			// ユーザ名、Eメール、忘れたとき用パスワード一致しない
 			model.addAttribute(WebConsts.BIND_NOTICE_ERROR, WebConsts.ERROR_FORGOTPASSWD);
 			this.setForgot_form(model);
-			return false;
+			return WebConsts.CHECK_COMMON_NG;
 		}
 		
 		// パスワード確認OK
-		return true;
+		return WebConsts.CHECK_COMMON_OK;
 	}
 	
 	/**
 	 * パスワード変更画面へ
-	 * @param model
+	 * @param model モデル
 	 */
 	private void setForgot_form(Model model) {
 		// パスワード変更設定
-		model.addAttribute(WebConsts.BIND_TITLE, "パスワード変更");
-		model.addAttribute(WebConsts.BIND_CONT, "各項目を入力してください。");
+		model.addAttribute(WebConsts.BIND_TITLE, WebConsts.FORGOT_PASSWORD_FORM_TITTLE);
+		model.addAttribute(WebConsts.BIND_CONT,  WebConsts.FORGOT_PASSWORD_FORM_MESSAGE);
 	}
 	
 	/**
 	 * パスワード変更確認画面へ
-	 * @param userForgotForm: パスワード変更フォーム
-	 * @param model: モデル
+	 * @param userForgotForm パスワード変更フォーム
+	 * @param model モデル
 	 */
 	private void setForgot_confirm(UserForgotForm userForgotForm, Model model) {
 		// パスワード変更設定
-		model.addAttribute(WebConsts.BIND_TITLE, "パスワード変更確認");
-		model.addAttribute(WebConsts.BIND_CONT, "これでよろしいですか？");
+		model.addAttribute(WebConsts.BIND_TITLE, WebConsts.FORGOT_PASSWORD_CONFIRM_TITTLE);
+		model.addAttribute(WebConsts.BIND_CONT,  WebConsts.FORGOT_PASSWORD_CONFIRM_MESSAGE);
 		model.addAttribute("userForgotForm", userForgotForm);
 	}
 }

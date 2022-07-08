@@ -11,12 +11,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.form.UserForgotForm;
-import com.example.demo.app.service.UserService;
+import com.example.demo.common.service.UserService;
 import com.example.demo.common.word.UserNameEmailPassword;
 
 /**
  * ---------------------------------------------------------------------------
  * 【パスワード変更確認コントローラ】
+* @author nanai
  * ---------------------------------------------------------------------------
  * 
  */
@@ -41,10 +42,10 @@ public class ForgotCompleteController {
 	
 	/**
 	 * パスワード変更処理受信
-	 * @param userForgotForm: パスワード変更フォーム
-	 * @param result: 結果
-	 * @param model: モデル
-	 * @param redirectAttributes: リダイレクト
+	 * @param userForgotForm パスワード変更フォーム
+	 * @param result 結果
+	 * @param model モデル
+	 * @param redirectAttributes リダイレクト
 	 * @return Webパス(redirect;/room)
 	 */
 	@PostMapping
@@ -53,7 +54,7 @@ public class ForgotCompleteController {
 			BindingResult result,
 			Model model,
 			RedirectAttributes redirectAttributes) {
-		// TODO パスワード変更処理
+		// パスワード変更処理
 		
 		// エラーチェック
 		if(result.hasErrors()) {
@@ -67,7 +68,8 @@ public class ForgotCompleteController {
 						userForgotForm.getName(), 
 						userForgotForm.getEmail(), 
 						userForgotForm.getNew_passwd()));
-		redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_SUCCESS, "パスワードを変更しました。");
+		
+		redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_SUCCESS, WebConsts.FORGOT_PASSWORD_ACTION_MESSAGE);
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
 	}
 }

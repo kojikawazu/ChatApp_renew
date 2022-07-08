@@ -100,6 +100,50 @@ public class UserModel {
 				LocalDateTime.now() :
 				updated);
 	}
+	
+	/**
+	 * コンストラクタ
+	 * @param name 名前
+	 * @param email　Eメールアドレス
+	 * @param passwd パスワード
+	 * @param forgot_passwd 忘れた時用パスワード
+	 * @param created 生成日時
+	 * @param updated 更新日時
+	 */
+	public UserModel(
+			NameWord name,
+			EmailWord email,
+			PasswordWord passwd,
+			PasswordWord forgot_passwd,
+			LocalDateTime created,
+			LocalDateTime updated) {
+		super();
+		this.id = new UserIdStatus(0);
+		
+		this.name = (name == null ?
+				new NameWord("") :
+				new NameWord(name.getString()));
+		
+		this.email = (email == null ?
+				new EmailWord("") :
+				new EmailWord(email.getString()));
+		
+		this.passwd = (passwd == null ?
+				new PasswordWord("") :
+				new PasswordWord(passwd.getString()));
+		
+		this.forgot_passwd = (forgot_passwd == null ?
+				new PasswordWord("") :
+				new PasswordWord(forgot_passwd.getString()));
+		
+		this.created = (created == null ?
+				LocalDateTime.now() :
+				created);
+		
+		this.updated = (updated == null ?
+				LocalDateTime.now() :
+				updated);
+	}
 
 	public int getId() {
 		return id.getId();

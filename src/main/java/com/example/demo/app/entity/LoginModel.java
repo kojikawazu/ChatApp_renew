@@ -70,6 +70,30 @@ public class LoginModel {
 
 		this.created 	= created;
 	}
+	
+	/**
+	 * コンストラクタ
+	 * @param room_id: ルームID
+	 * @param user_id: ユーザーID
+	 * @param created: 生成日付
+	 */
+	public LoginModel(RoomIdStatus room_id,
+			UserIdStatus user_id,
+			LocalDateTime created) {
+		super();
+		this.id = new LoginIdStatus(0);
+		
+		this.room_id = (room_id == null ?
+				new RoomIdStatus(0) :
+				new RoomIdStatus(room_id.getId())
+				);
+		
+		this.user_id = (user_id == null ?
+				new UserIdStatus(0) :
+				new UserIdStatus(user_id.getId()));
+
+		this.created 	= created;
+	}
 
 	public int getId() {
 		return id.getId();

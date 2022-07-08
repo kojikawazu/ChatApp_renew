@@ -14,8 +14,8 @@ import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.config.WebFunctions;
 import com.example.demo.app.entity.LoginModel;
 import com.example.demo.app.form.UserLoginForm;
-import com.example.demo.app.service.LoginService;
-import com.example.demo.app.service.UserService;
+import com.example.demo.common.service.LoginService;
+import com.example.demo.common.service.UserService;
 import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
@@ -24,6 +24,7 @@ import com.example.demo.common.word.UserNameEmailPassword;
 /**
  * ---------------------------------------------------------------------------
  * 【サインイン実行コントローラ】
+ * @author nanai
  * ---------------------------------------------------------------------------
  * 
  */
@@ -79,7 +80,11 @@ public class SigninController {
 			LoginIdStatus loginIdStatus = new LoginIdStatus(0);
 			
 			// エラーチェック
-			userIdStatus = this.checkSignin(userLoginForm, result, redirectAttributes);
+			userIdStatus = this.checkSignin(
+					userLoginForm, 
+					result, 
+					redirectAttributes);
+			
 			if( WebFunctions.isNotNull(userIdStatus) && userIdStatus.isError() ) {
 				// エラーの場合何もしない
 				return WebConsts.URL_REDIRECT_ROOM_INDEX;
@@ -110,35 +115,44 @@ public class SigninController {
 			UserLoginForm userLoginForm,
 			BindingResult result,
 			RedirectAttributes redirectAttributes) {
+		
 		// サインインエラーチェック
 		if( result.hasErrors() ) {
 			// エラーあり
 			redirectAttributes.addFlashAttribute(
-					WebConsts.BIND_NOTICE_ERROR, SIGNIN_MESSAGE_ERROR_LOGIN);
+					WebConsts.BIND_NOTICE_ERROR, 
+					SIGNIN_MESSAGE_ERROR_LOGIN);
+			
 			return new UserIdStatus(WebConsts.ERROR_NUMBER);
 		}
 		
 		// エラーなし
 		UserIdStatus userIdStatus = new UserIdStatus(
 				this.userService.selectId_byNameEmailPasswd(
-						new UserNameEmailPassword(
+					new UserNameEmailPassword(
 						userLoginForm.getName(), 
 						userLoginForm.getEmail(), 
 						userLoginForm.getPasswd())
-				));
+					)
+				);
 		
 		// サインイン内容チェック
 		if( userIdStatus.isError() ) {
 			// ユーザ名、Eメール、パスワード一致しない[ERROR]
 			redirectAttributes.addFlashAttribute(
-					WebConsts.BIND_NOTICE_ERROR, SIGNIN_MESSAGE_ERROR_LOGIN);
+					WebConsts.BIND_NOTICE_ERROR, 
+					SIGNIN_MESSAGE_ERROR_LOGIN);
+			
 			return new UserIdStatus(WebConsts.ERROR_NUMBER);
 		}
 		
+		// ログイン情報チェック
 		if( this.loginService.isSelect_byUserId(userIdStatus) ) {
 			// ログイン情報が既に存在する[ERROR]
 			redirectAttributes.addFlashAttribute(
-					WebConsts.BIND_NOTICE_ERROR, SIGNIN_MESSAGE_ERROR_ALREADY_LOGIN);
+					WebConsts.BIND_NOTICE_ERROR, 
+					SIGNIN_MESSAGE_ERROR_ALREADY_LOGIN);
+			
 			return new UserIdStatus(WebConsts.ERROR_NUMBER);
 		}
 		
@@ -154,7 +168,6 @@ public class SigninController {
 	private LoginIdStatus addSignin(UserIdStatus userStatus) {
 		// サインイン情報登録
 		LoginModel loginModel = new LoginModel(
-				 new LoginIdStatus(0),
 				 new RoomIdStatus(0),
 				 userStatus,
 				 LocalDateTime.now());

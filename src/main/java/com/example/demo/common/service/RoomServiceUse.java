@@ -1,13 +1,13 @@
-package com.example.demo.app.service;
+package com.example.demo.common.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.app.dao.RoomDao;
 import com.example.demo.app.entity.RoomModel;
 import com.example.demo.app.exception.WebMvcConfig;
+import com.example.demo.common.dao.RoomDao;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 

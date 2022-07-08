@@ -13,6 +13,7 @@ import com.example.demo.app.form.UserForgotForm;
 /**
  * ---------------------------------------------------------------------------
  * 【パスワード変更フォームコントローラ】
+ * @author nanai
  * ---------------------------------------------------------------------------
  * 
  */
@@ -30,8 +31,8 @@ public class ForgotFormController {
 	
 	/**
 	 * パスワード変更受信
-	 * @param userForgotForm: パスワード変更フォーム
-	 * @param model: モデル
+	 * @param userForgotForm パスワード変更フォーム
+	 * @param model モデル
 	 * @return Webパス(user/forgot_form)
 	 */
 	@PostMapping
@@ -47,15 +48,15 @@ public class ForgotFormController {
 	
 	/**
 	 * パスワード変更受信
-	 * @param userForgotForm: パスワード変更フォーム
-	 * @param model: モデル
+	 * @param userForgotForm パスワード変更フォーム
+	 * @param model モデル
 	 * @return Webパス(user/forgot_form)
 	 */
 	@GetMapping
 	public String forgot_form_goback(
 			UserForgotForm userForgotForm,
 			Model model) {
-		// TODO パスワード変更フォーム画面
+		// パスワード変更フォーム画面
 		
 		// パスワード変更画面設定
 		this.setForgot_form(model);
@@ -67,8 +68,8 @@ public class ForgotFormController {
 	 * @param model
 	 */
 	private void setForgot_form(Model model) {
-		// パスワード変更設定
-		model.addAttribute(WebConsts.BIND_TITLE, "パスワード変更");
-		model.addAttribute(WebConsts.BIND_CONT, "各項目を入力してください。");
+		// パスワード変更画面設定
+		model.addAttribute(WebConsts.BIND_TITLE, WebConsts.FORGOT_PASSWORD_FORM_TITTLE);
+		model.addAttribute(WebConsts.BIND_CONT,  WebConsts.FORGOT_PASSWORD_FORM_MESSAGE);
 	}
 }

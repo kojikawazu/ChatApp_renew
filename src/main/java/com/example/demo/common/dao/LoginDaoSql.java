@@ -1,4 +1,4 @@
-package com.example.demo.app.dao;
+package com.example.demo.common.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,6 +26,7 @@ import com.example.demo.common.status.UserIdStatus;
 
 /**
  * ログインDaoパターン
+ * @author nanai
  *
  */
 @Repository

@@ -8,12 +8,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.form.UserLogoutForm;
-import com.example.demo.app.service.LoginService;
+import com.example.demo.common.service.LoginService;
 import com.example.demo.common.status.LoginIdStatus;
 
 /**
  * ---------------------------------------------------------------------------
  * 【サインアウト実行コントローラ】
+ * @author nanai
  * ---------------------------------------------------------------------------
  * 
  */
