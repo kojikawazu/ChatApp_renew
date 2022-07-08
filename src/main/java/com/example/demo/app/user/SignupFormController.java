@@ -25,6 +25,16 @@ public class SignupFormController {
 	//log.info("テストOK");
 	
 	/**
+	 * フィールド
+	 */
+	
+	/** サインアップフォームタイトル */
+	public static String SIGNUP_FORM_TITTLE = "サインアップ";
+	
+	/** サインアップフォームメッセージ */
+	public static String SIGNUP_FORM_MESSAGE = "各項目を入力してください。";
+	
+	/**
 	 * コンストラクタ
 	 */
 	@Autowired
@@ -68,7 +78,7 @@ public class SignupFormController {
 	 */
 	private void setSignup_form(Model model) {
 		// サインアップ画面設定
-		model.addAttribute(WebConsts.BIND_TITLE, WebConsts.SIGNUP_FORM_TITTLE);
-		model.addAttribute(WebConsts.BIND_CONT,  WebConsts.SIGNUP_FORM_MESSAGE);
+		model.addAttribute(WebConsts.BIND_TITLE, SIGNUP_FORM_TITTLE);
+		model.addAttribute(WebConsts.BIND_CONT,  SIGNUP_FORM_MESSAGE);
 	}
 }

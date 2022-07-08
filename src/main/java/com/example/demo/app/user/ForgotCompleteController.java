@@ -26,6 +26,13 @@ import com.example.demo.common.word.UserNameEmailPassword;
 public class ForgotCompleteController {
 
 	/**
+	 * フィールド 
+	 * 
+	 */
+	/** パスワード変更実行メッセージ */
+	public static String FORGOT_PASSWORD_ACTION_MESSAGE = "パスワードを変更しました。";
+	
+	/**
 	 * サービス
 	 */
 	private UserService userService;
@@ -69,7 +76,10 @@ public class ForgotCompleteController {
 						userForgotForm.getEmail(), 
 						userForgotForm.getNew_passwd()));
 		
-		redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_SUCCESS, WebConsts.FORGOT_PASSWORD_ACTION_MESSAGE);
+		redirectAttributes.addFlashAttribute(
+				WebConsts.BIND_NOTICE_SUCCESS, 
+				FORGOT_PASSWORD_ACTION_MESSAGE);
+		
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
 	}
 }
