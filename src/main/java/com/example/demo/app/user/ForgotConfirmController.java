@@ -26,6 +26,30 @@ import com.example.demo.common.word.UserNameEmailPassword;
 public class ForgotConfirmController {
 
 	/**
+	 * フィールド 
+	 * 
+	 */
+	/** パスワード変更確認画面タイトル */
+	public static String FORGOT_PASSWORD_CONFIRM_TITTLE = "パスワード変更確認";
+	
+	/** パスワード変更確認画面メッセージ */
+	public static String FORGOT_PASSWORD_CONFIRM_MESSAGE = "これでよろしいですか？";
+	
+	/**
+	 * エラーメッセージ
+	 */
+	/** DBに登録データなし */
+	public static final String ERROR_FORGOTPASSWD_NAMEEMAIL = "登録している名前とメールアドレスがありません。";
+	
+	/** DBと忘れた時用のパスワード不一致 */
+	public static final String ERROR_FORGOTPASSWD = "忘れた時のパスワードが違います。";
+	
+	/**
+	 * フォームクラス
+	 */
+	private static final String USER_FORGOT_FORM_NAME = "userForgotForm";
+	
+	/**
 	 * サービス
 	 */
 	private UserService userService;
@@ -90,7 +114,7 @@ public class ForgotConfirmController {
 						userForgotForm.getName(), 
 						userForgotForm.getEmail()))) {
 			// ユーザ名、Eメール一致しない
-			model.addAttribute(WebConsts.BIND_NOTICE_ERROR, WebConsts.ERROR_FORGOTPASSWD_NAMEEMAIL);
+			model.addAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_FORGOTPASSWD_NAMEEMAIL);
 			this.setForgot_form(model);
 			return WebConsts.CHECK_COMMON_NG;
 		}
@@ -100,7 +124,7 @@ public class ForgotConfirmController {
 						userForgotForm.getEmail(), 
 						userForgotForm.getForgot_passwd() ) ) ) {
 			// ユーザ名、Eメール、忘れたとき用パスワード一致しない
-			model.addAttribute(WebConsts.BIND_NOTICE_ERROR, WebConsts.ERROR_FORGOTPASSWD);
+			model.addAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_FORGOTPASSWD);
 			this.setForgot_form(model);
 			return WebConsts.CHECK_COMMON_NG;
 		}
@@ -115,8 +139,8 @@ public class ForgotConfirmController {
 	 */
 	private void setForgot_form(Model model) {
 		// パスワード変更設定
-		model.addAttribute(WebConsts.BIND_TITLE, WebConsts.FORGOT_PASSWORD_FORM_TITTLE);
-		model.addAttribute(WebConsts.BIND_CONT,  WebConsts.FORGOT_PASSWORD_FORM_MESSAGE);
+		model.addAttribute(WebConsts.BIND_TITLE, ForgotFormController.FORGOT_PASSWORD_FORM_TITTLE);
+		model.addAttribute(WebConsts.BIND_CONT,  ForgotFormController.FORGOT_PASSWORD_FORM_MESSAGE);
 	}
 	
 	/**
@@ -126,8 +150,8 @@ public class ForgotConfirmController {
 	 */
 	private void setForgot_confirm(UserForgotForm userForgotForm, Model model) {
 		// パスワード変更設定
-		model.addAttribute(WebConsts.BIND_TITLE, WebConsts.FORGOT_PASSWORD_CONFIRM_TITTLE);
-		model.addAttribute(WebConsts.BIND_CONT,  WebConsts.FORGOT_PASSWORD_CONFIRM_MESSAGE);
-		model.addAttribute("userForgotForm", userForgotForm);
+		model.addAttribute(WebConsts.BIND_TITLE, FORGOT_PASSWORD_CONFIRM_TITTLE);
+		model.addAttribute(WebConsts.BIND_CONT,  FORGOT_PASSWORD_CONFIRM_MESSAGE);
+		model.addAttribute(USER_FORGOT_FORM_NAME, userForgotForm);
 	}
 }

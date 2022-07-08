@@ -23,6 +23,16 @@ import com.example.demo.app.form.UserSignupForm;
 public class SignupConfirmController {
 
 	/**
+	 * フィールド 
+	 * 
+	 */
+	/** サインアップ確認画面タイトル */
+	public static String SIGNUP_CONFIRM_TITTLE = "サインアップ確認";
+	
+	/** サインアップ確認画面メッセージ */
+	public static String SIGNUP_CONFIRM_MESSAGE = "このユーザーでよろしいでしょうか？";
+	
+	/**
 	 * コンストラクタ
 	 */
 	@Autowired
@@ -60,8 +70,8 @@ public class SignupConfirmController {
 	 */
 	private void setSignup_form(Model model) {
 		// サインアップ画面設定
-		model.addAttribute(WebConsts.BIND_TITLE, WebConsts.SIGNUP_FORM_TITTLE);
-		model.addAttribute(WebConsts.BIND_CONT,  WebConsts.SIGNUP_FORM_MESSAGE);
+		model.addAttribute(WebConsts.BIND_TITLE, SignupFormController.SIGNUP_FORM_TITTLE);
+		model.addAttribute(WebConsts.BIND_CONT,  SignupFormController.SIGNUP_FORM_MESSAGE);
 	}
 	
 	/**
@@ -70,7 +80,7 @@ public class SignupConfirmController {
 	 */
 	private void setSignup_confirm(Model model) {
 		// パスワード確認画面設定
-		model.addAttribute(WebConsts.BIND_TITLE, WebConsts.SIGNUP_CONFIRM_TITTLE);
-		model.addAttribute(WebConsts.BIND_CONT,  WebConsts.SIGNUP_CONFIRM_MESSAGE);
+		model.addAttribute(WebConsts.BIND_TITLE, SIGNUP_CONFIRM_TITTLE);
+		model.addAttribute(WebConsts.BIND_CONT,  SIGNUP_CONFIRM_MESSAGE);
 	}
 }

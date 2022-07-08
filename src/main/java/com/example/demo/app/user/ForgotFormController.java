@@ -21,6 +21,12 @@ import com.example.demo.app.form.UserForgotForm;
 @RequestMapping("/forgot_form")
 public class ForgotFormController {
 
+	/** パスワード変更フォーム画面タイトル */
+	public static String FORGOT_PASSWORD_FORM_TITTLE = "パスワード変更";
+	
+	/** パスワード変更フォーム画面メッセージ */
+	public static String FORGOT_PASSWORD_FORM_MESSAGE = "各項目を入力してください。";
+	
 	/**
 	 * コンストラクタ
 	 */
@@ -69,7 +75,7 @@ public class ForgotFormController {
 	 */
 	private void setForgot_form(Model model) {
 		// パスワード変更画面設定
-		model.addAttribute(WebConsts.BIND_TITLE, WebConsts.FORGOT_PASSWORD_FORM_TITTLE);
-		model.addAttribute(WebConsts.BIND_CONT,  WebConsts.FORGOT_PASSWORD_FORM_MESSAGE);
+		model.addAttribute(WebConsts.BIND_TITLE, FORGOT_PASSWORD_FORM_TITTLE);
+		model.addAttribute(WebConsts.BIND_CONT,  FORGOT_PASSWORD_FORM_MESSAGE);
 	}
 }

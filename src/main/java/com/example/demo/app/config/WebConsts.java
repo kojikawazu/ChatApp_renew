@@ -2,8 +2,17 @@ package com.example.demo.app.config;
 
 public class WebConsts {
 	
-	public static final int ERROR_NUMBER = -1;								// 	エラー番号
+	/** エラー番号 */
+	public static final int ERROR_NUMBER = -1;
 	
+	// ---------------------------------------------------------------------------
+	
+	/** チェック処理判定結果(OK) */
+	public static final boolean CHECK_COMMON_OK = true;
+		
+	/** チェック処理判定結果(NG) */
+	public static final boolean CHECK_COMMON_NG = false;
+		
 	// ---------------------------------------------------------------------------
 	
 	public static final String BIND_TITLE = "title";
@@ -59,46 +68,5 @@ public class WebConsts {
 	public static final String URL_REDIRECT_CHAT_INDEX = "redirect:/chat";
 	
 	// ---------------------------------------------------------------------------
-	
-	/** チェック処理判定結果(OK) */
-	public static final boolean CHECK_COMMON_OK = true;
-	
-	/** チェック処理判定結果(NG) */
-	public static final boolean CHECK_COMMON_NG = false;
-	
-	// ---------------------------------------------------------------------------
-	
-	public static final String ERROR_FORGOTPASSWD_NAMEEMAIL = "登録している名前とメールアドレスがありません。";
-	
-	public static final String ERROR_FORGOTPASSWD = "忘れた時のパスワードが違います。";
-	
-	// ---------------------------------------------------------------------------
-	
-	/** サインアップフォームタイトル */
-	public static String SIGNUP_FORM_TITTLE = "サインアップ";
-	
-	/** サインアップフォームメッセージ */
-	public static String SIGNUP_FORM_MESSAGE = "各項目を入力してください。";
-	
-	/** サインアップ確認画面タイトル */
-	public static String SIGNUP_CONFIRM_TITTLE = "サインアップ確認";
-	
-	/** サインアップ確認画面メッセージ */
-	public static String SIGNUP_CONFIRM_MESSAGE = "このユーザーでよろしいでしょうか？";
-	
-	/** パスワード変更フォーム画面タイトル */
-	public static String FORGOT_PASSWORD_FORM_TITTLE = "パスワード変更";
-	
-	/** パスワード変更フォーム画面メッセージ */
-	public static String FORGOT_PASSWORD_FORM_MESSAGE = "各項目を入力してください。";
-	
-	/** パスワード変更確認画面タイトル */
-	public static String FORGOT_PASSWORD_CONFIRM_TITTLE = "パスワード変更確認";
-	
-	/** パスワード変更確認画面メッセージ */
-	public static String FORGOT_PASSWORD_CONFIRM_MESSAGE = "これでよろしいですか？";
-	
-	/** パスワード変更実行メッセージ */
-	public static String FORGOT_PASSWORD_ACTION_MESSAGE = "パスワードを変更しました。";
-	
+
 }
