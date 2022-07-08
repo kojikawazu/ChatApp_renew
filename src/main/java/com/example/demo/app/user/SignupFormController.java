@@ -19,7 +19,7 @@ import com.example.demo.app.form.UserSignupForm;
  */
 @Controller
 @RequestMapping("/signup_form")
-public class SignupFormController {
+public class SignupFormController implements SuperUserController {
 
 	//Log log = LogFactory.getLog(UserSignupController.class);
 	//log.info("テストOK");

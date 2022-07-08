@@ -32,7 +32,7 @@ import com.example.demo.common.word.PasswordWord;
  */
 @Controller
 @RequestMapping("/signup_complete")
-public class SignupCompleteController {
+public class SignupCompleteController implements SuperUserController {
 
 	/**
 	 * サービス

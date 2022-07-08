@@ -36,21 +36,21 @@
 			    		<label for="name">ユーザ名</label>
 			    		<input type="text" name="name" class="form-control" th:value="*{name}">
 			  		</div>
-			  		<div class="text-danger mb-4" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+			  		<div class="text-danger mb-4" th:if="${#fields.hasErrors('name')}" th:text="${error_message_user_name}"></div>
 			  		
 			  		<!-- メールアドレス -->
 			  		<div class="form-group">
 			    		<label for="email">メールアドレス</label>
 			    		<input type="text" name="email" class="form-control" th:value="*{email}">
 			  		</div>
-			  		<div class="text-danger mb-4" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+			  		<div class="text-danger mb-4" th:if="${#fields.hasErrors('email')}" th:text="${error_message_email}"></div>
 			  		
 			  		<!-- 忘れた時のパスワード -->
 			  		<div class="form-group">
 			    		<label for="forgot_passwd">忘れた時用のパスワード</label>
 			    		<input type="password" name="forgot_passwd" class="form-control" th:value="*{forgot_passwd}">
 			  		</div>
-			  		<div class="text-danger mb-4" th:if="${#fields.hasErrors('forgot_passwd')}" th:errors="*{forgot_passwd}"></div>
+			  		<div class="text-danger mb-4" th:if="${#fields.hasErrors('forgot_passwd')}" th:text="${error_message_forgot_passwd}"></div>
 			  		
 			  		<!-- 新しいパスワード -->
 			  		<div class="form-group">
