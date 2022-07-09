@@ -35,13 +35,14 @@ import com.example.demo.common.word.RoomTagWord;
 /**
  * ---------------------------------------------------------------------------
  * 【部屋生成実行コントローラ】
+ * @author nanai
  * ---------------------------------------------------------------------------
  * 
  */
 @Controller
 @RequestMapping("/room_complete")
 public class CreateRoomCompleteController {
-
+	
 	/**
 	 * サービス
 	 */
@@ -52,29 +53,30 @@ public class CreateRoomCompleteController {
 	
 	/**
 	 * コンストラクタ
+	 * @param roomService
+	 * @param commentService
 	 * @param loginService
+	 * @param enterService
 	 * 
 	 */
 	@Autowired
 	public CreateRoomCompleteController(
-			RoomService roomService,
+			RoomService    roomService,
 			CommentService commentService,
-			LoginService loginService,
-			EnterService enterService) {
-		// コンストラクタ
-		this.roomService = roomService;
+			LoginService   loginService,
+			EnterService   enterService) {
+		this.roomService    = roomService;
 		this.commentService = commentService;
-		this.loginService = loginService;
-		this.enterService = enterService;
+		this.loginService   = loginService;
+		this.enterService   = enterService;
 	}
-	
 	
 	/**
 	 * ルーム作成処理受信
-	 * @param roomCreateForm: ルーム作成フォーム
-	 * @param result: 結果
-	 * @param model: モデル
-	 * @param redirectAttributes: リダイレクト
+	 * @param roomCreateForm ルーム作成フォーム
+	 * @param result 結果
+	 * @param model モデル
+	 * @param redirectAttributes リダイレクト
 	 * @return Webパス(room/create_room, redirect:/chat)
 	 */
 	@PostMapping
@@ -97,34 +99,33 @@ public class CreateRoomCompleteController {
 		
 		// ルームの生成
 		LoginModel loginModel = this.loginService.select(new LoginIdStatus(roomCreateForm.getLogin_id()));
-		int room_id = this.setRoom(loginModel, roomCreateForm);
+		RoomIdStatus room_id  = new RoomIdStatus(this.setRoom(loginModel, roomCreateForm));
 		
 		// ログイン情報のルーム番号の更新
 		this.loginService.updateRoomId_byId(
-				new RoomIdStatus(room_id), 
+				room_id, 
 				new LoginIdStatus(roomCreateForm.getLogin_id()));
 		
 		// 入室情報の生成
-		int enter_id = this.setEnter_createroom(loginModel, roomCreateForm, room_id);
+		EnterIdStatus enter_id = new EnterIdStatus(this.setEnter_createroom(loginModel, roomCreateForm, room_id));
 		
 		// 部屋生成コメントの追加
 		this.setComment_createroom(loginModel, room_id);
 		
 		// チャット画面へ
-		redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, enter_id);
+		redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, enter_id.getId());
 		return WebConsts.URL_REDIRECT_CHAT_INDEX;
 	}
 	
 	/**
 	 * ルーム追加処理
-	 * @param loginModel: ログインモデル
-	 * @param roomCreateForm: ルーム生成フォーム
-	 * @return
+	 * @param loginModel ログインモデル
+	 * @param roomCreateForm ルーム生成フォーム
+	 * @return ルームID
 	 */
 	private int setRoom(LoginModel loginModel, RoomCreateForm roomCreateForm) {
 		// ルームの追加
 		RoomModel roomModel = new RoomModel(
-				new RoomIdStatus(0),
 				new RoomNameWord(roomCreateForm.getName()),
 				new RoomCommentWord(roomCreateForm.getComment()),
 				new RoomTagWord(roomCreateForm.getTag()),
@@ -137,16 +138,15 @@ public class CreateRoomCompleteController {
 	
 	/**
 	 * 入室情報の追加
-	 * @param loginModel: ログインモデル
-	 * @param roomCreateForm: ルーム生成フォーム
-	 * @param room_id: ルームID
+	 * @param loginModel ログインモデル
+	 * @param roomCreateForm ルーム生成フォーム
+	 * @param room_id ルームID
 	 * @return 入室ID
 	 */
-	private int setEnter_createroom(LoginModel loginModel, RoomCreateForm roomCreateForm, int room_id) {
+	private int setEnter_createroom(LoginModel loginModel, RoomCreateForm roomCreateForm, RoomIdStatus room_id) {
 		// 入室情報の追加
 		EnterModel enterModel = new EnterModel(
-				new EnterIdStatus(0),
-				new RoomIdStatus(room_id),
+				room_id,
 				new UserIdStatus(loginModel.getUser_id()),
 				new UserIdStatus(loginModel.getUser_id()),
 				new RoomMaxNumber(roomCreateForm.getMax_roomsum()),
@@ -156,15 +156,14 @@ public class CreateRoomCompleteController {
 	
 	/**
 	 * 部屋生成コメントの追加
-	 * @param loginModel: ログインモデル
-	 * @param room_id: ルームID
+	 * @param loginModel ログインモデル
+	 * @param room_id ルームID
 	 */
-	private void setComment_createroom(LoginModel loginModel, int room_id) {
+	private void setComment_createroom(LoginModel loginModel, RoomIdStatus room_id) {
 		// 部屋生成コメントの追加
 		CommentModel commentModel = new CommentModel(
-				new CommentIdStatus(0),
 				new ChatCommentWord("部屋が作られました。"),
-				new RoomIdStatus(room_id),
+				room_id,
 				new UserIdStatus(loginModel.getId()),
 				LocalDateTime.now());
 		this.commentService.save(commentModel);
@@ -176,7 +175,7 @@ public class CreateRoomCompleteController {
 	 */
 	private void setCreateroom_form(Model model) {
 		// ルーム作成の設定
-		model.addAttribute(WebConsts.BIND_TITLE, "ルーム作成");
-		model.addAttribute(WebConsts.BIND_CONT, "各項目を入力してください。");
+		model.addAttribute(WebConsts.BIND_TITLE, CreateRoomFormController.CREATE_ROOM_FORM_TITTLE);
+		model.addAttribute(WebConsts.BIND_CONT,  CreateRoomFormController.CREATE_ROOM_FORM_MESSAGE);
 	}
 }

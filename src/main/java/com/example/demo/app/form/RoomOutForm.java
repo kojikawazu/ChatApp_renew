@@ -2,13 +2,17 @@ package com.example.demo.app.form;
 
 /**
  * 部屋閉鎖フォーム
+ * @author nanai
  *
  */
 public class RoomOutForm {
 
-	// 入室ID
+	/** 入室ID */
 	private int enter_id;
 
+	/**
+	 * コンストラクタ
+	 */
 	public RoomOutForm() {
 		super();
 	}

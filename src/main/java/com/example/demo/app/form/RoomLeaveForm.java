@@ -2,16 +2,20 @@ package com.example.demo.app.form;
 
 /**
  * 強制退室フォーム
+ * @author nanai
  *
  */
 public class RoomLeaveForm {
 	
-	// ログイン_ユーザID
+	/** ログイン_ユーザID */
 	private int in_id;
 	
-	// 入室ID
+	/** 入室ID */
 	private int enter_id;
 
+	/**
+	 * コンストラクタ
+	 */
 	public RoomLeaveForm() {
 		super();
 	}
@@ -31,9 +35,4 @@ public class RoomLeaveForm {
 	public void setIn_id(int in_id) {
 		this.in_id = in_id;
 	}
-
-
-	
-	
-
 }

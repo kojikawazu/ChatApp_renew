@@ -2,22 +2,25 @@ package com.example.demo.app.form;
 
 /**
  * コメントフォーム
- *
+ * @author nanai
  */
 public class UserSpeechForm {
 	
-	// コメントID
+	/** コメントID */
 	private int enter_id;
 	
-	// ルームID
+	/** ルームID */
 	private int room_id;
 	
-	// ユーザID
+	/** ユーザID */
 	private int user_id;
 	
-	// コメント
+	/** コメント */
 	private String comment;
 
+	/**
+	 * コンストラクタ
+	 */
 	public UserSpeechForm() {
 		super();
 	}
@@ -53,7 +56,4 @@ public class UserSpeechForm {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-	
-	
-
 }

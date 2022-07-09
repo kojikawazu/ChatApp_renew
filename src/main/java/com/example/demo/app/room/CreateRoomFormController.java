@@ -13,6 +13,7 @@ import com.example.demo.app.form.RoomUserForm;
 /**
  * ---------------------------------------------------------------------------
  * 【部屋生成フォームコントローラ】
+ * @author nanai
  * ---------------------------------------------------------------------------
  * 
  */
@@ -20,18 +21,24 @@ import com.example.demo.app.form.RoomUserForm;
 @RequestMapping("/createroom_form")
 public class CreateRoomFormController {
 
+	/** ルーム生成フォーム画面タイトル */
+	public static String CREATE_ROOM_FORM_TITTLE = "ルーム作成";
+	
+	/** ルーム生成フォーム画面メッセージ */
+	public static String CREATE_ROOM_FORM_MESSAGE = "各項目を入力してください。";
+	
 	/**
 	 * コンストラクタ
 	 */
 	@Autowired
 	public CreateRoomFormController() {
-		// コンストラクタ
+		
 	}
 	
 	/**
 	 * ルーム作成受信
-	 * @param roomUserForm: ルーム情報フォーム
-	 * @param roomCreateForm: ルーム作成フォーム
+	 * @param roomUserForm ルーム情報フォーム
+	 * @param roomCreateForm ルーム作成フォーム
 	 * @param model
 	 * @return Webパス(room/create_room)
 	 */
@@ -55,8 +62,7 @@ public class CreateRoomFormController {
 	 */
 	private void setCreateroom_form(Model model) {
 		// ルーム作成画面設定
-		model.addAttribute(WebConsts.BIND_TITLE, "ルーム作成");
-		model.addAttribute(WebConsts.BIND_CONT, "各項目を入力してください。");
+		model.addAttribute(WebConsts.BIND_TITLE, CREATE_ROOM_FORM_TITTLE);
+		model.addAttribute(WebConsts.BIND_CONT,  CREATE_ROOM_FORM_MESSAGE);
 	}
-	
 }

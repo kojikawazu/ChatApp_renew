@@ -111,6 +111,56 @@ public class RoomModel {
 				LocalDateTime.now() :
 				updated);
 	}
+	
+	/**
+	 * コンストラクタ
+	 * @param name ルーム名
+	 * @param comment ルームコメント
+	 * @param tag ルームタグ
+	 * @param max_roomsum ルーム最大人数
+	 * @param user_id ホストID
+	 * @param created 生成日時
+	 * @param updated　更新日時
+	 */
+	public RoomModel(
+			RoomNameWord name,
+			RoomCommentWord comment,
+			RoomTagWord tag,
+			RoomMaxNumber max_roomsum,
+			UserIdStatus user_id,
+			LocalDateTime created,
+			LocalDateTime updated) {
+		super();
+		this.id = new RoomIdStatus(0);
+		
+		this.name = (name == null ? 
+				new RoomNameWord("") : 
+				new RoomNameWord(name.getString()));
+		
+		this.comment = (comment == null ? 
+				new RoomCommentWord("") : 
+				new RoomCommentWord(comment.getString()));
+		
+		this.tag = (tag == null ? 
+				new RoomTagWord("") : 
+				new RoomTagWord(tag.getString()));
+		
+		this.max_roomsum = (max_roomsum == null ? 
+				new RoomMaxNumber(0) : 
+				new RoomMaxNumber(max_roomsum.getNumber()));
+		
+		this.user_id = (max_roomsum == null ? 
+				new UserIdStatus(0) : 
+				new UserIdStatus(user_id.getId()));
+		
+		this.created = (created == null ?
+				LocalDateTime.now() :
+				created);
+		
+		this.updated = (updated == null ?
+				LocalDateTime.now() :
+				updated);
+	}
 
 	public int getId() {
 		return id.getId();

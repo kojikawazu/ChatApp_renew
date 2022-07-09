@@ -7,34 +7,44 @@ import javax.validation.constraints.Size;
 
 /**
  * ルーム生成フォーム
+ * @author nanai
  *
  */
-public class RoomCreateForm {
+public class RoomCreateForm implements SuperRoomForm {
 	
-	// ルーム名
+	/** ルーム名 */
 	@NotNull
-	@Size(min = 1, max =20, message = "20文字を超えています。")
+	@Size(min = ROOM_NAME_MIN_VALUE, 
+			max = ROOM_NAME_MAX_VALUE, 
+			message = ERROR_ROOM_NAME_MAX_MESSAGE)
 	private String name;
 	
-	// ルームコメント
+	/** ルームコメント */
 	@NotNull
-	@Size(min = 1, max =50, message = "50文字を超えています。")
+	@Size(min = ROOM_COMMENT_MIN_VALUE, 
+			max = ROOM_COMMENT_MAX_VALUE, 
+			message = ERROR_ROOM_COMMENT_MAX_MESSAGE)
 	private String comment;
 	
-	// ルームタグ
+	/** ルームタグ */
 	@NotNull
-	@Size(min = 1, max =20, message = "20文字を超えています。")
+	@Size(min = ROOM_TAG_MIN_VALUE, 
+			max = ROOM_TAG_MAX_VALUE, 
+			message = ERROR_ROOM_TAG_MAX_MESSAGE)
 	private String tag;
 	
-	// ルーム最大ユーザ数
+	/** ルーム最大ユーザ数 */
 	@NotNull
-	@Min(2)
-	@Max(10)
+	@Min(ROOM_ENTER_USER_MIN_VALUE)
+	@Max(ROOM_ENTER_USER_MAX_VALUE)
 	private int max_roomsum;
 	
-	// ホスト_ログインID
+	/** ホスト_ログインID */
 	private int login_id;
 
+	/**
+	 * コンストラクタ
+	 */
 	public RoomCreateForm() {
 		super();
 	}
@@ -78,7 +88,4 @@ public class RoomCreateForm {
 	public void setLogin_id(int login_id) {
 		this.login_id = login_id;
 	}
-
-	
-
 }

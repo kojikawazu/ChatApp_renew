@@ -185,7 +185,6 @@ public class ForgotConfirmController implements SuperUserController {
 			// 名前入力エラー
 			model.addAttribute(BIND_ERROR_MESSAGE_FORGOT_PASSWD, ERROR_MESSAGE_FORGOT_PASSWD);
 		}
-		
 	}
 	
 	

@@ -28,20 +28,29 @@ import com.example.demo.common.status.UserIdStatus;
 import com.example.demo.common.word.NameWord;
 
 /**
- * ルームコントローラ
+ *  ---------------------------------------------------------------------------
+ * 【ルームコントローラ】
+ * @author nanai
+ *  ---------------------------------------------------------------------------
  */
 @Controller
 @RequestMapping("/room")
 public class RoomController {
 
+	/** ルームタイトル */
+	public static String ROOM_TITTLE  = "ルーム選択";
+	
+	/** ルームメッセージ */
+	public static String ROOM_MESSAGE = "チャットルーム一覧です。";
+	
 	/**
 	 * サービス
 	 */
-	private UserService userService;
-	private RoomService roomService;
+	private UserService    userService;
+	private RoomService    roomService;
 	private CommentService commentService;
-	private LoginService loginService;
-	private EnterService enterService;
+	private LoginService   loginService;
+	private EnterService   enterService;
 	
 	/**
 	 * コンストラクタ
@@ -57,20 +66,19 @@ public class RoomController {
 			CommentService commentService,
 			LoginService loginService,
 			EnterService enterService) {
-		// コンストラクタ
-		this.userService = userService;
-		this.roomService = roomService;
+		this.userService    = userService;
+		this.roomService    = roomService;
 		this.commentService = commentService;
-		this.loginService = loginService;
-		this.enterService = enterService;
+		this.loginService   = loginService;
+		this.enterService   = enterService;
 	}
 	
 	/**
 	 * ホーム受信
-	 * @param login_id: ログインID
-	 * @param model: モデル
-	 * @param noticeSuccess: 成功通知 
-	 * @param noticeError: 失敗通知
+	 * @param login_id ログインID
+	 * @param model モデル
+	 * @param noticeSuccess 成功通知 
+	 * @param noticeError 失敗通知
 	 * @return Webパス(room/index)
 	 */
 	@GetMapping
@@ -78,7 +86,7 @@ public class RoomController {
 			@RequestParam(value = "login_id", required = false, defaultValue = "0") int login_id,
 			Model model,
 			@ModelAttribute("noticeSuccess") String noticeSuccess,
-			@ModelAttribute("noticeError") String noticeError) {
+			@ModelAttribute("noticeError")   String noticeError) {
 		// ホーム画面
 		
 		// ログインID設定
@@ -86,7 +94,7 @@ public class RoomController {
 		if( login_id > 0) {
 			// ログイン情報設定
 			LoginModel loginModel = this.loginService.select(new LoginIdStatus(login_id));
-			UserModel userModel = this.userService.select(new UserIdStatus(loginModel.getUser_id()));
+			UserModel userModel   = this.userService.select(new UserIdStatus(loginModel.getUser_id()));
 			model.addAttribute(WebConsts.BIND_USER_MODEL, userModel);
 		}
 		
@@ -108,9 +116,9 @@ public class RoomController {
 	 */
 	private List<RoomModelEx> changeRoomModel(){
 		// ルームリストを拡張版へ変換
-		List<RoomModel> roomModelList = this.roomService.getAll();
+		List<RoomModel>   roomModelList       = this.roomService.getAll();
 		List<RoomModelEx> roomModelListExList = new ArrayList<RoomModelEx>();
-		for( RoomModel roomModel : roomModelList){
+		for( RoomModel roomModel : roomModelList ){
 			UserModel uModel =  this.userService.select(new UserIdStatus(roomModel.getUser_id()));
 			// 入室数取得
 			int count = this.enterService.getCount_roomId(new RoomIdStatus(roomModel.getId()));
@@ -131,8 +139,7 @@ public class RoomController {
 	 */
 	private void setIndex(Model model) {
 		// ホーム画面設定
-		model.addAttribute(WebConsts.BIND_TITLE, "ルーム選択");
-		model.addAttribute(WebConsts.BIND_CONT, "チャットルーム一覧です。");
+		model.addAttribute(WebConsts.BIND_TITLE, ROOM_TITTLE);
+		model.addAttribute(WebConsts.BIND_CONT,  ROOM_MESSAGE);
 	}
-	
 }
