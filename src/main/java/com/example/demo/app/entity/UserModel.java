@@ -28,39 +28,13 @@ public class UserModel {
 	
 	/**
 	 * コンストラクタ
-	 * @param model: ログインモデルクラス
-	 */
-	public UserModel(UserModel model) {
-		super();
-
-		if( model == null ) {
-			this.id 			= new UserIdStatus(0);
-			this.name 			= new NameWord("");
-			this.email 			= new EmailWord("");
-			this.passwd 		= new PasswordWord("");
-			this.forgot_passwd 	= new PasswordWord("");
-			this.created 		= LocalDateTime.now();
-			this.updated 		= LocalDateTime.now();
-		} else {
-			this.id 			= new UserIdStatus(model.getId());
-			this.name 			= new NameWord(model.getName());
-			this.email 			= new EmailWord(model.getEmail());
-			this.passwd 		= new PasswordWord(model.getPasswd());
-			this.forgot_passwd 	= new PasswordWord(model.getForgot_passwd());
-			this.created 		= model.getCreated();
-			this.updated 		= model.getUpdated();
-		}
-	}
-	
-	/**
-	 * コンストラクタ
-	 * @param id ID
-	 * @param name 名前
-	 * @param email　Eメールアドレス
-	 * @param passwd パスワード
+	 * @param id            ID
+	 * @param name          名前
+	 * @param email         Eメールアドレス
+	 * @param passwd        パスワード
 	 * @param forgot_passwd 忘れた時用パスワード
-	 * @param created 生成日時
-	 * @param updated 更新日時
+	 * @param created       生成日時
+	 * @param updated       更新日時
 	 */
 	public UserModel(
 			UserIdStatus id,
@@ -103,12 +77,12 @@ public class UserModel {
 	
 	/**
 	 * コンストラクタ
-	 * @param name 名前
-	 * @param email　Eメールアドレス
-	 * @param passwd パスワード
+	 * @param name          名前
+	 * @param email         Eメールアドレス
+	 * @param passwd        パスワード
 	 * @param forgot_passwd 忘れた時用パスワード
-	 * @param created 生成日時
-	 * @param updated 更新日時
+	 * @param created       生成日時
+	 * @param updated       更新日時
 	 */
 	public UserModel(
 			NameWord name,
@@ -143,6 +117,32 @@ public class UserModel {
 		this.updated = (updated == null ?
 				LocalDateTime.now() :
 				updated);
+	}
+	
+	/**
+	 * コンストラクタ
+	 * @param model ログインモデルクラス
+	 */
+	public UserModel(UserModel model) {
+		super();
+
+		if( model == null ) {
+			this.id 			= new UserIdStatus(0);
+			this.name 			= new NameWord("");
+			this.email 			= new EmailWord("");
+			this.passwd 		= new PasswordWord("");
+			this.forgot_passwd 	= new PasswordWord("");
+			this.created 		= LocalDateTime.now();
+			this.updated 		= LocalDateTime.now();
+		} else {
+			this.id 			= new UserIdStatus(model.getId());
+			this.name 			= new NameWord(model.getName());
+			this.email 			= new EmailWord(model.getEmail());
+			this.passwd 		= new PasswordWord(model.getPasswd());
+			this.forgot_passwd 	= new PasswordWord(model.getForgot_passwd());
+			this.created 		= model.getCreated();
+			this.updated 		= model.getUpdated();
+		}
 	}
 
 	public int getId() {

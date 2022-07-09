@@ -147,8 +147,8 @@ class UserDaoSqlTest {
 	 */
 	@Test
 	void insert_returnId_test() {
-		doReturn(0).when(this.userDaoSql2).insert_returnId(model);
-		Assertions.assertEquals(this.userDaoSql2.insert_returnId(model), 0);
+		doReturn(new UserIdStatus(0)).when(this.userDaoSql2).insert_returnId(model);
+		Assertions.assertEquals(this.userDaoSql2.insert_returnId(model).getId(), 0);
 	}
 	
 	/**
@@ -286,8 +286,8 @@ class UserDaoSqlTest {
 	 */
 	@Test
 	void selectId_byNameEmailPass_test() {
-		doReturn(0).when(this.userDaoSql2).selectId_byNameEmailPass(user);
-		Assertions.assertEquals(this.userDaoSql2.selectId_byNameEmailPass(user), 0);
+		doReturn(new UserIdStatus(0)).when(this.userDaoSql2).selectId_byNameEmailPass(user);
+		Assertions.assertEquals(this.userDaoSql2.selectId_byNameEmailPass(user).getId(), 0);
 	}
 	
 	/**

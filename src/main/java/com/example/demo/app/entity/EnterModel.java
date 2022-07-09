@@ -27,12 +27,12 @@ public class EnterModel {
 	
 	/**
 	 * コンストラクタ
-	 * @param id 入室ID
-	 * @param room_id ルームID
-	 * @param user_id ユーザID
+	 * @param id         入室ID
+	 * @param room_id    ルームID
+	 * @param user_id    ユーザID
 	 * @param manager_id ホストID
-	 * @param max_sum 入室数
-	 * @param created 生成日時
+	 * @param max_sum    入室数
+	 * @param created    生成日時
 	 */
 	public EnterModel(
 			EnterIdStatus id,
@@ -69,11 +69,11 @@ public class EnterModel {
 	
 	/**
 	 * コンストラクタ
-	 * @param room_id ルームID
-	 * @param user_id ユーザID
+	 * @param room_id    ルームID
+	 * @param user_id    ユーザID
 	 * @param manager_id ホストID
-	 * @param max_sum 入室数
-	 * @param created 生成日時
+	 * @param max_sum    入室数
+	 * @param created    生成日時
 	 */
 	public EnterModel(
 			RoomIdStatus room_id,
@@ -130,7 +130,7 @@ public class EnterModel {
 	public int getId() {
 		return id.getId();
 	}
-
+	
 	protected void setId(int id) {
 		this.id = new EnterIdStatus(id);
 	}

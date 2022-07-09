@@ -96,7 +96,7 @@ public class SignupCompleteController implements SuperUserController {
 				LocalDateTime.now(),
 				LocalDateTime.now()
 				);
-		return new UserIdStatus(this.userService.save_returnId(userModel));
+		return this.userService.save_returnId(userModel);
 	}
 	
 	/**
@@ -111,7 +111,7 @@ public class SignupCompleteController implements SuperUserController {
 				new UserIdStatus(userId.getId()),
 				LocalDateTime.now()
 				);
-		return new LoginIdStatus(this.loginService.save_returnId(loginModel));
+		return this.loginService.save_returnId(loginModel);
 	}
 	
 }

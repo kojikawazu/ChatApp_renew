@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.EnterModel;
 import com.example.demo.app.exception.WebMvcConfig;
 import com.example.demo.common.dao.EnterDao;
@@ -32,7 +33,6 @@ public class EnterServiceUse implements EnterService {
 	 */
 	@Autowired
 	public EnterServiceUse(EnterDao dao) {
-		// \コンストラクタ
 		this.dao = dao;
 	}
 	
@@ -49,10 +49,10 @@ public class EnterServiceUse implements EnterService {
 	/**
 	 * 入室情報保存
 	 * @param model 入室モデル
-	 * @return 入室ID
+	 * @return      入室ID
 	 */
 	@Override
-	public int save_returnId(EnterModel model) {
+	public EnterIdStatus save_returnId(EnterModel model) {
 		// 保存(返却ID)
 		return this.dao.insert_byId(model);
 	}
@@ -64,22 +64,22 @@ public class EnterServiceUse implements EnterService {
 	@Override
 	public void update(EnterModel model) {
 		// 更新
-		if( this.dao.update(model) == 0 ) {
+		if( this.dao.update(model) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
 	
 	/**
 	 * 更新
-	 * @param room_id ルームID
+	 * @param room_id    ルームID
 	 * @param manager_id 管理ID
-	 * @param sum 入室最大数
-	 * @param user_id ユーザID
+	 * @param sum        入室最大数
+	 * @param user_id    ユーザID
 	 */
 	@Override
 	public void update_byUserId(RoomIdStatus room_id, UserIdStatus manager_id, RoomMaxNumber sum, UserIdStatus user_id) {
 		// 更新
-		if( this.dao.update_byUserId(room_id, manager_id, sum, user_id) == 0 ) {
+		if( this.dao.update_byUserId(room_id, manager_id, sum, user_id) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
@@ -87,12 +87,12 @@ public class EnterServiceUse implements EnterService {
 	/**
 	 * 更新
 	 * @param managerId 管理ID
-	 * @param id 入室ID
+	 * @param id        入室ID
 	 */
 	@Override
 	public void updateManagerId_byId(UserIdStatus managerId, EnterIdStatus id) {
 		// 更新
-		if( this.dao.updateManagerId_byId(managerId, id) == 0 ) {
+		if( this.dao.updateManagerId_byId(managerId, id) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
@@ -104,7 +104,7 @@ public class EnterServiceUse implements EnterService {
 	@Override
 	public void delete(EnterIdStatus id) {
 		// 削除
-		if( this.dao.delete(id) == 0 ) {
+		if( this.dao.delete(id) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
@@ -122,7 +122,7 @@ public class EnterServiceUse implements EnterService {
 	/**
 	 * 選択
 	 * @param id 入室ID
-	 * @return 入室モデル
+	 * @return   入室モデル
 	 */
 	@Override
 	public EnterModel select(EnterIdStatus id) {
@@ -133,10 +133,10 @@ public class EnterServiceUse implements EnterService {
 	/**
 	 * 選択
 	 * @param userId ユーザID
-	 * @return 入室ID
+	 * @return       入室ID
 	 */
 	@Override
-	public int selectId_byUserId(UserIdStatus userId) {
+	public EnterIdStatus selectId_byUserId(UserIdStatus userId) {
 		// ユーザIDによるID取得
 		return this.dao.selectId_byUserId(userId);
 	}
@@ -166,7 +166,7 @@ public class EnterServiceUse implements EnterService {
 	/**
 	 * 入室数の取得
 	 * @param roomId ルームID
-	 * @return 入室数
+	 * @return       入室数
 	 */
 	@Override
 	public int getCount_roomId(RoomIdStatus roomId) {

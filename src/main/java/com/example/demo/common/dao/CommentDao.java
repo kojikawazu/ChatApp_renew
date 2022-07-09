@@ -14,7 +14,7 @@ public interface CommentDao {
 	
 	void insert(CommentModel model);
 	
-	int insert_byId(CommentModel model);
+	CommentIdStatus insert_byId(CommentModel model);
 	
 	int update(CommentModel model);
 	

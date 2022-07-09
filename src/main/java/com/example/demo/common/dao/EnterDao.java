@@ -16,7 +16,7 @@ public interface EnterDao {
 	
 	void insert(EnterModel model);
 	
-	int insert_byId(EnterModel model);
+	EnterIdStatus insert_byId(EnterModel model);
 	
 	int update(EnterModel model);
 	
@@ -30,7 +30,7 @@ public interface EnterDao {
 	
 	EnterModel select(EnterIdStatus id);
 	
-	int selectId_byUserId(UserIdStatus userId);
+	EnterIdStatus selectId_byUserId(UserIdStatus userId);
 
 	boolean isSelect_byId(EnterIdStatus id);
 	

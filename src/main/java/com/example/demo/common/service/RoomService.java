@@ -14,7 +14,7 @@ public interface RoomService {
 
 	void save(RoomModel model);
 	
-	int save_returnId(RoomModel model);
+	RoomIdStatus save_returnId(RoomModel model);
 	
 	void update(RoomModel model);
 	

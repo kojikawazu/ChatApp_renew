@@ -73,13 +73,13 @@ public class EnterDaoSql implements EnterDao {
 
 	/**
 	 * 追加処理
-	 * @param model 入室モデル
-	 * @return 入室ID
+	 * @param model  入室モデル
+	 * @return 入室ID 失敗した場合は-1。
 	 */
 	@Override
-	public int insert_byId(EnterModel model) {
+	public EnterIdStatus insert_byId(EnterModel model) {
 		// 追加(return id)
-		if(model == null)	return WebConsts.ERROR_NUMBER;
+		if(model == null)	return new EnterIdStatus(WebConsts.ERROR_NUMBER);
 		
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		String sql = "INSERT INTO chat_enter(room_id, user_id, manager_id, max_sum, created) VALUES(?,?,?,?,?)";
@@ -105,13 +105,13 @@ public class EnterDaoSql implements EnterDao {
 			ex.printStackTrace();
 			return_key = WebConsts.ERROR_NUMBER;
 		}
-		return return_key;
+		return new EnterIdStatus(return_key);
 	}
 
 	/**
 	 * 更新処理
 	 * @param model 入室モデル
-	 * @return 0 失敗 それ以外 成功
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int update(EnterModel model) {
@@ -130,11 +130,11 @@ public class EnterDaoSql implements EnterDao {
 	
 	/**
 	 * ユーザIDから更新処理
-	 * @param room_id ルームID
+	 * @param room_id    ルームID
 	 * @param manager_id 管理ID
-	 * @param sum ユーザ合計
-	 * @param user_id ユーザID
-	 * @return 0 失敗 それ以外 成功
+	 * @param sum        ユーザ合計
+	 * @param user_id    ユーザID
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int update_byUserId(RoomIdStatus room_id, UserIdStatus manager_id, RoomMaxNumber sum, UserIdStatus user_id) {
@@ -155,9 +155,9 @@ public class EnterDaoSql implements EnterDao {
 	
 	/**
 	 * 管理IDから更新処理
-	 * @param manager_id 管理ID
-	 * @param id 入室ID
-	 * @return 0 失敗 それ以外 成功
+	 * @param  manager_id 管理ID
+	 * @param  id         入室ID
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int updateManagerId_byId(UserIdStatus managerId, EnterIdStatus id) {
@@ -173,8 +173,8 @@ public class EnterDaoSql implements EnterDao {
 
 	/**
 	 * 削除処理
-	 * @param id 入室ID
-	 * @return 0 失敗 それ以外 成功
+	 * @param  id 入室ID
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int delete(EnterIdStatus id) {
@@ -218,7 +218,7 @@ public class EnterDaoSql implements EnterDao {
 
 	/**
 	 * 入室IDから選択
-	 * @param id 入室ID
+	 * @param  id 入室ID
 	 * @return 入室モデル
 	 */
 	@Override
@@ -249,12 +249,12 @@ public class EnterDaoSql implements EnterDao {
 	/**
 	 * ユーザIDから入室ID選択
 	 * @param userId ユーザID
-	 * @return 入室ID
+	 * @return       入室ID
 	 */
 	@Override
-	public int selectId_byUserId(UserIdStatus userId) {
+	public EnterIdStatus selectId_byUserId(UserIdStatus userId) {
 		// ユーザIDによるID取得
-		if(userId == null) 	return WebConsts.ERROR_NUMBER;
+		if(userId == null) 	return new EnterIdStatus(WebConsts.ERROR_NUMBER);
 		
 		int id = 0;
 		try {
@@ -265,18 +265,18 @@ public class EnterDaoSql implements EnterDao {
 			ex.printStackTrace();
 			id = WebConsts.ERROR_NUMBER;
 		}
-		return id;
+		return new EnterIdStatus(id);
 	}
 
 	/**
 	 * 入室IDによる有無チェック
-	 * @param id 入室ID
+	 * @param  id 入室ID
 	 * @return true あり false なし
 	 */
 	@Override
 	public boolean isSelect_byId(EnterIdStatus id) {
 		// IDによる有無チェック
-		if(id == null)	return false;
+		if(id == null)	return WebConsts.DB_ENTITY_NONE;
 		
 		String sql = "SELECT id FROM chat_enter WHERE id = ?";
 		return jdbcTemp.query(
@@ -284,19 +284,19 @@ public class EnterDaoSql implements EnterDao {
 				new Object[]{ id.getId() },
 				new int[] { Types.INTEGER },
 				rs -> {
-			return rs.next() ? true : false;	
+			return rs.next() ? WebConsts.DB_ENTITY_FINDED : WebConsts.DB_ENTITY_NONE;
 		});
 	}
 
 	/**
 	 * ユーザIDによる有無チェック
-	 * @param userId ユーザID
+	 * @param  userId ユーザID
 	 * @return true あり false なし
 	 */
 	@Override
 	public boolean isSelect_byUserId(UserIdStatus userId) {
 		// 入室しているユーザの有無の確認
-		if(userId == null)	return false;
+		if(userId == null)	return WebConsts.DB_ENTITY_NONE;
 		
 		String sql = "SELECT id FROM chat_enter WHERE user_id = ?";
 		return jdbcTemp.query(
@@ -304,19 +304,19 @@ public class EnterDaoSql implements EnterDao {
 				new Object[]{ userId.getId() },
 				new int[] { Types.INTEGER },
 				rs -> {
-			return rs.next() ? true : false;	
+			return rs.next() ? WebConsts.DB_ENTITY_FINDED : WebConsts.DB_ENTITY_NONE;
 		});
 	}
 
 	/**
 	 * ルームIDによる入室数の取得
-	 * @param roomId ルームID
+	 * @param  roomId ルームID
 	 * @return ログイン数
 	 */
 	@Override
 	public int getCount_roomId(RoomIdStatus roomId) {
 		// ログインしている数の取得
-		if(roomId == null)	return WebConsts.ERROR_NUMBER;
+		if(roomId == null)	return 0;
 		
 		int count = 0;
 		try {

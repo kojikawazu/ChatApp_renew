@@ -25,7 +25,7 @@ class RoomModelTest {
 	 * コンストラクタテスト(null割り当て)
 	 */
 	@Test
-	void initTestNull() {
+	void initTest_modelNull() {
 		RoomModel test = new RoomModel(null);
 		
 		Assertions.assertEquals(test.getId(), 0);
@@ -68,7 +68,7 @@ class RoomModelTest {
 	 * コンストラクタテスト(null割り当て)
 	 */
 	@Test
-	void initTest3_null() {
+	void initTest1_null() {
 		LocalDateTime now = LocalDateTime.now();
 		RoomModel test = new RoomModel(
 				null,
@@ -80,9 +80,9 @@ class RoomModelTest {
 				now, 
 				now);
 
-		Assertions.assertEquals(test.getName(), "room_test");
-		Assertions.assertEquals(test.getComment(), "room_comment");
-		Assertions.assertEquals(test.getTag(), "room_tag");
+		Assertions.assertEquals(test.getName(), "");
+		Assertions.assertEquals(test.getComment(), "");
+		Assertions.assertEquals(test.getTag(), "");
 		Assertions.assertEquals(test.getMax_roomsum(), 0);
 		Assertions.assertEquals(test.getId(), 0);
 		Assertions.assertEquals(test.getUser_id(), 0);
@@ -94,7 +94,7 @@ class RoomModelTest {
 	 * コンストラクタテスト(同一クラス割り当て)
 	 */
 	@Test
-	void initTest2() {
+	void initTest1_sameClass() {
 		LocalDateTime now = LocalDateTime.now();
 		RoomModel dummy = new RoomModel(
 						new RoomIdStatus(0),
@@ -107,6 +107,31 @@ class RoomModelTest {
 						now);
 		
 		RoomModel test = new RoomModel(dummy);
+		
+		Assertions.assertEquals(test.getId(), 0);
+		Assertions.assertEquals(test.getName(), "room_test");
+		Assertions.assertEquals(test.getComment(), "room_comment");
+		Assertions.assertEquals(test.getTag(), "room_tag");
+		Assertions.assertEquals(test.getMax_roomsum(), 0);
+		Assertions.assertEquals(test.getUser_id(), 0);
+		Assertions.assertNotNull(test.getCreated());
+		Assertions.assertNotNull(test.getUpdated());
+	}
+	
+	/**
+	 * コンストラクタテスト
+	 */
+	@Test
+	void initTest2() {
+		LocalDateTime now = LocalDateTime.now();
+		RoomModel test = new RoomModel(
+						new RoomNameWord("room_test"),
+						new RoomCommentWord("room_comment"),
+						new RoomTagWord("room_tag"),
+						new RoomMaxNumber(0),
+						new UserIdStatus(0),
+						now, 
+						now);
 		
 		Assertions.assertEquals(test.getId(), 0);
 		Assertions.assertEquals(test.getName(), "room_test");

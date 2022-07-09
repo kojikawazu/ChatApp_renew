@@ -127,14 +127,12 @@ public class SigninController implements SuperUserController {
 		}
 		
 		// エラーなし
-		UserIdStatus userIdStatus = new UserIdStatus(
-				this.userService.selectId_byNameEmailPasswd(
-					new UserNameEmailPassword(
-						userLoginForm.getName(), 
-						userLoginForm.getEmail(), 
-						userLoginForm.getPasswd())
-					)
-				);
+		UserIdStatus userIdStatus = this.userService.selectId_byNameEmailPasswd(
+			new UserNameEmailPassword(
+				userLoginForm.getName(), 
+				userLoginForm.getEmail(), 
+				userLoginForm.getPasswd())
+			);
 		
 		// サインイン内容チェック
 		if( userIdStatus.isError() ) {
@@ -171,6 +169,6 @@ public class SigninController implements SuperUserController {
 				 new RoomIdStatus(0),
 				 userStatus,
 				 LocalDateTime.now());
-		return new LoginIdStatus(loginService.save_returnId(loginModel));
+		return loginService.save_returnId(loginModel);
 	}
 }

@@ -28,45 +28,17 @@ public class RoomModel {
 	private UserIdStatus user_id;		/** ホストID    */
 	private LocalDateTime created;		/** 生成日時   */
 	private LocalDateTime updated;		/** 更新日時   */
- 	
-	/**
-	 * コンストラクタ
-	 * @param model: ルームモデルクラス
-	 */
-	public RoomModel(RoomModel model) {
-		super();
-
-		if( model == null ) {
-			this.id 				= new RoomIdStatus(0);
-			this.name 				= new RoomNameWord("");
-			this.comment 			= new RoomCommentWord("");
-			this.tag 				= new RoomTagWord("");
-			this.max_roomsum 		= new RoomMaxNumber(0);
-			this.user_id			= new UserIdStatus(0);
-			this.created 			= LocalDateTime.now();
-			this.updated 			= LocalDateTime.now();
-		} else {
-			this.id 				= new RoomIdStatus(model.getId());
-			this.name 				= new RoomNameWord(model.getName());
-			this.comment 			= new RoomCommentWord(model.getComment());
-			this.tag 				= new RoomTagWord(model.getTag());
-			this.max_roomsum 		= new RoomMaxNumber(model.getMax_roomsum());
-			this.user_id			= new UserIdStatus(model.getUser_id());
-			this.created 			= model.getCreated();
-			this.updated 			= model.getUpdated();
-		}
-	}
 	
 	/**
 	 * コンストラクタ
-	 * @param id ID
-	 * @param name ルーム名
-	 * @param comment ルームコメント
-	 * @param tag ルームタグ
+	 * @param id          ID
+	 * @param name        ルーム名
+	 * @param comment     ルームコメント
+	 * @param tag         ルームタグ
 	 * @param max_roomsum ルーム最大人数
-	 * @param user_id ホストID
-	 * @param created 生成日時
-	 * @param updated　更新日時
+	 * @param user_id     ホストID
+	 * @param created     生成日時
+	 * @param updated     更新日時
 	 */
 	public RoomModel(
 			RoomIdStatus id,
@@ -114,13 +86,13 @@ public class RoomModel {
 	
 	/**
 	 * コンストラクタ
-	 * @param name ルーム名
-	 * @param comment ルームコメント
-	 * @param tag ルームタグ
+	 * @param name        ルーム名
+	 * @param comment     ルームコメント
+	 * @param tag         ルームタグ
 	 * @param max_roomsum ルーム最大人数
-	 * @param user_id ホストID
-	 * @param created 生成日時
-	 * @param updated　更新日時
+	 * @param user_id     ホストID
+	 * @param created     生成日時
+	 * @param updated     更新日時
 	 */
 	public RoomModel(
 			RoomNameWord name,
@@ -160,6 +132,34 @@ public class RoomModel {
 		this.updated = (updated == null ?
 				LocalDateTime.now() :
 				updated);
+	}
+	
+	/**
+	 * コンストラクタ
+	 * @param model ルームモデルクラス
+	 */
+	public RoomModel(RoomModel model) {
+		super();
+
+		if( model == null ) {
+			this.id 				= new RoomIdStatus(0);
+			this.name 				= new RoomNameWord("");
+			this.comment 			= new RoomCommentWord("");
+			this.tag 				= new RoomTagWord("");
+			this.max_roomsum 		= new RoomMaxNumber(0);
+			this.user_id			= new UserIdStatus(0);
+			this.created 			= LocalDateTime.now();
+			this.updated 			= LocalDateTime.now();
+		} else {
+			this.id 				= new RoomIdStatus(model.getId());
+			this.name 				= new RoomNameWord(model.getName());
+			this.comment 			= new RoomCommentWord(model.getComment());
+			this.tag 				= new RoomTagWord(model.getTag());
+			this.max_roomsum 		= new RoomMaxNumber(model.getMax_roomsum());
+			this.user_id			= new UserIdStatus(model.getUser_id());
+			this.created 			= model.getCreated();
+			this.updated 			= model.getUpdated();
+		}
 	}
 
 	public int getId() {

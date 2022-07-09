@@ -66,7 +66,7 @@
 		  			<div class="host-out-child">
 		  				
 		  				<!-- 強制退室 -->
-			  			<form th:if="${roomModel.enterCnt ge 2}" class="gest-close" method="post" th:action="@{/chat/userclose}" th:object="${roomLeaveForm}">
+			  			<form th:if="${roomModel.enterCnt ge 2}" class="gest-close" method="post" th:action="@{/userclose}" th:object="${roomLeaveForm}">
 			  				<select th:field="*{in_id}">
 			  					<option th:each="lnModel: ${loginModelList}" th:unless="${lnModel.user_id == hostModel.id}"  th:value="${lnModel.id}" th:text="${lnModel.userName}"></option>
 			  				</select>
@@ -75,7 +75,7 @@
 			  			</form>
 			  			
 			  			<!-- 閉鎖 -->
-			  			<form class="host-close" method="post" th:action="@{/chat/closeroom}" th:object="${roomOutForm}">
+			  			<form class="host-close" method="post" th:action="@{/closeroom}" th:object="${roomOutForm}">
 			  				<input type="hidden" name="enter_id" th:value="${enter_id}" />
 			  				<button class="btn btn-primary">閉鎖</button>
 			  			</form>
@@ -85,7 +85,7 @@
 		  		<!-- ゲスト -->
 		  		<div class="gest-out" th:unless="${userModel.id == hostModel.id}">
 		  			<!-- 退室フォーム -->
-		  			<form method="post" th:action="@{/chat/outroom}" th:object="${roomOutForm}">
+		  			<form method="post" th:action="@{/outroom}" th:object="${roomOutForm}">
 		  				<input type="hidden" name="enter_id" th:value="${enter_id}" />
 		  				<button class="btn btn-primary">退室</button>
 		  			</form>
@@ -95,7 +95,7 @@
 	 		
 	 		<!-- 投稿欄 -->
 	 		<div class="chat-layout">
-	 			<form method="post" th:action="@{/chat/speech}" th:object="${userSpeechForm}">
+	 			<form method="post" th:action="@{/speech}" th:object="${userSpeechForm}">
 	 				<!-- ユーザ名 -->
 			  		<label for="userName" th:text="${userModel.name}"></label>
 	 				<div class="input-group mb-3">

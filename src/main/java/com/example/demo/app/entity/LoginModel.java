@@ -24,30 +24,10 @@ public class LoginModel {
 	
 	/**
 	 * コンストラクタ
-	 * @param model: ログインモデルクラス
-	 */
-	public LoginModel(LoginModel model) {
-		super();
-
-		if( model == null ) {
-			this.id 		= new LoginIdStatus(0);
-			this.room_id 	= new RoomIdStatus(0);
-			this.user_id 	= new UserIdStatus(0);
-			this.created 	= LocalDateTime.now();
-		} else {
-			this.id 		= new LoginIdStatus(model.getId());
-			this.room_id 	= new RoomIdStatus(model.getRoom_id());
-			this.user_id 	= new UserIdStatus(model.getUser_id());
-			this.created 	= model.getCreated();
-		}
-	}
-	
-	/**
-	 * コンストラクタ
-	 * @param id: ログインID
-	 * @param room_id: ルームID
-	 * @param user_id: ユーザーID
-	 * @param created: 生成日付
+	 * @param id      ログインID
+	 * @param room_id ルームID
+	 * @param user_id ユーザーID
+	 * @param created 生成日付
 	 */
 	public LoginModel(LoginIdStatus id,
 			RoomIdStatus room_id,
@@ -73,9 +53,9 @@ public class LoginModel {
 	
 	/**
 	 * コンストラクタ
-	 * @param room_id: ルームID
-	 * @param user_id: ユーザーID
-	 * @param created: 生成日付
+	 * @param room_id ルームID
+	 * @param user_id ユーザーID
+	 * @param created 生成日付
 	 */
 	public LoginModel(RoomIdStatus room_id,
 			UserIdStatus user_id,
@@ -93,6 +73,26 @@ public class LoginModel {
 				new UserIdStatus(user_id.getId()));
 
 		this.created 	= created;
+	}
+	
+	/**
+	 * コンストラクタ
+	 * @param model ログインモデルクラス
+	 */
+	public LoginModel(LoginModel model) {
+		super();
+
+		if( model == null ) {
+			this.id 		= new LoginIdStatus(0);
+			this.room_id 	= new RoomIdStatus(0);
+			this.user_id 	= new UserIdStatus(0);
+			this.created 	= LocalDateTime.now();
+		} else {
+			this.id 		= new LoginIdStatus(model.getId());
+			this.room_id 	= new RoomIdStatus(model.getRoom_id());
+			this.user_id 	= new UserIdStatus(model.getUser_id());
+			this.created 	= model.getCreated();
+		}
 	}
 
 	public int getId() {

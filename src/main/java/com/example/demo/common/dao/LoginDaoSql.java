@@ -68,13 +68,13 @@ public class LoginDaoSql implements LoginDao {
 
 	/**
 	 * 追加処理
-	 * @param model ログインモデル
-	 * return ログインID
+	 * @param  model ログインモデル
+	 * @return ログインID 失敗した場合は-1。
 	 */
 	@Override
-	public int insert_returnId(LoginModel model) {
+	public LoginIdStatus insert_returnId(LoginModel model) {
 		// 追加(return id)
-		if(model == null)	return WebConsts.ERROR_NUMBER;
+		if(model == null)	return new LoginIdStatus(WebConsts.ERROR_NUMBER);
 		
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		String sql          = "INSERT INTO chat_login(room_id, user_id, created) VALUES(?,?,?)";
@@ -98,13 +98,13 @@ public class LoginDaoSql implements LoginDao {
 			ex.printStackTrace();
 			return_key = WebConsts.ERROR_NUMBER;
 		}
-		return keyHolder.getKey().intValue();
+		return new LoginIdStatus(return_key);
 	}
 
 	/**
 	 * 更新処理
 	 * @param model ログインモデル
-	 * return 0 失敗 それ以外 成功
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int update(LoginModel model) {
@@ -122,8 +122,8 @@ public class LoginDaoSql implements LoginDao {
 	/**
 	 * ログインIDからルームID更新処理
 	 * @param roomId ルームID
-	 * @param id ログインID
-	 * return 0 失敗 それ以外 成功
+	 * @param id     ログインID
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int updateRoomId_byId(RoomIdStatus roomId, LoginIdStatus id) {
@@ -140,7 +140,7 @@ public class LoginDaoSql implements LoginDao {
 	 * ユーザIDからルームID更新処理
 	 * @param roomId ルームID
 	 * @param userId ユーザID
-	 * return 0 失敗 それ以外 成功
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int updateRoomId_byUserId(RoomIdStatus roomId, UserIdStatus userId) {
@@ -155,9 +155,9 @@ public class LoginDaoSql implements LoginDao {
 	
 	/**
 	 * ルームIDから新規ルームIDへ更新処理
-	 * @param roomId ルームID
+	 * @param roomId   ルームID
 	 * @param changeId 新規ルームID
-	 * return 0 失敗 それ以外 成功
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int updateRoomId_byRoomId(RoomIdStatus roomId, RoomIdStatus changeId) {
@@ -172,8 +172,8 @@ public class LoginDaoSql implements LoginDao {
 
 	/**
 	 * 削除処理
-	 * @param id ログインID
-	 * return 0 失敗 それ以外 成功
+	 * @param  id ログインID
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int delete(LoginIdStatus id) {
@@ -187,7 +187,7 @@ public class LoginDaoSql implements LoginDao {
 
 	/**
 	 * 全選択
-	 * return ログインモデルリスト
+	 * @return ログインモデルリスト
 	 */
 	@Override
 	public List<LoginModel> getAll() {
@@ -216,7 +216,7 @@ public class LoginDaoSql implements LoginDao {
 	/**
 	 * ルームIDから選択
 	 * @param roomId ルームID
-	 * return ログインモデルリスト
+	 * @return ログインモデルリスト
 	 */
 	@Override
 	public List<LoginModel> selectList_byRoomId(RoomIdStatus roomId) {
@@ -244,7 +244,7 @@ public class LoginDaoSql implements LoginDao {
 	/**
 	 * ログインIDから選択
 	 * @param roomId ログインID
-	 * return ログインモデル
+	 * @return ログインモデル
 	 */
 	@Override
 	public LoginModel select(LoginIdStatus id) {
@@ -269,12 +269,12 @@ public class LoginDaoSql implements LoginDao {
 	/**
 	 * ユーザIDからログインID選択
 	 * @param userId ユーザID
-	 * return ログインID
+	 * @return ログインID
 	 */
 	@Override
-	public int selectId_byUserId(UserIdStatus userId) {
+	public LoginIdStatus selectId_byUserId(UserIdStatus userId) {
 		// ユーザIDによるIDの選択
-		if( !this.isSelect_byUserId(userId) ) return WebConsts.ERROR_NUMBER;
+		if( !this.isSelect_byUserId(userId) ) return new LoginIdStatus(WebConsts.ERROR_NUMBER);
 		int id = 0;
 		try {
 			String sql = "SELECT id FROM chat_login WHERE user_id = ?";
@@ -284,13 +284,13 @@ public class LoginDaoSql implements LoginDao {
 			ex.printStackTrace();
 			id = WebConsts.ERROR_NUMBER;
 		}
-		return id;
+		return new LoginIdStatus(id);
 	}
 	
 	/**
 	 * ユーザIDから選択
 	 * @param userId ユーザID
-	 * return ログインモデル
+	 * @return ログインモデル
 	 */
 	@Override
 	public LoginModel select_byuserId(UserIdStatus userId) {
@@ -317,12 +317,12 @@ public class LoginDaoSql implements LoginDao {
 	/**
 	 * ユーザIDからルームID選択
 	 * @param userId ユーザID
-	 * return ルームID
+	 * @return ルームID
 	 */
 	@Override
-	public int selectRoomId_byUserId(UserIdStatus userId) {
+	public RoomIdStatus selectRoomId_byUserId(UserIdStatus userId) {
 		// ユーザIDによるルームIDの選択
-		if( !this.isSelect_byUserId(userId) ) return WebConsts.ERROR_NUMBER;
+		if( !this.isSelect_byUserId(userId) ) return new RoomIdStatus(WebConsts.ERROR_NUMBER);
 		
 		int room_id = 0;
 		try {
@@ -333,18 +333,18 @@ public class LoginDaoSql implements LoginDao {
 			ex.printStackTrace();
 			room_id = WebConsts.ERROR_NUMBER;
 		}
-		return room_id;
+		return new RoomIdStatus(room_id);
 	}
 
 	/**
 	 * ログインIDからログイン有無チェック
 	 * @param id ログインID
-	 * return true あり false なし
+	 * @return true あり false なし
 	 */
 	@Override
 	public boolean isSelect_byId(LoginIdStatus id) {
 		// IDによる有無チェック
-		if(id == null)	return false;
+		if(id == null)	return WebConsts.DB_ENTITY_NONE;
 		
 		String sql = "SELECT id FROM chat_login WHERE id = ?";
 		return jdbcTemp.query(
@@ -352,19 +352,19 @@ public class LoginDaoSql implements LoginDao {
 				new Object[]{ id.getId() },
 				new int[] { Types.INTEGER },
 				rs -> {
-			return rs.next() ? true : false;	
+			return rs.next() ? WebConsts.DB_ENTITY_FINDED : WebConsts.DB_ENTITY_NONE;
 		});
 	}
 
 	/**
 	 * ユーザIDからログイン有無チェック
 	 * @param userId ユーザID
-	 * return true あり false なし
+	 * @return true あり false なし
 	 */
 	@Override
 	public boolean isSelect_byUserId(UserIdStatus userId) {
 		// ユーザIDによるIDの有無確認
-		if(userId == null)	return false;
+		if(userId == null)	return WebConsts.DB_ENTITY_NONE;
 		
 		String sql = "SELECT id FROM chat_login WHERE user_id = ?";
 		return jdbcTemp.query(
@@ -372,7 +372,7 @@ public class LoginDaoSql implements LoginDao {
 				new Object[]{ userId.getId() },
 				new int[] {	Types.INTEGER },
 				rs -> {
-			return rs.next() ? true : false;	
+			return rs.next() ? WebConsts.DB_ENTITY_FINDED : WebConsts.DB_ENTITY_NONE;
 		});
 	}
 }

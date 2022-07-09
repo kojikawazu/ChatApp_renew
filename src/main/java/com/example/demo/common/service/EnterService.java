@@ -16,7 +16,7 @@ public interface EnterService {
 	
 	void save(EnterModel model);
 	
-	int save_returnId(EnterModel model);
+	EnterIdStatus save_returnId(EnterModel model);
 	
 	void update(EnterModel model);
 	
@@ -30,7 +30,7 @@ public interface EnterService {
 	
 	EnterModel select(EnterIdStatus id);
 	
-	int selectId_byUserId(UserIdStatus userId);
+	EnterIdStatus selectId_byUserId(UserIdStatus userId);
 	
 	boolean isSelect_byId(EnterIdStatus id);
 	

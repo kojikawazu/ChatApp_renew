@@ -12,6 +12,16 @@ public class WebConsts {
 		
 	/** チェック処理判定結果(NG) */
 	public static final boolean CHECK_COMMON_NG = false;
+	
+	/** DBエラー番号 */
+	public static final int ERROR_DB_STATUS = 0;
+	
+	/** DB選択したがなかった */
+	public static final boolean DB_ENTITY_NONE  = false;
+	
+	/** DB選択し見つかった */
+	public static final boolean DB_ENTITY_FINDED = true;
+	
 		
 	// ---------------------------------------------------------------------------
 	

@@ -71,7 +71,7 @@ class RoomModelExTest {
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertNotNull(test.getCreated());
 		Assertions.assertNotNull(test.getUpdated());
-		Assertions.assertEquals(test.getUserName(), "");
+		Assertions.assertEquals(test.getUserName(), "テスト");
 		Assertions.assertEquals(test.getEnterCnt(), 0);
 	}
 	
@@ -106,7 +106,7 @@ class RoomModelExTest {
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertNotNull(test.getCreated());
 		Assertions.assertNotNull(test.getUpdated());
-		Assertions.assertEquals(test.getUserName(), "");
+		Assertions.assertEquals(test.getUserName(), "テスト");
 		Assertions.assertEquals(test.getEnterCnt(), 0);
 	}
 }
