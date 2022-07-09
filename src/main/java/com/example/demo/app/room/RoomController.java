@@ -1,6 +1,5 @@
 package com.example.demo.app.room;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,20 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.app.config.WebConsts;
-import com.example.demo.app.entity.LoginModel;
-import com.example.demo.app.entity.RoomModel;
 import com.example.demo.app.entity.RoomModelEx;
 import com.example.demo.app.entity.UserModel;
-import com.example.demo.common.number.RoomEnterCntNumber;
-import com.example.demo.common.service.CommentService;
-import com.example.demo.common.service.EnterService;
-import com.example.demo.common.service.LoginService;
 import com.example.demo.common.service.RoomService;
 import com.example.demo.common.service.UserService;
 import com.example.demo.common.status.LoginIdStatus;
-import com.example.demo.common.status.RoomIdStatus;
-import com.example.demo.common.status.UserIdStatus;
-import com.example.demo.common.word.NameWord;
 
 /**
  *  ---------------------------------------------------------------------------

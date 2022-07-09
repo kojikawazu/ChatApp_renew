@@ -21,7 +21,6 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.RoomModel;
 import com.example.demo.app.entity.RoomModelEx;
-import com.example.demo.app.entity.UserModel;
 import com.example.demo.common.number.RoomEnterCntNumber;
 import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.status.RoomIdStatus;
