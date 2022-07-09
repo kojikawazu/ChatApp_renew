@@ -43,6 +43,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import com.example.demo.app.entity.UserModel;
 import com.example.demo.common.dao.UserDaoSql;
 import com.example.demo.common.number.RoomMaxNumber;
+import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 import com.example.demo.common.word.EmailWord;
 import com.example.demo.common.word.NameWord;
@@ -71,32 +72,48 @@ class UserDaoSqlTest {
 	@Mock
 	private UserDaoSql userDaoSql2;
 	
-	private UserModel model;									/** ユーザーモデル	*/
-	private UserNameEmailPassword user;							/** ユーザーフォーム	*/
-	private UserNameEmail userEmail;							/** ユーザーフォーム2	*/
+	/** ユーザーモデル	*/
+	private UserModel model;
 	
-	private LocalDateTime created = LocalDateTime.now();		/** 生成日時     */
-	private LocalDateTime updated = LocalDateTime.now();		/** 更新日時     */
+	/** ユーザーフォーム	*/
+	private UserNameEmailPassword user;
 	
+	/** ユーザーフォーム2	*/
+	private UserNameEmail userEmail;
+	
+	/** 生成日時     */
+	private LocalDateTime created = LocalDateTime.now();
+	
+	/** 更新日時     */
+	private LocalDateTime updated = LocalDateTime.now();
+	
+	/**
+	 * 下準備
+	 */
 	@BeforeEach
 	void before() {
+		NameWord name       = new NameWord("test");
+		EmailWord email     = new EmailWord("test@example.com");
+		PasswordWord passwd = new PasswordWord("password");
+		PasswordWord forgot = new PasswordWord("forgot");
+		
 		this.model = new UserModel(
 				new UserIdStatus(0),
-				new NameWord("test"),
-				new EmailWord("test@example.com"),
-				new PasswordWord("password"),
-				new PasswordWord("forgot"),
+				name,
+				email,
+				passwd,
+				forgot,
 				created,
 				updated);
 		
 		this.user = new UserNameEmailPassword(
-				new NameWord("test"), 
-				new EmailWord("test@example.com"), 
-				new PasswordWord("password"));
+				name, 
+				email, 
+				passwd);
 		
 		this.userEmail = new UserNameEmail(
-				new NameWord("test"), 
-				new EmailWord("test@example.com"));
+				name, 
+				email);
 	}
 	
 	/**
@@ -147,8 +164,10 @@ class UserDaoSqlTest {
 	 */
 	@Test
 	void insert_returnId_test() {
-		doReturn(new UserIdStatus(0)).when(this.userDaoSql2).insert_returnId(model);
-		Assertions.assertEquals(this.userDaoSql2.insert_returnId(model).getId(), 0);
+		UserIdStatus returnUserId = new UserIdStatus(0);
+		
+		doReturn(returnUserId).when(this.userDaoSql2).insert_returnId(model);
+		Assertions.assertEquals(this.userDaoSql2.insert_returnId(model).getId(), returnUserId.getId());
 	}
 	
 	/**
@@ -176,8 +195,10 @@ class UserDaoSqlTest {
 	 */
 	@Test
 	void update_passwd_test() {
-		doReturn(0).when(this.userDaoSql2).update_passwd(user);
-		Assertions.assertEquals(this.userDaoSql2.update_passwd(user), 0);
+		int return_successed = 0;
+		
+		doReturn(return_successed).when(this.userDaoSql2).update_passwd(user);
+		Assertions.assertEquals(this.userDaoSql2.update_passwd(user), return_successed);
 	}
 	
 	/**
@@ -186,14 +207,15 @@ class UserDaoSqlTest {
 	@Test
 	void delete_test() {
 		UserIdStatus id = new UserIdStatus(0);
+		int return_successed = 0;
 		
 		Mockito.when(this.jdbcTemp.update(
 				"DELETE FROM chat_user WHERE id = ?",
 				id.getId()
 				)).
-			thenReturn(0);
+			thenReturn(return_successed);
 		
-		Assertions.assertEquals(this.userDaoSql.delete(id), 0);
+		Assertions.assertEquals(this.userDaoSql.delete(id), return_successed);
 	}
 
 	/**
@@ -201,15 +223,21 @@ class UserDaoSqlTest {
 	 */
 	@Test
 	void getall_test() {
+		UserIdStatus userId = new UserIdStatus(0);
+		NameWord name       = new NameWord("test");
+		EmailWord email     = new EmailWord("test@example.com");
+		PasswordWord passwd = new PasswordWord("password");
+		PasswordWord forgot = new PasswordWord("forgot");
+		
 		LocalDateTime time = LocalDateTime.now();
 		Timestamp timestamp = Timestamp.valueOf(time);
 		String sql = "SELECT id, name, email, passwd, forgot_passwd, created, updated FROM chat_user";
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put("id",				0);
-		result.put("name",				"name");
-		result.put("email",				"test@example.com");
-		result.put("passwd",			"password");
-		result.put("forgot_passwd",		"password");
+		result.put("id",				userId.getId());
+		result.put("name",				name.getString());
+		result.put("email",				email.getString());
+		result.put("passwd",			passwd.getString());
+		result.put("forgot_passwd",		forgot.getString());
 		result.put("created",			timestamp);
 		result.put("updated",			timestamp);
 		List<Map<String, Object>> resultList =  new ArrayList<Map<String, Object>>();
@@ -220,11 +248,11 @@ class UserDaoSqlTest {
 		
 		List<UserModel> testList = this.userDaoSql.getAll();
 		for( UserModel testModel : testList ) {
-			Assertions.assertEquals(testModel.getId(), 				0);
-			Assertions.assertEquals(testModel.getName(), 			"name");
-			Assertions.assertEquals(testModel.getEmail(), 			"test@example.com");
-			Assertions.assertEquals(testModel.getPasswd(), 			"password");
-			Assertions.assertEquals(testModel.getForgot_passwd(), 	"password");
+			Assertions.assertEquals(testModel.getId(), 				userId.getId());
+			Assertions.assertEquals(testModel.getName(), 			name.getString());
+			Assertions.assertEquals(testModel.getEmail(), 			email.getString());
+			Assertions.assertEquals(testModel.getPasswd(), 			passwd.getString());
+			Assertions.assertEquals(testModel.getForgot_passwd(), 	forgot.getString());
 			Assertions.assertEquals(testModel.getCreated(), 		time);
 			Assertions.assertEquals(testModel.getUpdated(), 		time);
 		}
@@ -235,27 +263,33 @@ class UserDaoSqlTest {
 	 */
 	@Test
 	void select_test() {
+		UserIdStatus userId = new UserIdStatus(0);
+		NameWord name       = new NameWord("test");
+		EmailWord email     = new EmailWord("test@example.com");
+		PasswordWord passwd = new PasswordWord("password");
+		PasswordWord forgot = new PasswordWord("forgot");
+		
 		LocalDateTime time = LocalDateTime.now();
 		Timestamp timestamp = Timestamp.valueOf(time);
 		String sql = "SELECT id, name, email, passwd, forgot_passwd, created, updated FROM chat_user WHERE id = ?";
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put("id",				0);
-		result.put("name",				"name");
-		result.put("email",				"test@example.com");
-		result.put("passwd",			"password");
-		result.put("forgot_passwd",		"password");
+		result.put("id",				userId.getId());
+		result.put("name",				name.getString());
+		result.put("email",				email.getString());
+		result.put("passwd",			passwd.getString());
+		result.put("forgot_passwd",		forgot.getString());
 		result.put("created",			timestamp);
 		result.put("updated",			timestamp);
 		
-		Mockito.when(this.jdbcTemp.queryForMap(sql, 0)).
+		Mockito.when(this.jdbcTemp.queryForMap(sql, userId.getId())).
 			thenReturn(result);
 		
-		UserModel test = this.userDaoSql.select(new UserIdStatus(0));
-		Assertions.assertEquals(test.getId(), 			0);
-		Assertions.assertEquals(test.getName(), 		"name");
-		Assertions.assertEquals(test.getEmail(), 		"test@example.com");
-		Assertions.assertEquals(test.getPasswd(), 		"password");
-		Assertions.assertEquals(test.getForgot_passwd(), "password");
+		UserModel test = this.userDaoSql.select(userId);
+		Assertions.assertEquals(test.getId(), 			userId.getId());
+		Assertions.assertEquals(test.getName(), 		name.getString());
+		Assertions.assertEquals(test.getEmail(), 		email.getString());
+		Assertions.assertEquals(test.getPasswd(), 		passwd.getString());
+		Assertions.assertEquals(test.getForgot_passwd(), forgot.getString());
 		Assertions.assertEquals(test.getCreated(), 		time);
 		Assertions.assertEquals(test.getUpdated(), 		time);
 	}
@@ -265,12 +299,13 @@ class UserDaoSqlTest {
 	 */
 	@Test
 	void select_test_failed() {
+		UserIdStatus userId = new UserIdStatus(1);
 		String sql = "SELECT id, name, email, passwd, forgot_passwd, created, updated FROM chat_user WHERE id = ?";
-		Mockito.when(this. jdbcTemp.queryForMap(sql, 1)).
+		Mockito.when(this. jdbcTemp.queryForMap(sql, userId.getId())).
 			thenThrow(EmptyResultDataAccessException.class);
 		
 		
-		UserModel test = this.userDaoSql.select(new UserIdStatus(1));
+		UserModel test = this.userDaoSql.select(userId);
 		Assertions.assertEquals(test.getId(), 			0);
 		Assertions.assertEquals(test.getName(), 		"");
 		Assertions.assertEquals(test.getEmail(), 		"");
@@ -281,13 +316,53 @@ class UserDaoSqlTest {
 	}
 	
 	/**
+	 * 選択テスト(ログインIDからユーザーIDを取得)
+	 */
+	@Test
+	void select_byId_subLoginId() {
+		NameWord name       = new NameWord("test");
+		EmailWord email     = new EmailWord("test@example.com");
+		PasswordWord passwd = new PasswordWord("password");
+		PasswordWord forgot = new PasswordWord("forgot");
+		
+		LocalDateTime time = LocalDateTime.now();
+		Timestamp timestamp = Timestamp.valueOf(time);
+		int inputId = 0;
+		String sql = "SELECT * FROM chat_user WHERE id in"
+				+ "("
+				+ "SELECT user_id FROM chat_login WHERE id = ?"
+				+ ")";
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("id",				inputId);
+		result.put("name",				name.getString());
+		result.put("email",				email.getString());
+		result.put("passwd",			passwd.getString());
+		result.put("forgot_passwd",		forgot.getString());
+		result.put("created",			timestamp);
+		result.put("updated",			timestamp);
+		
+		Mockito.when(this.jdbcTemp.queryForMap(sql, inputId)).
+			thenReturn(result);
+		
+		UserModel test = this.userDaoSql.select_byId_subLoginId(new LoginIdStatus(inputId));
+		Assertions.assertEquals(test.getId(), 			inputId);
+		Assertions.assertEquals(test.getName(), 		name.getString());
+		Assertions.assertEquals(test.getEmail(), 		email.getString());
+		Assertions.assertEquals(test.getPasswd(), 		passwd.getString());
+		Assertions.assertEquals(test.getForgot_passwd(), forgot.getString());
+		Assertions.assertEquals(test.getCreated(), 		time);
+		Assertions.assertEquals(test.getUpdated(), 		time);
+	}
+	
+	/**
 	 * 選択IDテスト(名前、Eメールアドレス、パスワード)
 	 * 
 	 */
 	@Test
 	void selectId_byNameEmailPass_test() {
-		doReturn(new UserIdStatus(0)).when(this.userDaoSql2).selectId_byNameEmailPass(user);
-		Assertions.assertEquals(this.userDaoSql2.selectId_byNameEmailPass(user).getId(), 0);
+		UserIdStatus userId = new UserIdStatus(0);
+		doReturn(userId).when(this.userDaoSql2).selectId_byNameEmailPass(user);
+		Assertions.assertEquals(this.userDaoSql2.selectId_byNameEmailPass(user).getId(), userId.getId());
 	}
 	
 	/**

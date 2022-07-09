@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.RoomModel;
+import com.example.demo.app.entity.RoomModelEx;
 import com.example.demo.app.exception.WebMvcConfig;
 import com.example.demo.common.dao.RoomDao;
 import com.example.demo.common.status.RoomIdStatus;
@@ -52,7 +53,7 @@ public class RoomServiceUse implements RoomService {
 	@Override
 	public RoomIdStatus save_returnId(RoomModel model) {
 		// 追加(返却ID)
-		return this.dao.insert_byId(model);
+		return this.dao.insert_returnId(model);
 	}
 
 	/**
@@ -100,6 +101,16 @@ public class RoomServiceUse implements RoomService {
 	public List<RoomModel> getAll() {
 		// 全選択
 		return this.dao.getAll();
+	}
+	
+	/**
+	 * 全選択+ユーザー名+入室数を選択
+	 * @return ルームモデル拡張版
+	 */
+	@Override
+	public List<RoomModelEx> getAll_plusUserName_EnterCnt() {
+		// 全選択+ユーザー名+入室数を選択
+		return this.dao.getAll_plusUserName_EnterCnt();
 	}
 
 	/**

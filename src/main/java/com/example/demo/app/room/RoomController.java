@@ -48,37 +48,25 @@ public class RoomController {
 	 */
 	private UserService    userService;
 	private RoomService    roomService;
-	private CommentService commentService;
-	private LoginService   loginService;
-	private EnterService   enterService;
 	
 	/**
 	 * コンストラクタ
 	 * @param userService
 	 * @param roomService
-	 * @param commentService
-	 * @param loginService
-	 * @param enterService
 	 */
 	@Autowired
 	public RoomController(UserService userService,
-			RoomService roomService,
-			CommentService commentService,
-			LoginService loginService,
-			EnterService enterService) {
+			RoomService roomService) {
 		this.userService    = userService;
 		this.roomService    = roomService;
-		this.commentService = commentService;
-		this.loginService   = loginService;
-		this.enterService   = enterService;
 	}
 	
 	/**
 	 * ホーム受信
-	 * @param login_id ログインID
-	 * @param model モデル
+	 * @param login_id      ログインID
+	 * @param model         モデル
 	 * @param noticeSuccess 成功通知 
-	 * @param noticeError 失敗通知
+	 * @param noticeError   失敗通知
 	 * @return Webパス(room/index)
 	 */
 	@GetMapping
@@ -93,8 +81,7 @@ public class RoomController {
 		model.addAttribute(WebConsts.BIND_LOGIN_ID, login_id);
 		if( login_id > 0) {
 			// ログイン情報設定
-			LoginModel loginModel = this.loginService.select(new LoginIdStatus(login_id));
-			UserModel userModel   = this.userService.select(new UserIdStatus(loginModel.getUser_id()));
+			UserModel userModel = this.userService.selectModel_subLoginId(new LoginIdStatus(login_id));
 			model.addAttribute(WebConsts.BIND_USER_MODEL, userModel);
 		}
 		
@@ -116,20 +103,7 @@ public class RoomController {
 	 */
 	private List<RoomModelEx> changeRoomModel(){
 		// ルームリストを拡張版へ変換
-		List<RoomModel>   roomModelList       = this.roomService.getAll();
-		List<RoomModelEx> roomModelListExList = new ArrayList<RoomModelEx>();
-		for( RoomModel roomModel : roomModelList ){
-			UserModel uModel =  this.userService.select(new UserIdStatus(roomModel.getUser_id()));
-			// 入室数取得
-			int count = this.enterService.getCount_roomId(new RoomIdStatus(roomModel.getId()));
-			RoomModelEx newModelEx = new RoomModelEx(
-					roomModel,
-					new NameWord(uModel.getName()),
-					new RoomEnterCntNumber(count)
-					);
-			roomModelListExList.add(newModelEx);
-		}
-		roomModelList.clear();
+		List<RoomModelEx> roomModelListExList = this.roomService.getAll_plusUserName_EnterCnt();
 		return roomModelListExList;
 	}
 	

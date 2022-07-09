@@ -3,6 +3,7 @@ package com.example.demo.common.service;
 import java.util.List;
 
 import com.example.demo.app.entity.UserModel;
+import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 import com.example.demo.common.word.UserNameEmail;
 import com.example.demo.common.word.UserNameEmailPassword;
@@ -26,6 +27,8 @@ public interface UserService {
 	List<UserModel> getAll();
 	
 	UserModel select(UserIdStatus id);
+	
+	UserModel selectModel_subLoginId(LoginIdStatus loginId);
 	
 	UserIdStatus selectId_byNameEmailPasswd(UserNameEmailPassword user);
 	

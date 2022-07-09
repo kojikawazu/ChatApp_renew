@@ -60,7 +60,7 @@ public class SignupConfirmController implements SuperUserController {
 			return WebConsts.URL_USER_SIGNUP_FORM;
 		}
 		// サインアップ確認画面へ
-		setSignup_confirm(model);
+		this.setSignup_confirm(model);
 		return WebConsts.URL_USER_SIGNUP_CONFIRM;
 	}
 	

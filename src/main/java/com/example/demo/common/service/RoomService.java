@@ -3,6 +3,7 @@ package com.example.demo.common.service;
 import java.util.List;
 
 import com.example.demo.app.entity.RoomModel;
+import com.example.demo.app.entity.RoomModelEx;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 
@@ -23,6 +24,8 @@ public interface RoomService {
 	void delete(RoomIdStatus id);
 	
 	List<RoomModel> getAll();
+	
+	List<RoomModelEx> getAll_plusUserName_EnterCnt();
 	
 	RoomModel select(RoomIdStatus id);
 	

@@ -34,7 +34,6 @@ public class SignoutController implements SuperUserController {
 	@Autowired
 	public SignoutController(
 			LoginService loginService) {
-		// コンストラクタ
 		this.loginService = loginService;
 	}
 	
@@ -51,8 +50,13 @@ public class SignoutController implements SuperUserController {
 		// サインアウト
 		
 		// ログイン情報削除
-		this.loginService.delete(new LoginIdStatus(userLogoutForm.getId()));
-		redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, 0);
+		LoginIdStatus login_id = new LoginIdStatus(userLogoutForm.getId());
+		this.loginService.delete(login_id);
+		
+		// Web側：ログインID初期化
+		redirectAttributes.addAttribute(
+				WebConsts.BIND_LOGIN_ID, 
+				WebConsts.LOGIN_ID_INIT_NUMBER);
 		
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
 	}

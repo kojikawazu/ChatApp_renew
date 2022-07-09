@@ -9,6 +9,7 @@ import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.UserModel;
 import com.example.demo.app.exception.WebMvcConfig;
 import com.example.demo.common.dao.UserDao;
+import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 import com.example.demo.common.word.UserNameEmail;
 import com.example.demo.common.word.UserNameEmailPassword;
@@ -48,7 +49,7 @@ public class UserServiceUse implements UserService {
 	/**
 	 * 保存
 	 * @param model ユーザモデル
-	 * return ユーザID
+	 * @return ユーザID
 	 */
 	@Override
 	public UserIdStatus save_returnId(UserModel model) {
@@ -94,7 +95,7 @@ public class UserServiceUse implements UserService {
 
 	/**
 	 * 全て選択
-	 * return ユーザモデルリスト
+	 * @return ユーザモデルリスト
 	 */
 	@Override
 	public List<UserModel> getAll() {
@@ -105,7 +106,7 @@ public class UserServiceUse implements UserService {
 	/**
 	 * 選択
 	 * @param id ユーザID
-	 * return ユーザモデル
+	 * @return ユーザモデル
 	 */
 	@Override
 	public UserModel select(UserIdStatus id) {
@@ -114,9 +115,20 @@ public class UserServiceUse implements UserService {
 	}
 	
 	/**
+	 * ログインIDを元にユーザーモデルを選択する
+	 * @param ログインID
+	 * @return ユーザーモデル
+	 */
+	@Override
+	public UserModel selectModel_subLoginId(LoginIdStatus loginId) {
+		// ログインIDを元にユーザーモデルを選択する
+		return this.dao.select_byId_subLoginId(loginId);
+	}
+	
+	/**
 	 * ユーザID取得
 	 * @param user ユーザ名, Eメール, パスワードクラス
-	 * return ユーザID
+	 * @return ユーザID
 	 */
 	@Override
 	public UserIdStatus selectId_byNameEmailPasswd(UserNameEmailPassword user) {
@@ -127,7 +139,7 @@ public class UserServiceUse implements UserService {
 	/**
 	 * ユーザモデルの有無確認
 	 * @param id ユーザID
-	 * return true あり false なし
+	 * @return true あり false なし
 	 */
 	@Override
 	public boolean isSelect_byId(UserIdStatus id) {
@@ -138,7 +150,7 @@ public class UserServiceUse implements UserService {
 	/**
 	 * ユーザモデルの有無確認
 	 * @param user ユーザ名, Eメールクラス
-	 * return true あり false なし
+	 * @return true あり false なし
 	 */
 	@Override
 	public boolean isSelect_byNameEmail(UserNameEmail user) {
@@ -149,7 +161,7 @@ public class UserServiceUse implements UserService {
 	/**
 	 * ユーザモデルの有無確認
 	 * @param user ユーザ名, Eメール, パスワードクラス
-	 * return true あり false なし
+	 * @return true あり false なし
 	 */
 	@Override
 	public boolean isSelect_byNameEmailForgotPW(UserNameEmailPassword user) {
@@ -160,7 +172,7 @@ public class UserServiceUse implements UserService {
 	/**
 	 * ユーザモデルの有無確認
 	 * @param user ユーザ名, Eメール, パスワードクラス
-	 * return true あり false なし
+	 * @return true あり false なし
 	 */
 	@Override
 	public boolean isSelect_byNameEmailPasswd(UserNameEmailPassword user) {

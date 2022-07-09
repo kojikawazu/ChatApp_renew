@@ -38,7 +38,7 @@ public class ForgotFormController implements SuperUserController {
 	/**
 	 * パスワード変更受信
 	 * @param userForgotForm パスワード変更フォーム
-	 * @param model モデル
+	 * @param model          モデル
 	 * @return Webパス(user/forgot_form)
 	 */
 	@PostMapping
@@ -55,7 +55,7 @@ public class ForgotFormController implements SuperUserController {
 	/**
 	 * パスワード変更受信
 	 * @param userForgotForm パスワード変更フォーム
-	 * @param model モデル
+	 * @param model          モデル
 	 * @return Webパス(user/forgot_form)
 	 */
 	@GetMapping

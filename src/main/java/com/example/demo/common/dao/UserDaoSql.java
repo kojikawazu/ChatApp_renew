@@ -20,11 +20,18 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.app.config.WebConsts;
+import com.example.demo.app.entity.RoomModel;
 import com.example.demo.app.entity.UserModel;
+import com.example.demo.common.number.RoomMaxNumber;
+import com.example.demo.common.status.LoginIdStatus;
+import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 import com.example.demo.common.word.EmailWord;
 import com.example.demo.common.word.NameWord;
 import com.example.demo.common.word.PasswordWord;
+import com.example.demo.common.word.RoomCommentWord;
+import com.example.demo.common.word.RoomNameWord;
+import com.example.demo.common.word.RoomTagWord;
 import com.example.demo.common.word.UserNameEmail;
 import com.example.demo.common.word.UserNameEmailPassword;
 
@@ -91,7 +98,7 @@ public class UserDaoSql implements UserDao {
 		int return_key = 0;
 
 		try {
-			jdbcTemp.update(new PreparedStatementCreator() {
+			this.jdbcTemp.update(new PreparedStatementCreator() {
 				public PreparedStatement createPreparedStatement(
 					Connection connection) throws SQLException {
 					PreparedStatement ps = connection.prepareStatement(
@@ -124,7 +131,7 @@ public class UserDaoSql implements UserDao {
 		// 更新
 		if(model == null)	return WebConsts.ERROR_NUMBER;
 		
-		return jdbcTemp.update(
+		return this.jdbcTemp.update(
 				"UPDATE chat_user SET name = ?, email = ?, passwd = ?, forgot_passwd = ?, created = ?, updated = ? WHERE id = ?",
 				model.getName(),
 				model.getEmail(),
@@ -230,6 +237,38 @@ public class UserDaoSql implements UserDao {
 	}
 	
 	/**
+	 * LoginIdを元にユーザーモデルを選択する
+	 * @param ログインID
+	 * @return ユーザーモデル
+	 */
+	@Override
+	public UserModel select_byId_subLoginId(LoginIdStatus loginId) {
+		if(loginId == null)	return new UserModel(null);
+		
+		UserModel model = null;
+		try {
+			String sql = "SELECT * FROM chat_user WHERE id in"
+					+ "("
+					+ "SELECT user_id FROM chat_login WHERE id = ?"
+					+ ")";
+			Map<String, Object> result = this.jdbcTemp.queryForMap(sql, loginId.getId());
+			model = new UserModel(
+					new UserIdStatus((int)result.get("id")),
+					new NameWord((String)result.get("name")),
+					new EmailWord((String)result.get("email")),
+					new PasswordWord((String)result.get("passwd")),
+					new PasswordWord((String)result.get("forgot_passwd")),
+					((Timestamp)result.get("created")).toLocalDateTime(),
+					((Timestamp)result.get("updated")).toLocalDateTime());
+		} catch(EmptyResultDataAccessException ex) {
+			ex.printStackTrace();
+			model = new UserModel(null);
+		}
+		
+		return model;
+	}
+	
+	/**
 	 * ユーザ名、Eメール、パスワードによるユーザID選択
 	 * @param user ユーザ名, Eメール, パスワードクラス
 	 * @return     ユーザID
@@ -240,7 +279,7 @@ public class UserDaoSql implements UserDao {
 		if(user == null)	return new UserIdStatus(WebConsts.ERROR_NUMBER);
 		
 		String sql = "SELECT id FROM chat_user WHERE name = ? AND email = ? AND passwd = ?";
-		return jdbcTemp.query(
+		return this.jdbcTemp.query(
 				sql, 
 				new Object[]{ user.getName(), user.getEmail(), user.getPassword() }, 
 				new int[] {	Types.VARCHAR, Types.VARCHAR, Types.VARCHAR },
@@ -262,7 +301,7 @@ public class UserDaoSql implements UserDao {
 		if(id == null)	return WebConsts.DB_ENTITY_NONE;
 		
 		String sql = "SELECT id FROM chat_user WHERE id = ?";
-		return jdbcTemp.query(
+		return this.jdbcTemp.query(
 				sql, 
 				new Object[]{ id.getId() },
 				new int[] {	Types.INTEGER },
@@ -283,7 +322,7 @@ public class UserDaoSql implements UserDao {
 		if(user == null)	return WebConsts.DB_ENTITY_NONE;
 		
 		String sql = "SELECT id FROM chat_user WHERE name = ? AND email = ?";
-		return jdbcTemp.query(
+		return this.jdbcTemp.query(
 				sql,
 				new Object[]{ user.getName(), user.getEmail() }, 
 				new int[] {	Types.VARCHAR, Types.VARCHAR },
@@ -304,7 +343,7 @@ public class UserDaoSql implements UserDao {
 		if(user == null)	return WebConsts.DB_ENTITY_NONE;
 		
 		String sql = "SELECT id FROM chat_user WHERE name = ? AND email = ? AND forgot_passwd = ?";
-		return jdbcTemp.query(
+		return this.jdbcTemp.query(
 				sql, 
 				new Object[]{ user.getName(), user.getEmail(), user.getPassword() },
 				new int[] {	Types.VARCHAR, Types.VARCHAR, Types.VARCHAR },
@@ -325,7 +364,7 @@ public class UserDaoSql implements UserDao {
 		if(user == null)	return WebConsts.DB_ENTITY_NONE;
 		
 		String sql = "SELECT id FROM chat_user WHERE name = ? AND email = ? AND passwd = ?";
-		return jdbcTemp.query(
+		return this.jdbcTemp.query(
 				sql, 
 				new Object[]{ user.getName(), user.getEmail(), user.getPassword() },
 				new int[] {	Types.VARCHAR, Types.VARCHAR, Types.VARCHAR },

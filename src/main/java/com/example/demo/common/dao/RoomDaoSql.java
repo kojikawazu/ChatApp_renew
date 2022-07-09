@@ -20,10 +20,13 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.RoomModel;
+import com.example.demo.app.entity.RoomModelEx;
 import com.example.demo.app.entity.UserModel;
+import com.example.demo.common.number.RoomEnterCntNumber;
 import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
+import com.example.demo.common.word.NameWord;
 import com.example.demo.common.word.RoomCommentWord;
 import com.example.demo.common.word.RoomNameWord;
 import com.example.demo.common.word.RoomTagWord;
@@ -82,7 +85,7 @@ public class RoomDaoSql implements RoomDao {
 	 * @return      ルームID 失敗した場合は-1。
 	 */
 	@Override
-	public RoomIdStatus insert_byId(RoomModel model) {
+	public RoomIdStatus insert_returnId(RoomModel model) {
 		// 追加(return id)
 		if(model == null) return new RoomIdStatus(WebConsts.ERROR_NUMBER);
 		
@@ -194,6 +197,50 @@ public class RoomDaoSql implements RoomDao {
 						((Timestamp)result.get("created")).toLocalDateTime(),
 						((Timestamp)result.get("updated")).toLocalDateTime());
 				list.add(model);
+			}
+		} catch(DataAccessException ex) {
+			ex.printStackTrace();
+			list.clear();
+		}
+		return list;
+	}
+	
+	/**
+	 * 
+	 * @return ルームモデル拡張版
+	 */
+	@Override
+	public List<RoomModelEx> getAll_plusUserName_EnterCnt() {
+		// 全ルーム+ルームのユーザ名+入室数を取得
+		List<RoomModelEx> list = new ArrayList<RoomModelEx>();
+		try {
+			// 全ルームのデータを取得
+			// ルームのユーザーIDからユーザー名を取得
+			// ルームIDから入室数を取得
+			String sql = "SELECT chat_room.*,chat_user.name AS user_name,"
+					+ "CAST(("
+					+ "SELECT COUNT(*) FROM chat_enter WHERE chat_enter.room_id = chat_room.id"
+					+ ") AS INTEGER) AS enter_cnt "
+					+ "FROM chat_room LEFT OUTER JOIN chat_user ON "
+					+ "chat_room.user_id = chat_user.id";
+			
+			List<Map<String, Object>> resultList = jdbcTemp.queryForList(sql);
+			for( Map<String, Object> result : resultList ) {
+				RoomModel model = new RoomModel(
+						new RoomIdStatus((int)result.get("id")),
+						new RoomNameWord((String)result.get("name")),
+						new RoomCommentWord((String)result.get("comment")),
+						new RoomTagWord((String)result.get("tag")),
+						new RoomMaxNumber((int)result.get("max_roomsum")),
+						new UserIdStatus((int)result.get("user_id")),
+						((Timestamp)result.get("created")).toLocalDateTime(),
+						((Timestamp)result.get("updated")).toLocalDateTime());
+				RoomModelEx modelEx = new RoomModelEx(
+						model,
+						new NameWord((String)result.get("user_name")),
+						new RoomEnterCntNumber((int)result.get("enter_cnt"))
+						);
+				list.add(modelEx);
 			}
 		} catch(DataAccessException ex) {
 			ex.printStackTrace();
