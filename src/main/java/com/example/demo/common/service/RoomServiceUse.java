@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.RoomModel;
 import com.example.demo.app.exception.WebMvcConfig;
 import com.example.demo.common.dao.RoomDao;
@@ -30,7 +31,6 @@ public class RoomServiceUse implements RoomService {
 	 */
 	@Autowired
 	public RoomServiceUse(RoomDao dao) {
-		// コンストラクタ
 		this.dao = dao;
 	}
 	
@@ -47,10 +47,10 @@ public class RoomServiceUse implements RoomService {
 	/**
 	 * 保存
 	 * @param model ルームモデル
-	 * @return ルームID
+	 * @return      ルームID
 	 */
 	@Override
-	public int save_returnId(RoomModel model) {
+	public RoomIdStatus save_returnId(RoomModel model) {
 		// 追加(返却ID)
 		return this.dao.insert_byId(model);
 	}
@@ -62,7 +62,7 @@ public class RoomServiceUse implements RoomService {
 	@Override
 	public void update(RoomModel model) {
 		// 更新
-		if( this.dao.update(model) == 0 ) {
+		if( this.dao.update(model) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
@@ -70,12 +70,12 @@ public class RoomServiceUse implements RoomService {
 	/**
 	 * 更新
 	 * @param userId ユーザID
-	 * @param newId 新しいユーザID
+	 * @param newId  新しいユーザID
 	 */
 	@Override
 	public void updateUserId_byUserId(UserIdStatus userId, UserIdStatus newId) {
 		// 更新
-		if( this.dao.updateUserId_byUserId(userId, newId) == 0 ) {
+		if( this.dao.updateUserId_byUserId(userId, newId) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
@@ -87,14 +87,14 @@ public class RoomServiceUse implements RoomService {
 	@Override
 	public void delete(RoomIdStatus id) {
 		// 削除
-		if( this.dao.delete(id) == 0 ) {
+		if( this.dao.delete(id) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
 
 	/**
 	 * 全て選択
-	 * @reutrn ルームモデルリスト
+	 * @return ルームモデルリスト
 	 */
 	@Override
 	public List<RoomModel> getAll() {

@@ -16,7 +16,7 @@ public interface UserDao {
 	
 	void insert(UserModel model);
 		
-	int insert_returnId(UserModel model);
+	UserIdStatus insert_returnId(UserModel model);
 	
 	int update(UserModel model);
 	
@@ -28,7 +28,7 @@ public interface UserDao {
 	
 	UserModel select(UserIdStatus id);
 	
-	int selectId_byNameEmailPass(UserNameEmailPassword user);
+	UserIdStatus selectId_byNameEmailPass(UserNameEmailPassword user);
 	
 	boolean isSelect_byId(UserIdStatus id);
 	

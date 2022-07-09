@@ -79,12 +79,12 @@ public class RoomDaoSql implements RoomDao {
 	/**
 	 * 追加処理
 	 * @param model ルームモデル
-	 * @return ルームID
+	 * @return      ルームID 失敗した場合は-1。
 	 */
 	@Override
-	public int insert_byId(RoomModel model) {
+	public RoomIdStatus insert_byId(RoomModel model) {
 		// 追加(return id)
-		if(model == null) return WebConsts.ERROR_NUMBER;
+		if(model == null) return new RoomIdStatus(WebConsts.ERROR_NUMBER);
 		
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		String sql = "INSERT INTO chat_room(name, comment, tag, max_roomsum, user_id, created, updated) VALUES(?,?,?,?,?,?,?)";
@@ -114,13 +114,13 @@ public class RoomDaoSql implements RoomDao {
 			return_key = WebConsts.ERROR_NUMBER;
 		}
       
-		return return_key;
+		return new RoomIdStatus(return_key);
 	}
 
 	/**
 	 * 更新処理
-	 * @param model ルームモデル
-	 * @return 0 失敗 それ以外 成功
+	 * @param  model ルームモデル
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int update(RoomModel model) {
@@ -143,7 +143,7 @@ public class RoomDaoSql implements RoomDao {
 	 * ユーザIDから新規ユーザIDに更新処理
 	 * @param userId ユーザID
 	 * @param newId 新規ユーザID
-	 * @return 0 失敗 それ以外 成功
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int updateUserId_byUserId(UserIdStatus userId, UserIdStatus newId) {
@@ -158,8 +158,8 @@ public class RoomDaoSql implements RoomDao {
 
 	/**
 	 * 削除処理
-	 * @param id ルームID
-	 * @return 0 失敗 それ以外 成功
+	 * @param  id ルームID
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int delete(RoomIdStatus id) {
@@ -204,7 +204,7 @@ public class RoomDaoSql implements RoomDao {
 
 	/**
 	 * ルームIDによる選択
-	 * @param id ルームID
+	 * @param  id ルームID
 	 * @return ルームモデル
 	 */
 	@Override
@@ -235,13 +235,13 @@ public class RoomDaoSql implements RoomDao {
 
 	/**
 	 * ルームIDによる有無チェック
-	 * @param id ルームID
+	 * @param  id ルームID
 	 * @return true あり false なし
 	 */
 	@Override
 	public boolean isSelect_byId(RoomIdStatus id) {
 		// IDによる有無チェック
-		if(id == null)	return false;
+		if(id == null)	return WebConsts.DB_ENTITY_NONE;
 		
 		String sql = "SELECT id FROM chat_room WHERE id = ?";
 		return jdbcTemp.query(
@@ -249,7 +249,7 @@ public class RoomDaoSql implements RoomDao {
 				new Object[]{ id.getId() }, 
 				new int[] {	Types.INTEGER },
 				rs -> {
-			return rs.next() ? true : false;	
+			return rs.next() ? WebConsts.DB_ENTITY_FINDED : WebConsts.DB_ENTITY_NONE;
 		});
 	}
 }

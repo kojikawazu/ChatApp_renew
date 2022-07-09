@@ -99,7 +99,7 @@ public class CreateRoomCompleteController {
 		
 		// ルームの生成
 		LoginModel loginModel = this.loginService.select(new LoginIdStatus(roomCreateForm.getLogin_id()));
-		RoomIdStatus room_id  = new RoomIdStatus(this.setRoom(loginModel, roomCreateForm));
+		RoomIdStatus room_id  = this.setRoom(loginModel, roomCreateForm);
 		
 		// ログイン情報のルーム番号の更新
 		this.loginService.updateRoomId_byId(
@@ -107,7 +107,7 @@ public class CreateRoomCompleteController {
 				new LoginIdStatus(roomCreateForm.getLogin_id()));
 		
 		// 入室情報の生成
-		EnterIdStatus enter_id = new EnterIdStatus(this.setEnter_createroom(loginModel, roomCreateForm, room_id));
+		EnterIdStatus enter_id = this.setEnter_createroom(loginModel, roomCreateForm, room_id);
 		
 		// 部屋生成コメントの追加
 		this.setComment_createroom(loginModel, room_id);
@@ -119,11 +119,11 @@ public class CreateRoomCompleteController {
 	
 	/**
 	 * ルーム追加処理
-	 * @param loginModel ログインモデル
+	 * @param loginModel     ログインモデル
 	 * @param roomCreateForm ルーム生成フォーム
-	 * @return ルームID
+	 * @return               ルームID
 	 */
-	private int setRoom(LoginModel loginModel, RoomCreateForm roomCreateForm) {
+	private RoomIdStatus setRoom(LoginModel loginModel, RoomCreateForm roomCreateForm) {
 		// ルームの追加
 		RoomModel roomModel = new RoomModel(
 				new RoomNameWord(roomCreateForm.getName()),
@@ -138,12 +138,12 @@ public class CreateRoomCompleteController {
 	
 	/**
 	 * 入室情報の追加
-	 * @param loginModel ログインモデル
+	 * @param loginModel     ログインモデル
 	 * @param roomCreateForm ルーム生成フォーム
-	 * @param room_id ルームID
-	 * @return 入室ID
+	 * @param room_id        ルームID
+	 * @return               入室ID
 	 */
-	private int setEnter_createroom(LoginModel loginModel, RoomCreateForm roomCreateForm, RoomIdStatus room_id) {
+	private EnterIdStatus setEnter_createroom(LoginModel loginModel, RoomCreateForm roomCreateForm, RoomIdStatus room_id) {
 		// 入室情報の追加
 		EnterModel enterModel = new EnterModel(
 				room_id,
@@ -157,7 +157,7 @@ public class CreateRoomCompleteController {
 	/**
 	 * 部屋生成コメントの追加
 	 * @param loginModel ログインモデル
-	 * @param room_id ルームID
+	 * @param room_id    ルームID
 	 */
 	private void setComment_createroom(LoginModel loginModel, RoomIdStatus room_id) {
 		// 部屋生成コメントの追加

@@ -15,7 +15,7 @@ public interface LoginService {
 	
 	void save(LoginModel model);
 	
-	int save_returnId(LoginModel model);
+	LoginIdStatus save_returnId(LoginModel model);
 	
 	void update(LoginModel model);
 	
@@ -33,11 +33,11 @@ public interface LoginService {
 	
 	List<LoginModel> selectList_byRoomId(RoomIdStatus roomId);
 	
-	int selectId_byUserId(UserIdStatus userId);
+	LoginIdStatus selectId_byUserId(UserIdStatus userId);
 	
 	LoginModel select_byUserId(UserIdStatus userId);
 	
-	int selectRoomId_byUserId(UserIdStatus userId);
+	RoomIdStatus selectRoomId_byUserId(UserIdStatus userId);
 	
 	boolean isSelect_byId(LoginIdStatus id);
 	

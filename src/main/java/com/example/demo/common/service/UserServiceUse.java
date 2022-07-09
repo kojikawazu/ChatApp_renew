@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.UserModel;
 import com.example.demo.app.exception.WebMvcConfig;
 import com.example.demo.common.dao.UserDao;
@@ -31,7 +32,6 @@ public class UserServiceUse implements UserService {
 	 */
 	@Autowired
 	public UserServiceUse(UserDao dao) {
-		// コンストラクタ
 		this.dao = dao;
 	}
 	
@@ -51,7 +51,7 @@ public class UserServiceUse implements UserService {
 	 * return ユーザID
 	 */
 	@Override
-	public int save_returnId(UserModel model) {
+	public UserIdStatus save_returnId(UserModel model) {
 		// 追加(返却ID)
 		return this.dao.insert_returnId(model);
 	}
@@ -63,7 +63,7 @@ public class UserServiceUse implements UserService {
 	@Override
 	public void update(UserModel model) {
 		// 更新
-		if( this.dao.update(model) == 0 ) {
+		if( this.dao.update(model) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
@@ -75,7 +75,7 @@ public class UserServiceUse implements UserService {
 	@Override
 	public void update_passwd(UserNameEmailPassword user) {
 		// パスワード更新
-		if( this.dao.update_passwd(user) == 0 ) {
+		if( this.dao.update_passwd(user) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
@@ -87,7 +87,7 @@ public class UserServiceUse implements UserService {
 	@Override
 	public void delete(UserIdStatus id) {
 		// 削除
-		if( this.dao.delete(id) == 0 ) {
+		if( this.dao.delete(id) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
@@ -119,7 +119,7 @@ public class UserServiceUse implements UserService {
 	 * return ユーザID
 	 */
 	@Override
-	public int selectId_byNameEmailPasswd(UserNameEmailPassword user) {
+	public UserIdStatus selectId_byNameEmailPasswd(UserNameEmailPassword user) {
 		// IDの取得
 		return this.dao.selectId_byNameEmailPass(user);
 	}

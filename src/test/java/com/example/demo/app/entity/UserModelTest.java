@@ -23,7 +23,7 @@ class UserModelTest {
 	 * コンストラクタテスト(null割り当て)
 	 */
 	@Test
-	void initTestNull() {
+	void initTest_UserModel_Null() {
 		UserModel test = new UserModel(null);
 		
 		Assertions.assertEquals(test.getId(), 0);
@@ -63,7 +63,7 @@ class UserModelTest {
 	 * コンストラクタテスト(null割り当て)
 	 */
 	@Test
-	void initTest3_null() {
+	void initTest1_null() {
 		LocalDateTime now = LocalDateTime.now();
 		UserModel test = new UserModel(
 						null, 
@@ -87,7 +87,7 @@ class UserModelTest {
 	 * コンストラクタテスト(同一クラス割り当て)
 	 */
 	@Test
-	void initTest2() {
+	void initTest1_sameClass() {
 		LocalDateTime now = LocalDateTime.now();
 		
 		UserModel dummy = new UserModel(
@@ -114,7 +114,7 @@ class UserModelTest {
 	 * コンストラクタテスト(6パラメータ割り当て)
 	 */
 	@Test
-	void initTest3() {
+	void initTest2() {
 		LocalDateTime now = LocalDateTime.now();
 		UserModel test = new UserModel(
 						new NameWord("name"),

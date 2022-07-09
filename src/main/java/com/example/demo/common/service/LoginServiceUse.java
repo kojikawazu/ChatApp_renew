@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.LoginModel;
 import com.example.demo.app.exception.WebMvcConfig;
 import com.example.demo.common.dao.LoginDao;
@@ -31,7 +32,6 @@ public class LoginServiceUse implements LoginService {
 	 */
 	@Autowired
 	public LoginServiceUse(LoginDao dao) {
-		// コンストラクタ
 		this.dao = dao;
 	}
 	
@@ -51,7 +51,7 @@ public class LoginServiceUse implements LoginService {
 	 * @return ログインID
 	 */
 	@Override
-	public int save_returnId(LoginModel model) {
+	public LoginIdStatus save_returnId(LoginModel model) {
 		// 保存(返却ID)
 		return this.dao.insert_returnId(model);
 	}
@@ -63,7 +63,7 @@ public class LoginServiceUse implements LoginService {
 	@Override
 	public void update(LoginModel model) {
 		// 更新
-		if( this.dao.update(model) == 0 ) {
+		if( this.dao.update(model) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
@@ -76,7 +76,7 @@ public class LoginServiceUse implements LoginService {
 	@Override
 	public void updateRoomId_byId(RoomIdStatus roomId, LoginIdStatus id) {
 		// ルームID更新
-		if( this.dao.updateRoomId_byId(roomId, id) == 0 ) {
+		if( this.dao.updateRoomId_byId(roomId, id) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
@@ -89,7 +89,7 @@ public class LoginServiceUse implements LoginService {
 	@Override
 	public void updateRoomId_byUserId(RoomIdStatus roomId, UserIdStatus userId) {
 		// ユーザIDによるルームIDの更新
-		if( this.dao.updateRoomId_byUserId(roomId, userId) == 0 ) {
+		if( this.dao.updateRoomId_byUserId(roomId, userId) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
@@ -102,7 +102,7 @@ public class LoginServiceUse implements LoginService {
 	@Override
 	public void updateRoomId_byRoomId(RoomIdStatus roomId, RoomIdStatus changeId) {
 		// ルームIDによるルームIDの更新
-		if( this.dao.updateRoomId_byRoomId(roomId, changeId) == 0 ) {
+		if( this.dao.updateRoomId_byRoomId(roomId, changeId) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 		
@@ -158,7 +158,7 @@ public class LoginServiceUse implements LoginService {
 	 * @return ログインID
 	 */
 	@Override
-	public int selectId_byUserId(UserIdStatus userId) {
+	public LoginIdStatus selectId_byUserId(UserIdStatus userId) {
 		// ユーザIDによるID取得
 		return this.dao.selectId_byUserId(userId);
 	}
@@ -180,7 +180,7 @@ public class LoginServiceUse implements LoginService {
 	 * @return ログインID
 	 */
 	@Override
-	public int selectRoomId_byUserId(UserIdStatus userId) {
+	public RoomIdStatus selectRoomId_byUserId(UserIdStatus userId) {
 		// ユーザIDによるルームIDの取得
 		return this.dao.selectRoomId_byUserId(userId);
 	}

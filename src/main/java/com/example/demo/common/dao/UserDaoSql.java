@@ -47,7 +47,6 @@ public class UserDaoSql implements UserDao {
 	 */
 	@Autowired
 	public UserDaoSql(JdbcTemplate jdbcTemp) {
-		// コンストラクタ
 		this.jdbcTemp = jdbcTemp;
 	}
 	
@@ -76,14 +75,14 @@ public class UserDaoSql implements UserDao {
 
 	/**
 	 * 追加処理
-	 * @param model ユーザモデル
+	 * @param  model ユーザモデル
 	 * @return ユーザーID 失敗した場合は-1。
 	 * 
 	 */
 	@Override
-	public int insert_returnId(UserModel model) {
+	public UserIdStatus insert_returnId(UserModel model) {
 		// 追加(return id)
-		if(model == null) return WebConsts.ERROR_NUMBER;
+		if(model == null) return new UserIdStatus(WebConsts.ERROR_NUMBER);
 		
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		String sql = "INSERT INTO chat_user(name, email, passwd, forgot_passwd, created, updated) VALUES(?,?,?,?,?,?)";
@@ -112,13 +111,13 @@ public class UserDaoSql implements UserDao {
 			return_key = WebConsts.ERROR_NUMBER;
 		}
        
-		return return_key;
+		return new UserIdStatus(return_key);
 	}
 
 	/**
 	 * 更新処理
-	 * @param model ユーザモデル
-	 * @return 0 失敗 それ以外 成功
+	 * @param  model ユーザモデル
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int update(UserModel model) {
@@ -138,8 +137,8 @@ public class UserDaoSql implements UserDao {
 	
 	/**
 	 * パスワード更新処理
-	 * @param user ユーザ名, Eメール, パスワードクラス
-	 * @return 0 失敗 それ以外 成功
+	 * @param  user ユーザ名, Eメール, パスワードクラス
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int update_passwd(UserNameEmailPassword user) {
@@ -155,8 +154,8 @@ public class UserDaoSql implements UserDao {
 
 	/**
 	 * 削除処理
-	 * @param id ユーザID
-	 * @return 0 失敗 それ以外 成功
+	 * @param  id ユーザID
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int delete(UserIdStatus id) {
@@ -202,7 +201,7 @@ public class UserDaoSql implements UserDao {
 	/**
 	 * ユーザIDによる選択
 	 * @param id ユーザID
-	 * @return ユーザモデル
+	 * @return   ユーザモデル
 	 */
 	@Override
 	public UserModel select(UserIdStatus id) {
@@ -233,12 +232,12 @@ public class UserDaoSql implements UserDao {
 	/**
 	 * ユーザ名、Eメール、パスワードによるユーザID選択
 	 * @param user ユーザ名, Eメール, パスワードクラス
-	 * @return ユーザID
+	 * @return     ユーザID
 	 */
 	@Override
-	public int selectId_byNameEmailPass(UserNameEmailPassword user) {
+	public UserIdStatus selectId_byNameEmailPass(UserNameEmailPassword user) {
 		// ユーザ名、Eメール、パスワードによるユーザID選択
-		if(user == null)	return WebConsts.ERROR_NUMBER;
+		if(user == null)	return new UserIdStatus(WebConsts.ERROR_NUMBER);
 		
 		String sql = "SELECT id FROM chat_user WHERE name = ? AND email = ? AND passwd = ?";
 		return jdbcTemp.query(
@@ -246,20 +245,21 @@ public class UserDaoSql implements UserDao {
 				new Object[]{ user.getName(), user.getEmail(), user.getPassword() }, 
 				new int[] {	Types.VARCHAR, Types.VARCHAR, Types.VARCHAR },
 				rs -> {
-					return rs.next() ? (int)rs.getInt("id") : -1;
+					UserIdStatus status = new UserIdStatus(rs.next() ? (int)rs.getInt("id") : -1);
+					return status;
 				}
 		);
 	}
 
 	/**
 	 * ユーザIDによる有無チェック
-	 * @param id ユーザID
+	 * @param  id ユーザID
 	 * @return true あり false なし
 	 */
 	@Override
 	public boolean isSelect_byId(UserIdStatus id) {
 		// IDによる有無チェック
-		if(id == null)	return false;
+		if(id == null)	return WebConsts.DB_ENTITY_NONE;
 		
 		String sql = "SELECT id FROM chat_user WHERE id = ?";
 		return jdbcTemp.query(
@@ -267,20 +267,20 @@ public class UserDaoSql implements UserDao {
 				new Object[]{ id.getId() },
 				new int[] {	Types.INTEGER },
 				rs -> {
-					return rs.next() ? true : false;
+					return rs.next() ? WebConsts.DB_ENTITY_FINDED : WebConsts.DB_ENTITY_NONE;
 				}
 		);
 	}
 
 	/**
 	 * ユーザ名、Eメールによる有無チェック
-	 * @param user ユーザ名, Eメールクラス
+	 * @param  user ユーザ名, Eメールクラス
 	 * @return true あり false なし
 	 */
 	@Override
 	public boolean isSelect_byNameEmail(UserNameEmail user) {
 		// 名前とメールアドレスの一致による有無確認
-		if(user == null)	return false;
+		if(user == null)	return WebConsts.DB_ENTITY_NONE;
 		
 		String sql = "SELECT id FROM chat_user WHERE name = ? AND email = ?";
 		return jdbcTemp.query(
@@ -288,20 +288,20 @@ public class UserDaoSql implements UserDao {
 				new Object[]{ user.getName(), user.getEmail() }, 
 				new int[] {	Types.VARCHAR, Types.VARCHAR },
 				rs -> {
-					return rs.next() ? true : false;
+					return rs.next() ? WebConsts.DB_ENTITY_FINDED : WebConsts.DB_ENTITY_NONE;
 				}
 		);
 	}
 
 	/**
 	 * ユーザ名、Eメール、忘れたとき用パスワードによる有無チェック
-	 * @param user ユーザ名, Eメール, パスワードクラス
+	 * @param  user ユーザ名, Eメール, パスワードクラス
 	 * @return true あり false なし
 	 */
 	@Override
 	public boolean isSelect_byNameEmailForgotPW(UserNameEmailPassword user) {
 		// 名前とメールアドレス忘れた用パスワードの一致確認
-		if(user == null)	return false;
+		if(user == null)	return WebConsts.DB_ENTITY_NONE;
 		
 		String sql = "SELECT id FROM chat_user WHERE name = ? AND email = ? AND forgot_passwd = ?";
 		return jdbcTemp.query(
@@ -309,20 +309,20 @@ public class UserDaoSql implements UserDao {
 				new Object[]{ user.getName(), user.getEmail(), user.getPassword() },
 				new int[] {	Types.VARCHAR, Types.VARCHAR, Types.VARCHAR },
 				rs -> {
-					return rs.next() ? true : false;
+					return rs.next() ? WebConsts.DB_ENTITY_FINDED : WebConsts.DB_ENTITY_NONE;
 				}
 		);
 	}
 
 	/**
 	 * ユーザ名、Eメール、パスワードによる有無チェック
-	 * @param user ユーザ名, Eメール, パスワードクラス
+	 * @param  user ユーザ名, Eメール, パスワードクラス
 	 * @return true あり false なし
 	 */
 	@Override
 	public boolean isSelect_byNameEmailPass(UserNameEmailPassword user) {
 		// 名前とメールアドレス,パスワードの一致確認
-		if(user == null)	return false;
+		if(user == null)	return WebConsts.DB_ENTITY_NONE;
 		
 		String sql = "SELECT id FROM chat_user WHERE name = ? AND email = ? AND passwd = ?";
 		return jdbcTemp.query(
@@ -330,7 +330,7 @@ public class UserDaoSql implements UserDao {
 				new Object[]{ user.getName(), user.getEmail(), user.getPassword() },
 				new int[] {	Types.VARCHAR, Types.VARCHAR, Types.VARCHAR },
 				rs -> {
-					return rs.next() ? true : false;
+					return rs.next() ? WebConsts.DB_ENTITY_FINDED : WebConsts.DB_ENTITY_NONE;
 				}
 		);
 	}

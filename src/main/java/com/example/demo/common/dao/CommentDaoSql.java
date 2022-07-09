@@ -43,7 +43,6 @@ public class CommentDaoSql implements CommentDao {
 	 */
 	@Autowired
 	public CommentDaoSql(JdbcTemplate jdbcTemp) {
-		// コンストラクタ
 		this.jdbcTemp = jdbcTemp;
 	}
 	
@@ -62,7 +61,7 @@ public class CommentDaoSql implements CommentDao {
 					model.getComment(),
 					model.getRoom_id(),
 					model.getUser_id(),
-					model.getCreated());	
+					model.getCreated());
 		} catch(DataAccessException ex) {
 			ex.printStackTrace();
 		}
@@ -71,12 +70,12 @@ public class CommentDaoSql implements CommentDao {
 	/**
 	 * 追加処理
 	 * @param model コメントモデル
-	 * @return コメントID
+	 * @return      コメントID 失敗した場合は-1。
 	 */
 	@Override
-	public int insert_byId(CommentModel model) {
+	public CommentIdStatus insert_byId(CommentModel model) {
 		// 追加(return id)
-		if(model == null)	return WebConsts.ERROR_NUMBER;
+		if(model == null)	return new CommentIdStatus(WebConsts.ERROR_NUMBER);
 		int return_key = 0;
 		
 		try {
@@ -103,13 +102,13 @@ public class CommentDaoSql implements CommentDao {
 		}
 		
 		
-		return return_key;
+		return new CommentIdStatus(return_key);
 	}
 
 	/**
 	 * 更新処理
-	 * @param model コメントモデル
-	 * @return 0 失敗 それ以外 成功
+	 * @param  model コメントモデル
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int update(CommentModel model) {
@@ -128,7 +127,7 @@ public class CommentDaoSql implements CommentDao {
 	/**
 	 * 削除処理
 	 * @param id コメントID
-	 * @return 0 失敗 それ以外 成功
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int delete(CommentIdStatus id) {
@@ -142,8 +141,8 @@ public class CommentDaoSql implements CommentDao {
 	
 	/**
 	 * 削除処理
-	 * @param id ルームID
-	 * @return 0 失敗 それ以外 成功
+	 * @param  id ルームID
+	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
 	public int delete_byRoomId(RoomIdStatus roomId) {
@@ -186,7 +185,7 @@ public class CommentDaoSql implements CommentDao {
 
 	/**
 	 * コメントIDから選択
-	 * @param id コメントID
+	 * @param  id コメントID
 	 * @return コメントモデル
 	 */
 	@Override
@@ -214,7 +213,7 @@ public class CommentDaoSql implements CommentDao {
 	
 	/**
 	 * ルームIDから選択
-	 * @param roomId ルームID
+	 * @param  roomId ルームID
 	 * @return コメントモデルリスト
 	 */
 	@Override
@@ -245,13 +244,13 @@ public class CommentDaoSql implements CommentDao {
 
 	/**
 	 * コメントの有無チェック
-	 * @param id ルームID
+	 * @param  id ルームID
 	 * @return true あり false なし
 	 */
 	@Override
 	public boolean isSelect_byId(CommentIdStatus id) {
 		// IDによる有無チェック
-		if(id == null)	return false;
+		if(id == null)	return WebConsts.DB_ENTITY_NONE;
 		
 		String sql = "SELECT id FROM chat_comment WHERE id = ?";
 		return jdbcTemp.query(
@@ -259,7 +258,7 @@ public class CommentDaoSql implements CommentDao {
 				new Object[]{ id.getId() },
 				new int[] { Types.INTEGER },
 				rs -> {
-			return rs.next() ? true : false;	
+			return rs.next() ?  WebConsts.DB_ENTITY_FINDED : WebConsts.DB_ENTITY_NONE;	
 		});
 	}
 }

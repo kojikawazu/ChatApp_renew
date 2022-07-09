@@ -53,7 +53,7 @@ class LoginModelTest {
 	 * コンストラクタテスト(null割り当て)
 	 */
 	@Test
-	void initTest3_null() {
+	void initTest1_null() {
 		LocalDateTime now = LocalDateTime.now();
 		LoginModel test = new LoginModel(
 						null, 
@@ -71,7 +71,7 @@ class LoginModelTest {
 	 * コンストラクタテスト(同一クラス割り当て)
 	 */
 	@Test
-	void initTest2() {
+	void initTest1_sameClass() {
 		LocalDateTime now = LocalDateTime.now();
 		
 		LoginModel dummy = new LoginModel(
@@ -92,7 +92,7 @@ class LoginModelTest {
 	 * コンストラクタテスト(3パラメータ割り当て)
 	 */
 	@Test
-	void initTest3() {
+	void initTest2() {
 		LocalDateTime now = LocalDateTime.now();
 		
 		LoginModel test = new LoginModel(

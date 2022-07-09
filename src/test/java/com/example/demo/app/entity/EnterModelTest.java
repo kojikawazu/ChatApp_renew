@@ -60,7 +60,7 @@ class EnterModelTest {
 	 * コンストラクタテスト(null割り当て)
 	 */
 	@Test
-	void initTest3_null() {
+	void initTest1_null() {
 		LocalDateTime now = LocalDateTime.now();
 		EnterModel test = new EnterModel(
 				null, 
@@ -82,7 +82,7 @@ class EnterModelTest {
 	 * コンストラクタテスト(同一クラス割り当て)
 	 */
 	@Test
-	void initTest2() {
+	void initTest1_sameClass() {
 		LocalDateTime now = LocalDateTime.now();
 		EnterModel dummy = new EnterModel(
 						new EnterIdStatus(1), 
@@ -103,4 +103,24 @@ class EnterModelTest {
 		Assertions.assertNotNull(test.getCreated());
 	}
 	
+	/**
+	 * コンストラクタテスト(各クラス割り当て)
+	 */
+	@Test
+	void initTest2() {
+		LocalDateTime now = LocalDateTime.now();
+		EnterModel test = new EnterModel(
+						new RoomIdStatus(0), 
+						new UserIdStatus(0), 
+						new UserIdStatus(0),
+						new RoomMaxNumber(0),
+						now);
+		
+		Assertions.assertEquals(test.getId(), 0);
+		Assertions.assertEquals(test.getRoom_id(), 0);
+		Assertions.assertEquals(test.getUser_id(), 0);
+		Assertions.assertEquals(test.getManager_id(), 0);
+		Assertions.assertEquals(test.getMax_sum(), 0);
+		Assertions.assertNotNull(test.getCreated());
+	}
 }

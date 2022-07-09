@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.CommentModel;
 import com.example.demo.app.exception.WebMvcConfig;
 import com.example.demo.common.dao.CommentDao;
@@ -46,10 +47,10 @@ public class CommentServiceUse implements CommentService {
 	/**
 	 * コメントモデルの保存
 	 * @param model コメントモデル
-	 * @return コメントID
+	 * @return      コメントID
 	 */
 	@Override
-	public int save_returnId(CommentModel model) {
+	public CommentIdStatus save_returnId(CommentModel model) {
 		// 追加(返却ID)
 		return this.dao.insert_byId(model);
 	}
@@ -61,7 +62,7 @@ public class CommentServiceUse implements CommentService {
 	@Override
 	public void update(CommentModel model) {
 		// 更新
-		if( this.dao.update(model) == 0 ) {
+		if( this.dao.update(model) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
@@ -73,7 +74,7 @@ public class CommentServiceUse implements CommentService {
 	@Override
 	public void delete(CommentIdStatus id) {
 		// 削除
-		if( this.dao.delete(id) == 0 ) {
+		if( this.dao.delete(id) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
@@ -85,7 +86,7 @@ public class CommentServiceUse implements CommentService {
 	@Override
 	public void delete_byRoomId(RoomIdStatus roomId) {
 		// ルームIDによる削除
-		if( this.dao.delete_byRoomId(roomId) == 0 ) {
+		if( this.dao.delete_byRoomId(roomId) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}

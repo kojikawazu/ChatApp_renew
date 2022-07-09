@@ -15,7 +15,7 @@ public interface UserService {
 
 	void save(UserModel model);
 	
-	int save_returnId(UserModel model);
+	UserIdStatus save_returnId(UserModel model);
 	
 	void update(UserModel model);
 	
@@ -27,7 +27,7 @@ public interface UserService {
 	
 	UserModel select(UserIdStatus id);
 	
-	int selectId_byNameEmailPasswd(UserNameEmailPassword user);
+	UserIdStatus selectId_byNameEmailPasswd(UserNameEmailPassword user);
 	
 	boolean isSelect_byId(UserIdStatus id);
 	

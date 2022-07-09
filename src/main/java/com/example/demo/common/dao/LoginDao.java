@@ -15,7 +15,7 @@ public interface LoginDao {
 	
 	void insert(LoginModel model);
 	
-	int insert_returnId(LoginModel model);
+	LoginIdStatus insert_returnId(LoginModel model);
 	
 	int update(LoginModel model);
 	
@@ -33,11 +33,11 @@ public interface LoginDao {
 	
 	List<LoginModel> selectList_byRoomId(RoomIdStatus roomId);
 	
-	int selectId_byUserId(UserIdStatus userId);
+	LoginIdStatus selectId_byUserId(UserIdStatus userId);
 	
 	LoginModel select_byuserId(UserIdStatus userId);
 	
-	int selectRoomId_byUserId(UserIdStatus userId);
+	RoomIdStatus selectRoomId_byUserId(UserIdStatus userId);
 	
 	boolean isSelect_byId(LoginIdStatus id);
 	

@@ -114,7 +114,7 @@ public class CommentModel {
 	public int getId() {
 		return id.getId();
 	}
-
+	
 	protected void setId(int id) {
 		this.id = new CommentIdStatus(id);
 	}

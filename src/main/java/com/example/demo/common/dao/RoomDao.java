@@ -15,7 +15,7 @@ public interface RoomDao {
 	
 	void insert(RoomModel model);
 	
-	int insert_byId(RoomModel model);
+	RoomIdStatus insert_byId(RoomModel model);
 	
 	int update(RoomModel model);
 	

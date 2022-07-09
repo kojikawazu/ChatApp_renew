@@ -14,7 +14,7 @@ public interface CommentService {
 	
 	void save(CommentModel model);
 	
-	int save_returnId(CommentModel model);
+	CommentIdStatus save_returnId(CommentModel model);
 	
 	void update(CommentModel model);
 	

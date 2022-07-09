@@ -16,17 +16,6 @@ public class RoomModelEx extends RoomModel {
 	 */
 	private NameWord userName;				/** ユーザ名 */
 	private RoomEnterCntNumber enterCnt;	/** 入室数 */
-
-	/**
-	 * コンストラクタ
-	 * @param roomModel ルームモデルクラス
-	 */
-	public RoomModelEx(RoomModel model) {
-		super(model);
-		
-		this.userName = new NameWord("");
-		this.enterCnt = new RoomEnterCntNumber(0);
-	}
 	
 	/**
 	 * コンストラクタ
@@ -50,8 +39,18 @@ public class RoomModelEx extends RoomModel {
 	 * コンストラクタ
 	 * @param roomModel ルームモデルクラス
 	 */
-	public RoomModelEx(
-			RoomModelEx model) {
+	public RoomModelEx(RoomModel model) {
+		super(model);
+		
+		this.userName = new NameWord("");
+		this.enterCnt = new RoomEnterCntNumber(0);
+	}
+
+	/**
+	 * コンストラクタ
+	 * @param roomModel ルームモデルクラス
+	 */
+	public RoomModelEx(RoomModelEx model) {
 		super(model);
 
 		if ( model == null ) {

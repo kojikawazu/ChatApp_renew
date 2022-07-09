@@ -57,7 +57,7 @@ class CommentModelTest {
 	 * コンストラクタテスト(null割り当て)
 	 */
 	@Test
-	void initTest3_null() {
+	void initTest1_null() {
 		LocalDateTime now = LocalDateTime.now();
 		CommentModel test = new CommentModel(
 				null,
@@ -77,7 +77,7 @@ class CommentModelTest {
 	 * コンストラクタテスト(同一クラス割り当て)
 	 */
 	@Test
-	void initTest2() {
+	void initTest1_sameClass() {
 		LocalDateTime now = LocalDateTime.now();
 		CommentModel dummy = new CommentModel(
 				new CommentIdStatus(1),
@@ -91,6 +91,25 @@ class CommentModelTest {
 		Assertions.assertEquals(test.getComment(), "test");
 		Assertions.assertEquals(test.getRoom_id(), 2);
 		Assertions.assertEquals(test.getUser_id(), 3);
+		Assertions.assertNotNull(test.getCreated());
+	}
+	
+	/**
+	 * コンストラクタテスト(各クラス割り当て)
+	 */
+	@Test
+	void initTest2() {
+		LocalDateTime now = LocalDateTime.now();
+		CommentModel test = new CommentModel(
+						new ChatCommentWord(""),
+						new RoomIdStatus(0), 
+						new UserIdStatus(0), 
+						now);
+		
+		Assertions.assertEquals(test.getId(), 0);
+		Assertions.assertEquals(test.getComment(), "");
+		Assertions.assertEquals(test.getRoom_id(), 0);
+		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertNotNull(test.getCreated());
 	}
 }

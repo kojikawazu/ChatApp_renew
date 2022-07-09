@@ -112,9 +112,8 @@ public class EnterController {
 					new UserIdStatus(roomModel.getUser_id()), 
 					new RoomMaxNumber(roomModel.getMax_roomsum()), 
 					new UserIdStatus(loginModel.getUser_id()));	
-			EnterIdStatus out_enterId = new EnterIdStatus(
-				this.enterService.selectId_byUserId(new UserIdStatus(loginModel.getUser_id()))
-			);
+			EnterIdStatus out_enterId = 
+				this.enterService.selectId_byUserId(new UserIdStatus(loginModel.getUser_id()));
 			redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, out_enterId.getId());
 		}else {
 			// 入室情報なし
@@ -194,7 +193,7 @@ public class EnterController {
 				new UserIdStatus(roomModel.getUser_id()),
 				new RoomMaxNumber(roomModel.getMax_roomsum()),
 				LocalDateTime.now());
-		EnterIdStatus enter_id = new EnterIdStatus(this.enterService.save_returnId(enterModel));
+		EnterIdStatus enter_id = this.enterService.save_returnId(enterModel);
 		
 		// 入室通知
 		CommentModel commentModel = new CommentModel(
