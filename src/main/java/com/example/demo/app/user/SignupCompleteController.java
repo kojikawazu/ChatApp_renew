@@ -55,8 +55,8 @@ public class SignupCompleteController implements SuperUserController {
 	/**
 	 * サインアップ処理受信
 	 * @param userSignupForm サインアップフォーム
-	 * @param result 結果
-	 * @param model モデル
+	 * @param result         結果
+	 * @param model          モデル
 	 * @param redirectAttributes リダイレクト
 	 * @return Webパス(redirect:/room)
 	 */
@@ -76,15 +76,15 @@ public class SignupCompleteController implements SuperUserController {
 		UserIdStatus userId =  this.createUser(userSignupForm);
 		// ログイン情報の追加
 		LoginIdStatus loginId = this.addSignIn(userId);
-		redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, loginId.getId());
 		
+		redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, loginId.getId());
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
 	}
 	
 	/**
 	 * ユーザ追加処理
 	 * @param userSignupForm サインアップフォーム
-	 * @return ユーザID
+	 * @return               ユーザID
 	 */
 	private UserIdStatus createUser(UserSignupForm userSignupForm) {
 		// ユーザの追加
@@ -102,7 +102,7 @@ public class SignupCompleteController implements SuperUserController {
 	/**
 	 * サインイン情報登録処理
 	 * @param user_id ユーザID
-	 * @return ログインID
+	 * @return        ログインID
 	 */
 	private LoginIdStatus addSignIn(UserIdStatus userId) {
 		// サインイン情報登録

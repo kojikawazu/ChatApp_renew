@@ -3,6 +3,7 @@ package com.example.demo.common.dao;
 import java.util.List;
 
 import com.example.demo.app.entity.UserModel;
+import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 import com.example.demo.common.word.UserNameEmail;
 import com.example.demo.common.word.UserNameEmailPassword;
@@ -27,6 +28,8 @@ public interface UserDao {
 	List<UserModel> getAll();
 	
 	UserModel select(UserIdStatus id);
+	
+	UserModel select_byId_subLoginId(LoginIdStatus loginId);
 	
 	UserIdStatus selectId_byNameEmailPass(UserNameEmailPassword user);
 	

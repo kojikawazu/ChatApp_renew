@@ -5,8 +5,6 @@ public class WebConsts {
 	/** エラー番号 */
 	public static final int ERROR_NUMBER = -1;
 	
-	// ---------------------------------------------------------------------------
-	
 	/** チェック処理判定結果(OK) */
 	public static final boolean CHECK_COMMON_OK = true;
 		
@@ -22,7 +20,9 @@ public class WebConsts {
 	/** DB選択し見つかった */
 	public static final boolean DB_ENTITY_FINDED = true;
 	
-		
+	/** */
+	public static final int LOGIN_ID_INIT_NUMBER = 0;
+	
 	// ---------------------------------------------------------------------------
 	
 	public static final String BIND_TITLE = "title";

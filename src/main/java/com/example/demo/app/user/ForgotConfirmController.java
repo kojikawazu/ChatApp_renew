@@ -94,8 +94,8 @@ public class ForgotConfirmController implements SuperUserController {
 	/**
 	 * パスワード変更確認受信
 	 * @param userForgotForm パスワード変更フォーム
-	 * @param result 結果
-	 * @param model モデル
+	 * @param result         結果
+	 * @param model          モデル
 	 * @return: Webパス(user/forgot_form, 
 	 * 				   user/forgot_confirm)
 	 */
@@ -107,7 +107,7 @@ public class ForgotConfirmController implements SuperUserController {
 		// パスワード変更確認
 		
 		// エラーチェック
-		if(!isCheck_changepasswd(userForgotForm, result, model)) {
+		if(!this.isCheck_changepasswd(userForgotForm, result, model)) {
 			// パスワード変更画面へ
 			return WebConsts.URL_USER_FORGOT_FORM;
 		}
@@ -120,14 +120,15 @@ public class ForgotConfirmController implements SuperUserController {
 	/**
 	 * パスワード変更確認チェック
 	 * @param userForgotForm パスワード変更フォーム
-	 * @param result 結果
-	 * @param model モデル
+	 * @param result         結果
+	 * @param model          モデル
 	 * @return true OK false NG
 	 */
 	private boolean isCheck_changepasswd(
 			UserForgotForm userForgotForm,
 			BindingResult result,
 			Model model) {
+		
 		// パスワード変更確認チェック
 		if(result.hasErrors()) {
 			// エラーあり
@@ -136,6 +137,7 @@ public class ForgotConfirmController implements SuperUserController {
 			return WebConsts.CHECK_COMMON_NG;
 		}
 		
+		// ユーザー名、Email一致チェック
 		if( !this.userService.isSelect_byNameEmail(
 				new UserNameEmail(
 						userForgotForm.getName(), 
@@ -145,6 +147,9 @@ public class ForgotConfirmController implements SuperUserController {
 			this.setForgot_form(model);
 			return WebConsts.CHECK_COMMON_NG;
 		}
+		// ユーザー名、Email一致
+		
+		// ユーザー名、Email、忘れた時用のパスワード一致チェック
 		if( !this.userService.isSelect_byNameEmailForgotPW(
 				new UserNameEmailPassword(
 						userForgotForm.getName(), 
@@ -155,6 +160,7 @@ public class ForgotConfirmController implements SuperUserController {
 			this.setForgot_form(model);
 			return WebConsts.CHECK_COMMON_NG;
 		}
+		// ユーザー名、Email、忘れた時用のパスワード一致
 		
 		// パスワード確認OK
 		return WebConsts.CHECK_COMMON_OK;
@@ -163,7 +169,7 @@ public class ForgotConfirmController implements SuperUserController {
 	/**
 	 * エラー時の文字を設定
 	 * @param restult 結果クラス
-	 * @param model モデル
+	 * @param model   モデル
 	 */
 	private void setErrorMessage(BindingResult result, Model model) {
 		// 入力エラー設定
@@ -176,17 +182,16 @@ public class ForgotConfirmController implements SuperUserController {
 		
 		// Emailのエラーチェック
 		if( result.hasFieldErrors(USER_FORM_EMAIL) ) {
-			// 名前入力エラー
+			// Email入力エラー
 			model.addAttribute(BIND_ERROR_MESSAGE_EMAIL, ERROR_MESSAGE_EMAIL);
 		}
 		
-		// 忘れた時用のエラーチェック
+		// 忘れた時用のパスワードのエラーチェック
 		if( result.hasFieldErrors(USER_FORM_FORGOT_PASSWD) ) {
-			// 名前入力エラー
+			// 忘れた時用のパスワード入力エラー
 			model.addAttribute(BIND_ERROR_MESSAGE_FORGOT_PASSWD, ERROR_MESSAGE_FORGOT_PASSWD);
 		}
 	}
-	
 	
 	/**
 	 * パスワード変更画面へ
@@ -201,7 +206,7 @@ public class ForgotConfirmController implements SuperUserController {
 	/**
 	 * パスワード変更確認画面へ
 	 * @param userForgotForm パスワード変更フォーム
-	 * @param model モデル
+	 * @param model          モデル
 	 */
 	private void setForgot_confirm(UserForgotForm userForgotForm, Model model) {
 		// パスワード変更設定

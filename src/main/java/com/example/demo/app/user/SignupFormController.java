@@ -45,7 +45,7 @@ public class SignupFormController implements SuperUserController {
 	/**
 	 * サインアップ受信
 	 * @param userSignupForm サインアップフォーム
-	 * @param model モデル
+	 * @param model          モデル
 	 * @return Webパス(signup_form/index)
 	 */
 	@PostMapping
@@ -60,7 +60,7 @@ public class SignupFormController implements SuperUserController {
 	/**
 	 * サインアップ戻り受信
 	 * @param userSignupForm サインアップフォーム
-	 * @param model モデル
+	 * @param model          モデル
 	 * @return Webパス(user/signup_form)
 	 */
 	@GetMapping

@@ -22,6 +22,7 @@ import com.example.demo.common.service.UserService;
 
 /**
  * 管理コントロール
+ * @author nanai
  *
  */
 @Controller
@@ -52,7 +53,6 @@ public class ManagerController {
 			CommentService commentService,
 			LoginService loginService,
 			EnterService enterService) {
-		// TODO コンストラクタ
 		this.userService = userService;
 		this.roomService = roomService;
 		this.commentService = commentService;
@@ -63,11 +63,11 @@ public class ManagerController {
 	/**
 	 * 管理ホーム受信
 	 * @param model
-	 * @return
+	 * @return manager/index
 	 */
 	@GetMapping
 	public String index(Model model) {
-		// TODO ホーム画面
+		// ホーム画面
 		
 		List<UserModel> userModelList = this.userService.getAll();
 		List<RoomModel> roomModelList = this.roomService.getAll();

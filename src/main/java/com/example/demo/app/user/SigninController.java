@@ -56,7 +56,6 @@ public class SigninController implements SuperUserController {
 	public SigninController(
 			UserService userService,
 			LoginService loginService) {
-		// コンストラクタ
 		this.userService = userService;
 		this.loginService = loginService;
 	}
@@ -106,10 +105,10 @@ public class SigninController implements SuperUserController {
 	
 	/**
 	 * サインインチェック
-	 * @param userLoginForm ログインフォーム
-	 * @param result 結果
+	 * @param userLoginForm      ログインフォーム
+	 * @param result             結果
 	 * @param redirectAttributes リダイレクト
-	 * @return ログインIDクラス
+	 * @return                   ログインIDクラス
 	 */
 	private UserIdStatus checkSignin(
 			UserLoginForm userLoginForm,
@@ -125,8 +124,8 @@ public class SigninController implements SuperUserController {
 			
 			return new UserIdStatus(WebConsts.ERROR_NUMBER);
 		}
-		
 		// エラーなし
+		
 		UserIdStatus userIdStatus = this.userService.selectId_byNameEmailPasswd(
 			new UserNameEmailPassword(
 				userLoginForm.getName(), 
@@ -143,6 +142,7 @@ public class SigninController implements SuperUserController {
 			
 			return new UserIdStatus(WebConsts.ERROR_NUMBER);
 		}
+		// ユーザ名、Eメール、パスワード一致
 		
 		// ログイン情報チェック
 		if( this.loginService.isSelect_byUserId(userIdStatus) ) {
@@ -161,7 +161,7 @@ public class SigninController implements SuperUserController {
 	/**
 	 * サインイン情報登録処理
 	 * @param user_id ユーザID
-	 * @return ログインIDクラス
+	 * @return        ログインIDクラス
 	 */
 	private LoginIdStatus addSignin(UserIdStatus userStatus) {
 		// サインイン情報登録

@@ -49,9 +49,9 @@ public class ForgotCompleteController implements SuperUserController {
 	
 	/**
 	 * パスワード変更処理受信
-	 * @param userForgotForm パスワード変更フォーム
-	 * @param result 結果
-	 * @param model モデル
+	 * @param userForgotForm     パスワード変更フォーム
+	 * @param result             結果
+	 * @param model              モデル
 	 * @param redirectAttributes リダイレクト
 	 * @return Webパス(redirect;/room)
 	 */
@@ -76,6 +76,7 @@ public class ForgotCompleteController implements SuperUserController {
 						userForgotForm.getEmail(), 
 						userForgotForm.getNew_passwd()));
 		
+		// パスワード変更実行通知
 		redirectAttributes.addFlashAttribute(
 				WebConsts.BIND_NOTICE_SUCCESS, 
 				FORGOT_PASSWORD_ACTION_MESSAGE);

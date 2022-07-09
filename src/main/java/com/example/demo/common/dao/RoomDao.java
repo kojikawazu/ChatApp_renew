@@ -3,6 +3,7 @@ package com.example.demo.common.dao;
 import java.util.List;
 
 import com.example.demo.app.entity.RoomModel;
+import com.example.demo.app.entity.RoomModelEx;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 
@@ -15,7 +16,7 @@ public interface RoomDao {
 	
 	void insert(RoomModel model);
 	
-	RoomIdStatus insert_byId(RoomModel model);
+	RoomIdStatus insert_returnId(RoomModel model);
 	
 	int update(RoomModel model);
 	
@@ -24,6 +25,8 @@ public interface RoomDao {
 	int delete(RoomIdStatus id);
 	
 	List<RoomModel> getAll();
+	
+	List<RoomModelEx> getAll_plusUserName_EnterCnt();
 	
 	RoomModel select(RoomIdStatus id);
 	
