@@ -30,6 +30,7 @@ import com.example.demo.common.word.ChatCommentWord;
 /**
  * ---------------------------------------------------------------------------
  * 【入室実行コントローラ】
+ * @author nanai
  * ---------------------------------------------------------------------------
  * 
  */
@@ -38,12 +39,27 @@ import com.example.demo.common.word.ChatCommentWord;
 public class EnterController {
 
 	/**
+	 * メッセージ
+	 */
+	/** ログイン促し */
+	public static String ERROR_MESSAGE_NO_LOGIN = "ログインしてください。";
+	
+	/** 既に満室 */
+	public static String ERROR_MESSAGE_MAX_ENTER_ROOM = "既に満室でした。";
+	
+	/** 閉鎖された */
+	public static String ERROR_MESSAGE_CLOSUER = "部屋が既に閉鎖された可能性があります。";
+	
+	/** ログインID(初期化番号) */
+	public static int NO_LOGIN_NUMBER = 0;
+	
+	/**
 	 * サービス
 	 */
-	private RoomService roomService;
+	private RoomService    roomService;
 	private CommentService commentService;
-	private LoginService loginService;
-	private EnterService enterService;
+	private LoginService   loginService;
+	private EnterService   enterService;
 	
 	/**
 	 * コンストラクタ
@@ -54,22 +70,21 @@ public class EnterController {
 	 */
 	@Autowired
 	public EnterController(
-			RoomService roomService,
+			RoomService    roomService,
 			CommentService commentService,
-			LoginService loginService,
-			EnterService enterService) {
-		// コンストラクタ
-		this.roomService = roomService;
+			LoginService   loginService,
+			EnterService   enterService) {
+		this.roomService    = roomService;
 		this.commentService = commentService;
-		this.loginService = loginService;
-		this.enterService = enterService;
+		this.loginService   = loginService;
+		this.enterService   = enterService;
 	}
 	
 	/**
 	 * 入室受信
-	 * @param userEnterForm: 入室フォーム
-	 * @param model: モデル
-	 * @param redirectAttributes: リダイレクト
+	 * @param userEnterForm 入室フォーム
+	 * @param model モデル
+	 * @param redirectAttributes リダイレクト
 	 * @return (redirect:/room, redirect:/chat)
 	 */
 	@PostMapping
@@ -86,19 +101,21 @@ public class EnterController {
 		}
 		
 		// 入室情報登録
-		int room_id = userEnterForm.getRoom_id();
-		int login_id = userEnterForm.getLogin_id();
-		LoginModel loginModel =  this.loginService.select(new LoginIdStatus(login_id));
+		RoomIdStatus  room_id  = new RoomIdStatus(userEnterForm.getRoom_id());
+		LoginIdStatus login_id = new LoginIdStatus(userEnterForm.getLogin_id());
+		LoginModel loginModel =  this.loginService.select(login_id);
 		if(this.enterService.isSelect_byUserId(new UserIdStatus(loginModel.getUser_id()))) {
 			// 既に入室している
-			RoomModel roomModel = this.roomService.select(new RoomIdStatus(room_id));
+			RoomModel roomModel = this.roomService.select(room_id);
 			this.enterService.update_byUserId(
-					new RoomIdStatus(room_id), 
+					room_id, 
 					new UserIdStatus(roomModel.getUser_id()), 
 					new RoomMaxNumber(roomModel.getMax_roomsum()), 
 					new UserIdStatus(loginModel.getUser_id()));	
-			int out_enterId = this.enterService.selectId_byUserId(new UserIdStatus(loginModel.getUser_id()));
-			redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, out_enterId);
+			EnterIdStatus out_enterId = new EnterIdStatus(
+				this.enterService.selectId_byUserId(new UserIdStatus(loginModel.getUser_id()))
+			);
+			redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, out_enterId.getId());
 		}else {
 			// 入室情報なし
 			// 入室情報登録
@@ -107,84 +124,89 @@ public class EnterController {
 		
 		// ログイン情報のルーム番号更新
 		this.loginService.updateRoomId_byId(
-				new RoomIdStatus(room_id), 
-				new LoginIdStatus(login_id));
+				room_id, 
+				login_id);
 		
 		return WebConsts.URL_REDIRECT_CHAT_INDEX;
 	}
 	
 	/**
 	 * 入室チェック
-	 * @param userEnterForm: 入室フォーム
-	 * @param redirectAttributes: リダイレクト
-	 * @return true: 入室OK, false: 入室NG
+	 * @param userEnterForm 入室フォーム
+	 * @param redirectAttributes リダイレクト
+	 * @return true 入室OK, false 入室NG
 	 */
 	private boolean isEnter(
 			UserEnterForm userEnterForm,
 			RedirectAttributes redirectAttributes) {
+		
 		// 入室チェック
 		if(userEnterForm.getLogin_id() == 0) {
 			// ログインしてない
-			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, "ログインしてください。");
-			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, 0);
-			return false;
+			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_MESSAGE_NO_LOGIN);
+			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, NO_LOGIN_NUMBER);
+			return WebConsts.CHECK_COMMON_NG;
 		}
 		
-		int room_id = userEnterForm.getRoom_id();
-		int login_id = userEnterForm.getLogin_id();
+		RoomIdStatus room_id   = new RoomIdStatus(userEnterForm.getRoom_id());
+		LoginIdStatus login_id = new LoginIdStatus(userEnterForm.getLogin_id());
+		// 満室チェック
 		if((userEnterForm.getCount_sum() + 1) > userEnterForm.getMax_sum()) {
 			// 既に満室
-			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, "既に満室でした。");
-			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id);
-			return false;
+			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_MESSAGE_MAX_ENTER_ROOM);
+			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id.getId());
+			return WebConsts.CHECK_COMMON_NG;
 		}
-		if(!this.roomService.isSelect_byId(new RoomIdStatus(room_id))) {
+		
+		// ルームチェック
+		if(!this.roomService.isSelect_byId(room_id)) {
 			// ルームがない
-			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, "部屋が既に閉鎖された可能性があります。");
-			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id);
-			return false;
+			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_MESSAGE_CLOSUER);
+			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id.getId());
+			return WebConsts.CHECK_COMMON_NG;
 		}
 		
 		// 入室OK
-		return true;
+		return WebConsts.CHECK_COMMON_OK;
 	}
 	
 	/**
 	 * 入室設定
-	 * @param userEnterForm: 入室フォーム
-	 * @param model: モデル
-	 * @param redirectAttributes: リダイレクト
+	 * @param userEnterForm 入室フォーム
+	 * @param model モデル
+	 * @param redirectAttributes リダイレクト
 	 */
 	private void setEnter(
 			UserEnterForm userEnterForm,
 			Model model,
 			RedirectAttributes redirectAttributes) {
 		// 入室処理
-		int room_id = userEnterForm.getRoom_id();
-		int login_id = userEnterForm.getLogin_id();
+		RoomIdStatus  room_id  = new RoomIdStatus(userEnterForm.getRoom_id());
+		LoginIdStatus login_id = new LoginIdStatus(userEnterForm.getLogin_id());
 		
 		// 情報取得
-		RoomModel roomModel = this.roomService.select(new RoomIdStatus(room_id));
-		LoginModel loginModel = this.loginService.select(new LoginIdStatus(login_id));
+		RoomModel roomModel   = this.roomService.select(room_id);
+		LoginModel loginModel = this.loginService.select(login_id);
 		
 		EnterModel enterModel = new EnterModel(
-				new EnterIdStatus(0),
-				new RoomIdStatus(room_id),
+				room_id,
 				new UserIdStatus(loginModel.getUser_id()),
 				new UserIdStatus(roomModel.getUser_id()),
 				new RoomMaxNumber(roomModel.getMax_roomsum()),
 				LocalDateTime.now());
-		int enter_id = this.enterService.save_returnId(enterModel);
+		EnterIdStatus enter_id = new EnterIdStatus(this.enterService.save_returnId(enterModel));
 		
 		// 入室通知
 		CommentModel commentModel = new CommentModel(
 				new CommentIdStatus(0),
 				new ChatCommentWord("入室されました。"),
-				new RoomIdStatus(room_id),
+				room_id,
 				new UserIdStatus(loginModel.getUser_id()),
 				LocalDateTime.now());
+		
+		// 保存
 		this.commentService.save(commentModel);
 		
-		redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, enter_id);
+		redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, enter_id.getId());
 	}
 }

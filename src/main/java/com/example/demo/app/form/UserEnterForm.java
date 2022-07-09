@@ -2,22 +2,26 @@ package com.example.demo.app.form;
 
 /**
  * 入室フォーム
+ * @author nanai
  *
  */
 public class UserEnterForm {
 	
-	// ルームID
+	/** ルームID */
 	private int room_id;
 	
-	// ログインID
+	/** ログインID */
 	private int login_id;
 	
-	// ログインユーザ数
+	/** ログインユーザ数 */
 	private int count_sum;
 	
-	// ログイン最大数
+	/** ログイン最大数 */
 	private int max_sum;
 
+	/**
+	 * コンストラクタ
+	 */
 	public UserEnterForm() {
 		super();
 	}
@@ -53,6 +57,4 @@ public class UserEnterForm {
 	public void setMax_sum(int max_sum) {
 		this.max_sum = max_sum;
 	}
-	
-	
 }

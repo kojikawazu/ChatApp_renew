@@ -62,6 +62,37 @@ public class CommentModel {
 	
 	/**
 	 * コンストラクタ
+	 * @param comment コメント
+	 * @param room_id ルームID
+	 * @param user_id ユーザID
+	 * @param created 生成日時
+	 */
+	public CommentModel(
+			ChatCommentWord comment,
+			RoomIdStatus room_id,
+			UserIdStatus user_id,
+			LocalDateTime created) {
+		this.id = new CommentIdStatus(0);
+		
+		this.comment = (comment == null ?
+				new ChatCommentWord("") :
+				new ChatCommentWord(comment.getString()));
+		
+		this.room_id = (room_id == null ?
+				new RoomIdStatus(0) :
+				new RoomIdStatus(room_id.getId()));
+		
+		this.user_id = (user_id == null ?
+				new UserIdStatus(0) :
+				new UserIdStatus(user_id.getId()));
+		
+		this.created = (created == null ?
+				LocalDateTime.now() :
+				created);
+	}
+	
+	/**
+	 * コンストラクタ
 	 * @param model
 	 */
 	public CommentModel(CommentModel model) {

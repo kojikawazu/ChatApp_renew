@@ -2,13 +2,17 @@ package com.example.demo.app.form;
 
 /**
  * ルームユーザフォーム
+* @author nanai
  *
  */
 public class RoomUserForm {
 	
-	// ログインID
+	/** ログインID */
 	private int login_id;
 
+	/**
+	 * コンストラクタ
+	 */
 	public RoomUserForm() {
 		super();
 	}
@@ -20,7 +24,4 @@ public class RoomUserForm {
 	public void setLogin_id(int login_id) {
 		this.login_id = login_id;
 	}
-	
-	
-
 }

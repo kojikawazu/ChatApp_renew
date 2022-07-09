@@ -69,6 +69,43 @@ public class EnterModel {
 	
 	/**
 	 * コンストラクタ
+	 * @param room_id ルームID
+	 * @param user_id ユーザID
+	 * @param manager_id ホストID
+	 * @param max_sum 入室数
+	 * @param created 生成日時
+	 */
+	public EnterModel(
+			RoomIdStatus room_id,
+			UserIdStatus user_id,
+			UserIdStatus manager_id,
+			RoomMaxNumber max_sum,
+			LocalDateTime created) {
+		this.id = new EnterIdStatus(0);
+		
+		this.room_id = (room_id == null ?
+				new RoomIdStatus(0) :
+				new RoomIdStatus(room_id.getId()));
+		
+		this.user_id = (user_id == null ?
+				new UserIdStatus(0) :
+				new UserIdStatus(user_id.getId()));
+		
+		this.manager_id = (manager_id == null ?
+				new UserIdStatus(0) :
+				new UserIdStatus(manager_id.getId()));
+		
+		this.max_sum = (max_sum == null ?
+				new RoomMaxNumber(0) :
+				new RoomMaxNumber(max_sum.getNumber()));
+		
+		this.created = (created == null ?
+				LocalDateTime.now() :
+				created);
+	}
+	
+	/**
+	 * コンストラクタ
 	 * @param model 入室モデル
 	 */
 	public EnterModel(EnterModel model) {
