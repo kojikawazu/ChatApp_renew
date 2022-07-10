@@ -40,6 +40,7 @@ public class RoomOutController implements SuperChatController {
 	
 	/**
 	 * コンストラクタ
+	 * @param commentService
 	 * @param loginService
 	 * @param enterService
 	 */

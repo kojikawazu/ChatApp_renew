@@ -5,7 +5,7 @@ package com.example.demo.app.form;
  * @author nanai
  *
  */
-public class UserLogoutForm implements SuperForm {
+public class UserLogoutForm implements SuperUserForm {
 
 	/** ユーザID */
 	private int id;

@@ -25,7 +25,7 @@ import com.example.demo.common.status.LoginIdStatus;
  */
 @Controller
 @RequestMapping("/room")
-public class RoomController {
+public class RoomController implements SuperRoomController {
 
 	/** ルームタイトル */
 	public static String ROOM_TITTLE  = "ルーム選択";

@@ -14,32 +14,51 @@ import org.springframework.util.StringUtils;
  */
 public class ConfirmValidator implements ConstraintValidator<Confirm, Object> {
 
+	/** 値A */
 	private String field;
+	
+	/** 値B */
 	private String fieldConfirm;
+	
+	/** メッセージ */
 	private String message;
 	
+	/**
+	 * 初期化
+	 * @param constraintAnnotation
+	 */
 	@Override
 	public void initialize(Confirm constraintAnnotation) {
-		// TODO 初期化
+		// 初期化
 		field = constraintAnnotation.field();
 		fieldConfirm = "confirm" + StringUtils.capitalize(field);
 		message = constraintAnnotation.message();
 	}
 	
+	/**
+	 * バリデート処理
+	 * @param value
+	 * @param context
+	 */
 	@Override
 	public boolean isValid(Object value, ConstraintValidatorContext context) {
-		// TODO 自動生成されたメソッド・スタブ
+		// バリデート処理
 		BeanWrapper beanWrapper = new BeanWrapperImpl(value);
 		Object field1Value = beanWrapper.getPropertyValue(field);
 		Object confirmFieldValue = beanWrapper.getPropertyValue(fieldConfirm);
-        boolean matched = ObjectUtils.nullSafeEquals(field1Value,
+        
+		// マッチング
+		boolean matched = ObjectUtils.nullSafeEquals(field1Value,
                 confirmFieldValue);
         if (matched) {
+        	// 一致
             return true;
         } else {
-            context.disableDefaultConstraintViolation(); // (3)
+        	// 不一致
+            context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message)
-                    .addNode(field).addConstraintViolation(); // (4)
+            		//.addConstraintViolation();
+                    .addNode(field).addConstraintViolation();
             return false;
         }
 	}

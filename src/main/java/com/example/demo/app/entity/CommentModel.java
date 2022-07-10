@@ -12,7 +12,7 @@ import com.example.demo.common.word.ChatCommentWord;
  * @author nanai
  *
  */
-public class CommentModel {
+public class CommentModel implements SuperModel {
 	
 	/**
 	 * フィールド

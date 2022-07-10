@@ -12,7 +12,7 @@ import com.example.demo.common.status.UserIdStatus;
  * @author nanai
  *
  */
-public class EnterModel {
+public class EnterModel implements SuperModel {
 	
 	/**
 	 * フィールド

@@ -41,7 +41,7 @@ import com.example.demo.common.word.RoomTagWord;
  */
 @Controller
 @RequestMapping("/room_complete")
-public class CreateRoomCompleteController {
+public class CreateRoomCompleteController implements SuperRoomController {
 	
 	/**
 	 * サービス
@@ -102,9 +102,7 @@ public class CreateRoomCompleteController {
 		RoomIdStatus room_id  = this.setRoom(loginModel, roomCreateForm);
 		
 		// ログイン情報のルーム番号の更新
-		this.loginService.updateRoomId_byId(
-				room_id, 
-				new LoginIdStatus(roomCreateForm.getLogin_id()));
+		this.updateLoginInfo_roomId(room_id, roomCreateForm);
 		
 		// 入室情報の生成
 		EnterIdStatus enter_id = this.setEnter_createroom(loginModel, roomCreateForm, room_id);
@@ -134,6 +132,17 @@ public class CreateRoomCompleteController {
 				LocalDateTime.now(),
 				LocalDateTime.now());
 		return this.roomService.save_returnId(roomModel);
+	}
+	
+	/**
+	 * ログイン情報のルーム番号の更新
+	 * @param room_id
+	 * @param roomCreateForm
+	 */
+	private void updateLoginInfo_roomId(RoomIdStatus room_id, RoomCreateForm roomCreateForm) {
+		this.loginService.updateRoomId_byId(
+				room_id, 
+				new LoginIdStatus(roomCreateForm.getLogin_id()));
 	}
 	
 	/**

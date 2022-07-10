@@ -39,7 +39,6 @@ public class RoomCloseController implements SuperChatController {
 	
 	/**
 	 * コンストラクタ
-	 * @param userService
 	 * @param roomService
 	 * @param commentService
 	 * @param loginService

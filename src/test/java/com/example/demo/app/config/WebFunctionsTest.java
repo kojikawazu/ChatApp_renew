@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.example.demo.app.config.WebFunctions;
 import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.SuperStatus;
 
