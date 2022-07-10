@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -217,14 +218,17 @@ public class RoomDaoSql implements RoomDao {
 			// ルームのユーザーIDからユーザー名を取得
 			// ルームIDから入室数を取得
 			String sql = "SELECT chat_room.*,chat_user.name AS user_name,"
-					+ "CAST(("
+					+ "CAST("
+					+ "("
 					+ "SELECT COUNT(*) FROM chat_enter WHERE chat_enter.room_id = chat_room.id"
-					+ ") AS INTEGER) AS enter_cnt "
+					+ ") "
+					+ "AS INTEGER) AS enter_cnt "
 					+ "FROM chat_room LEFT OUTER JOIN chat_user ON "
 					+ "chat_room.user_id = chat_user.id";
 			
 			List<Map<String, Object>> resultList = jdbcTemp.queryForList(sql);
 			for( Map<String, Object> result : resultList ) {
+				
 				RoomModel model = new RoomModel(
 						new RoomIdStatus((int)result.get("id")),
 						new RoomNameWord((String)result.get("name")),
@@ -237,7 +241,7 @@ public class RoomDaoSql implements RoomDao {
 				RoomModelEx modelEx = new RoomModelEx(
 						model,
 						new NameWord((String)result.get("user_name")),
-						new RoomEnterCntNumber((int)result.get("enter_cnt"))
+						new RoomEnterCntNumber((int)((long)result.get("enter_cnt")))
 						);
 				list.add(modelEx);
 			}
