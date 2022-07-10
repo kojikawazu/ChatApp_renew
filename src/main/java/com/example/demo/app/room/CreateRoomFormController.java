@@ -19,7 +19,7 @@ import com.example.demo.app.form.RoomUserForm;
  */
 @Controller
 @RequestMapping("/createroom_form")
-public class CreateRoomFormController {
+public class CreateRoomFormController implements SuperRoomController {
 
 	/** ルーム生成フォーム画面タイトル */
 	public static String CREATE_ROOM_FORM_TITTLE = "ルーム作成";

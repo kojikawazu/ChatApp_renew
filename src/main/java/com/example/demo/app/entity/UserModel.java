@@ -12,7 +12,7 @@ import com.example.demo.common.word.PasswordWord;
  * @author nanai
  *
  */
-public class UserModel {
+public class UserModel implements SuperModel {
 	
 	/**
 	 * フィールド

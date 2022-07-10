@@ -14,7 +14,7 @@ import com.example.demo.common.word.RoomTagWord;
  * @author nanai
  *
  */
-public class RoomModel {
+public class RoomModel implements SuperModel {
 	
 	/**
 	 * フィールド

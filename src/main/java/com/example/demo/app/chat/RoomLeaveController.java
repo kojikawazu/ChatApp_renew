@@ -38,7 +38,7 @@ public class RoomLeaveController implements SuperChatController {
 	/**
 	 * サービス 
 	 */
-	private UserService userService;
+	private UserService    userService;
 	private CommentService commentService;
 	private LoginService   loginService;
 	private EnterService   enterService;
@@ -46,8 +46,6 @@ public class RoomLeaveController implements SuperChatController {
 	/**
 	 * コンストラクタ
 	 * @param userService
-	 * @param userService
-	 * @param roomService
 	 * @param commentService
 	 * @param loginService
 	 * @param enterService
@@ -58,7 +56,7 @@ public class RoomLeaveController implements SuperChatController {
 			CommentService commentService,
 			LoginService   loginService,
 			EnterService   enterService) {
-		this.userService = userService;
+		this.userService    = userService;
 		this.commentService = commentService;
 		this.loginService   = loginService;
 		this.enterService   = enterService;
@@ -85,6 +83,22 @@ public class RoomLeaveController implements SuperChatController {
 			return WebConsts.URL_REDIRECT_CHAT_INDEX;
 		}
 		
+		// 強制退室通知
+		this.noticeLeave(roomLeaveForm);
+		
+		// ログイン情報のルーム番号の初期化
+		this.initRoomId_byLoginId(roomLeaveForm);
+		
+		// チャットリダイレクト
+		redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, roomLeaveForm.getEnter_id());
+		return WebConsts.URL_REDIRECT_CHAT_INDEX;
+	}
+	
+	/**
+	 * 強制退室通知
+	 * @param roomLeaveForm
+	 */
+	private void noticeLeave(RoomLeaveForm roomLeaveForm) {
 		// 情報取得
 		EnterModel enterModel = this.enterService.select(new EnterIdStatus(roomLeaveForm.getEnter_id()));
 		LoginModel loginModel = this.loginService.select(new LoginIdStatus(roomLeaveForm.getIn_id()));
@@ -97,14 +111,15 @@ public class RoomLeaveController implements SuperChatController {
 				new UserIdStatus(enterModel.getUser_id()),
 				LocalDateTime.now());
 		this.commentService.save(commentModel);
-		
-		// ログイン情報のルーム番号の初期化
+	}
+	
+	/**
+	 * ログインIDによるルームIDの初期化
+	 * @param roomLeaveForm
+	 */
+	private void initRoomId_byLoginId(RoomLeaveForm roomLeaveForm) {
 		this.loginService.updateRoomId_byId(
 				new RoomIdStatus(0), 
 				new LoginIdStatus(roomLeaveForm.getIn_id()));
-		
-		// チャットリダイレクト
-		redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, roomLeaveForm.getEnter_id());
-		return WebConsts.URL_REDIRECT_CHAT_INDEX;
 	}
 }

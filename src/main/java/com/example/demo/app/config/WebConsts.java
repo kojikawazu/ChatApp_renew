@@ -1,5 +1,10 @@
 package com.example.demo.app.config;
 
+/**
+ * 定数群
+ * @author nanai
+ *
+ */
 public class WebConsts {
 	
 	/** エラー番号 */

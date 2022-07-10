@@ -11,8 +11,8 @@ public class WebFunctions {
 
 	/**
 	 * nullでないか判定
-	 * @param status: ID取得クラス
-	 * @return True: nullでない False: null
+	 * @param status ID取得クラス
+	 * @return True nullでない False null
 	 */
 	public static final boolean isNotNull(SuperStatus status) {
 		return ( status != null );

@@ -11,7 +11,7 @@ import com.example.demo.common.status.UserIdStatus;
  * @author nanai
  *
  */
-public class LoginModel {
+public class LoginModel implements SuperModel {
 
 	/**
 	 * フィールド

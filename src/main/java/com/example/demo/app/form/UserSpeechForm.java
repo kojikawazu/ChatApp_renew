@@ -4,7 +4,7 @@ package com.example.demo.app.form;
  * コメントフォーム
  * @author nanai
  */
-public class UserSpeechForm {
+public class UserSpeechForm implements SuperUserForm {
 	
 	/** コメントID */
 	private int enter_id;

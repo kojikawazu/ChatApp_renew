@@ -20,18 +20,12 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.app.config.WebConsts;
-import com.example.demo.app.entity.RoomModel;
 import com.example.demo.app.entity.UserModel;
-import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.status.LoginIdStatus;
-import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 import com.example.demo.common.word.EmailWord;
 import com.example.demo.common.word.NameWord;
 import com.example.demo.common.word.PasswordWord;
-import com.example.demo.common.word.RoomCommentWord;
-import com.example.demo.common.word.RoomNameWord;
-import com.example.demo.common.word.RoomTagWord;
 import com.example.demo.common.word.UserNameEmail;
 import com.example.demo.common.word.UserNameEmailPassword;
 

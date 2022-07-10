@@ -5,7 +5,7 @@ package com.example.demo.app.form;
 * @author nanai
  *
  */
-public class RoomUserForm {
+public class RoomUserForm implements SuperRoomForm {
 	
 	/** ログインID */
 	private int login_id;
