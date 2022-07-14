@@ -12,16 +12,23 @@ repositories {
 	mavenCentral()
 }
 
+apply plugin: 'war'
+
+war {
+    archiveName 'ChatApp_renew.war'
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation('org.springframework.boot:spring-boot-starter-validation')
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	
-	
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly('org.springframework.boot:spring-boot-devtools')
 	compileOnly('org.projectlombok:lombok')
+	
+	// war
+	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 	
 	// DB
 	//runtimeOnly 'com.h2database:h2'

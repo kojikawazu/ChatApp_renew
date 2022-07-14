@@ -222,7 +222,7 @@ public class RoomDaoSql implements RoomDao {
 					+ "("
 					+ "SELECT COUNT(*) FROM chat_enter WHERE chat_enter.room_id = chat_room.id"
 					+ ") "
-					+ "AS INTEGER) AS enter_cnt "
+					+ "AS SIGNED INTEGER) AS enter_cnt "
 					+ "FROM chat_room LEFT OUTER JOIN chat_user ON "
 					+ "chat_room.user_id = chat_user.id";
 			
