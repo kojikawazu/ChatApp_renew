@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.form.UserForgotForm;
+import com.example.demo.common.log.ChatAppLogger;
 
 /**
  * ---------------------------------------------------------------------------
@@ -21,6 +22,11 @@ import com.example.demo.app.form.UserForgotForm;
 @RequestMapping("/forgot_form")
 public class ForgotFormController implements SuperUserController {
 
+	/**
+	 * ログクラス
+	 */
+	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
+	
 	/** パスワード変更フォーム画面タイトル */
 	public static String FORGOT_PASSWORD_FORM_TITTLE = "パスワード変更";
 	
@@ -32,7 +38,7 @@ public class ForgotFormController implements SuperUserController {
 	 */
 	@Autowired
 	public ForgotFormController() {
-		// コンストラクタ
+		
 	}
 	
 	/**
@@ -45,7 +51,7 @@ public class ForgotFormController implements SuperUserController {
 	public String index(
 			UserForgotForm userForgotForm,
 			Model model) {
-		// パスワード変更フォーム画面
+		this.appLogger.info("パスワード変更フォーム受信...");
 		
 		// パスワード変更画面設定
 		this.setForgot_form(model);
@@ -62,7 +68,7 @@ public class ForgotFormController implements SuperUserController {
 	public String forgot_form_goback(
 			UserForgotForm userForgotForm,
 			Model model) {
-		// パスワード変更フォーム画面
+		this.appLogger.info("パスワード変更フォームへ戻る");
 		
 		// パスワード変更画面設定
 		this.setForgot_form(model);

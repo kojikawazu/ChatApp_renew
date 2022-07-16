@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.form.UserForgotForm;
+import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.UserService;
 import com.example.demo.common.word.UserNameEmail;
 import com.example.demo.common.word.UserNameEmailPassword;
@@ -26,9 +27,14 @@ import com.example.demo.common.word.UserNameEmailPassword;
 public class ForgotConfirmController implements SuperUserController {
 
 	/**
-	 * フィールド 
-	 * 
+	 * サービス
 	 */
+	private UserService userService;
+	
+	/**
+	 * ログクラス
+	 */
+	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
 	
 	/** パスワード変更確認画面タイトル */
 	public static String FORGOT_PASSWORD_CONFIRM_TITTLE = "パスワード変更確認";
@@ -76,17 +82,11 @@ public class ForgotConfirmController implements SuperUserController {
 	private static final String USER_FORGOT_FORM_NAME = "userForgotForm";
 	
 	/**
-	 * サービス
-	 */
-	private UserService userService;
-	
-	/**
 	 * コンストラクタ
 	 */
 	@Autowired
 	public ForgotConfirmController(
 			UserService userService) {
-		// コンストラクタ
 		this.userService = userService;
 	}
 	
@@ -104,15 +104,15 @@ public class ForgotConfirmController implements SuperUserController {
 			@Validated UserForgotForm userForgotForm,
 			BindingResult result,
 			Model model) {
-		// パスワード変更確認
+		this.appLogger.start("パスワード変更確認受信...");
 		
 		// エラーチェック
 		if(!this.isCheck_changepasswd(userForgotForm, result, model)) {
-			// パスワード変更画面へ
+			this.appLogger.error("パスワード変更画面へ");
 			return WebConsts.URL_USER_FORGOT_FORM;
 		}
 		
-		// パスワード変更確認画面へ
+		this.appLogger.successed("パスワード変更確認成功");
 		this.setForgot_confirm(userForgotForm, model);
 		return WebConsts.URL_USER_FORGOT_CONFIRM;
 	}
@@ -128,10 +128,11 @@ public class ForgotConfirmController implements SuperUserController {
 			UserForgotForm userForgotForm,
 			BindingResult result,
 			Model model) {
+		this.appLogger.start("パスワード変更確認チェック...");
 		
-		// パスワード変更確認チェック
 		if(result.hasErrors()) {
 			// エラーあり
+			this.appLogger.error("バリデーションエラー : " + result);
 			this.setErrorMessage(result, model);
 			this.setForgot_form(model);
 			return WebConsts.CHECK_COMMON_NG;
@@ -143,6 +144,8 @@ public class ForgotConfirmController implements SuperUserController {
 						userForgotForm.getName(), 
 						userForgotForm.getEmail()))) {
 			// ユーザ名、Eメール一致しない
+			this.appLogger.error("ユーザ名、Eメール一致しない : name  : " + userForgotForm.getName());
+			this.appLogger.error("                     : email : " + userForgotForm.getEmail());
 			model.addAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_FORGOTPASSWD_NAMEEMAIL);
 			this.setForgot_form(model);
 			return WebConsts.CHECK_COMMON_NG;
@@ -156,13 +159,16 @@ public class ForgotConfirmController implements SuperUserController {
 						userForgotForm.getEmail(), 
 						userForgotForm.getForgot_passwd() ) ) ) {
 			// ユーザ名、Eメール、忘れたとき用パスワード一致しない
+			this.appLogger.error("ユーザ名、Eメール、忘れたとき用パスワード一致しない : name        : " + userForgotForm.getName());
+			this.appLogger.error("                                     : email        : " + userForgotForm.getEmail());
+			this.appLogger.error("                                     : forgotPasswd : " + userForgotForm.getForgot_passwd());
 			model.addAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_FORGOTPASSWD);
 			this.setForgot_form(model);
 			return WebConsts.CHECK_COMMON_NG;
 		}
 		// ユーザー名、Email、忘れた時用のパスワード一致
 		
-		// パスワード確認OK
+		this.appLogger.successed("パスワード変更確認OK");
 		return WebConsts.CHECK_COMMON_OK;
 	}
 	

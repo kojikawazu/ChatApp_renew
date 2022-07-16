@@ -8,6 +8,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.form.UserLogoutForm;
+import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.LoginService;
 import com.example.demo.common.status.LoginIdStatus;
 
@@ -26,6 +27,11 @@ public class SignoutController implements SuperUserController {
 	 * サービス
 	 */
 	private LoginService loginService;
+	
+	/**
+	 * ログクラス
+	 */
+	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
 
 	/**
 	 * コンストラクタ
@@ -39,15 +45,15 @@ public class SignoutController implements SuperUserController {
 	
 	/**
 	 * サインアウト受信
-	 * @param userLogoutForm: ログアウトフォーム
-	 * @param redirectAttributes: リダイレクト
+	 * @param userLogoutForm      ログアウトフォーム
+	 * @param redirectAttributes  リダイレクト
 	 * @return Webパス(redirect:/room)
 	 */
 	@PostMapping
 	public String index(
 			UserLogoutForm userLogoutForm,
 			RedirectAttributes redirectAttributes) {
-		// サインアウト
+		this.appLogger.start("サインアウト受信...");
 		
 		// ログイン情報削除
 		LoginIdStatus login_id = new LoginIdStatus(userLogoutForm.getId());
@@ -58,6 +64,7 @@ public class SignoutController implements SuperUserController {
 				WebConsts.BIND_LOGIN_ID, 
 				WebConsts.LOGIN_ID_INIT_NUMBER);
 		
+		this.appLogger.successed("サインアウト成功 : loginId : " + login_id.getId());
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
 	}
 }

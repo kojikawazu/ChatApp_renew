@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.form.UserSignupForm;
+import com.example.demo.common.log.ChatAppLogger;
 
 /**
  * ---------------------------------------------------------------------------
@@ -20,13 +21,11 @@ import com.example.demo.app.form.UserSignupForm;
 @Controller
 @RequestMapping("/signup_form")
 public class SignupFormController implements SuperUserController {
-
-	//Log log = LogFactory.getLog(UserSignupController.class);
-	//log.info("テストOK");
 	
 	/**
-	 * フィールド
+	 * ログクラス
 	 */
+	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
 	
 	/** サインアップフォームタイトル */
 	public static String SIGNUP_FORM_TITTLE = "サインアップ";
@@ -39,7 +38,7 @@ public class SignupFormController implements SuperUserController {
 	 */
 	@Autowired
 	public SignupFormController() {
-		// コンストラクタ
+		
 	}
 	
 	/**
@@ -52,7 +51,7 @@ public class SignupFormController implements SuperUserController {
 	public String index(
 			UserSignupForm userSignupForm,
 			Model model) {
-		// サインアップフォーム受信
+		this.appLogger.info("サインアップフォーム受信...");
 		this.setSignup_form(model);
 		return WebConsts.URL_USER_SIGNUP_FORM;
 	}
@@ -67,7 +66,7 @@ public class SignupFormController implements SuperUserController {
 	public String signup_form_goback(
 			UserSignupForm userSignupForm,
 			Model model) {
-		// サインアップフォームに戻ってきた
+		this.appLogger.info("サインアップフォームへ戻る");
 		this.setSignup_form(model);
 		return WebConsts.URL_USER_SIGNUP_FORM;
 	}

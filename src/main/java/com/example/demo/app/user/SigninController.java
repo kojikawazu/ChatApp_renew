@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.app.config.WebConsts;
-import com.example.demo.app.config.WebFunctions;
 import com.example.demo.app.entity.LoginModel;
 import com.example.demo.app.form.UserLoginForm;
+import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.LoginService;
 import com.example.demo.common.service.UserService;
 import com.example.demo.common.status.LoginIdStatus;
@@ -39,6 +39,11 @@ public class SigninController implements SuperUserController {
 	private LoginService loginService;
 	
 	/**
+	 * ログクラス
+	 */
+	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
+	
+	/**
 	 * メッセージ
 	 */
 	/** ログインに失敗した時のメッセージ */
@@ -49,21 +54,21 @@ public class SigninController implements SuperUserController {
 	
 	/**
 	 * コンストラクタ
-	 * @param userService ユーザーサービス
+	 * @param userService  ユーザーサービス
 	 * @param loginService ログインサービス
 	 */
 	@Autowired
 	public SigninController(
 			UserService userService,
 			LoginService loginService) {
-		this.userService = userService;
+		this.userService  = userService;
 		this.loginService = loginService;
 	}
 	
 	/**
 	 * サインイン受信
-	 * @param userLoginForm サインインフォーム
-	 * @param result 結果
+	 * @param userLoginForm      サインインフォーム
+	 * @param result             結果
 	 * @param redirectAttributes リダイレクト
 	 * @return Webパス(redirect:/room)
 	 */
@@ -72,7 +77,7 @@ public class SigninController implements SuperUserController {
 			@Validated UserLoginForm userLoginForm,
 			BindingResult result,
 			RedirectAttributes redirectAttributes) {
-		// サインイン
+		this.appLogger.start("サインイン受信...");
 		
 		try {
 			UserIdStatus userIdStatus = new UserIdStatus(0);
@@ -84,18 +89,26 @@ public class SigninController implements SuperUserController {
 					result, 
 					redirectAttributes);
 			
-			if( WebFunctions.isNotNull(userIdStatus) && userIdStatus.isError() ) {
+			if( userIdStatus.isError() ) {
 				// エラーの場合何もしない
+				this.appLogger.error("ルーム画面へ");
 				return WebConsts.URL_REDIRECT_ROOM_INDEX;
 			}
 			
 			// サインイン情報登録
 			loginIdStatus = this.addSignin(userIdStatus);
-			if( WebFunctions.isNotNull(loginIdStatus) && !loginIdStatus.isError() ) {
-				// ログインIDをWebに登録
-				redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, loginIdStatus.getId());
+			if( loginIdStatus.isError() ) {
+				// エラーの場合何もしない
+				this.appLogger.error("ルーム画面へ");
+				return WebConsts.URL_REDIRECT_ROOM_INDEX;
 			}
+			
+			// ログインIDをWebに登録
+			this.appLogger.successed("サインイン成功 : userId : "  + userIdStatus.getId());
+			this.appLogger.successed("             loginId : " + loginIdStatus.getId());
+			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, loginIdStatus.getId());
 		} catch(Exception ex) {
+			this.appLogger.error(ex.getMessage());
 			ex.printStackTrace();
 		}
 		
@@ -114,10 +127,11 @@ public class SigninController implements SuperUserController {
 			UserLoginForm userLoginForm,
 			BindingResult result,
 			RedirectAttributes redirectAttributes) {
+		this.appLogger.start("サインインチェック...");
 		
-		// サインインエラーチェック
 		if( result.hasErrors() ) {
 			// エラーあり
+			this.appLogger.error("バリデーションエラー: " + result);
 			redirectAttributes.addFlashAttribute(
 					WebConsts.BIND_NOTICE_ERROR, 
 					SIGNIN_MESSAGE_ERROR_LOGIN);
@@ -135,7 +149,8 @@ public class SigninController implements SuperUserController {
 		
 		// サインイン内容チェック
 		if( userIdStatus.isError() ) {
-			// ユーザ名、Eメール、パスワード一致しない[ERROR]
+			// [ERROR]
+			this.appLogger.error("ユーザ名、Eメール、パスワード一致しない");
 			redirectAttributes.addFlashAttribute(
 					WebConsts.BIND_NOTICE_ERROR, 
 					SIGNIN_MESSAGE_ERROR_LOGIN);
@@ -146,7 +161,8 @@ public class SigninController implements SuperUserController {
 		
 		// ログイン情報チェック
 		if( this.loginService.isSelect_byUserId(userIdStatus) ) {
-			// ログイン情報が既に存在する[ERROR]
+			// [ERROR]
+			this.appLogger.error("ログイン情報が既に存在する。 : userId: " + userIdStatus.getId());
 			redirectAttributes.addFlashAttribute(
 					WebConsts.BIND_NOTICE_ERROR, 
 					SIGNIN_MESSAGE_ERROR_ALREADY_LOGIN);
@@ -155,6 +171,7 @@ public class SigninController implements SuperUserController {
 		}
 		
 		// サインインOK
+		this.appLogger.successed("サインインチェック[done]");
 		return userIdStatus;
 	}
 	

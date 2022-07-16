@@ -14,6 +14,7 @@ import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.LoginModel;
 import com.example.demo.app.entity.UserModel;
 import com.example.demo.app.form.UserSignupForm;
+import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.LoginService;
 import com.example.demo.common.service.UserService;
 import com.example.demo.common.status.LoginIdStatus;
@@ -41,14 +42,21 @@ public class SignupCompleteController implements SuperUserController {
 	private LoginService loginService;
 	
 	/**
+	 * ログクラス
+	 */
+	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
+	
+	/**
 	 * コンストラクタ
+	 * @param userService  ユーザーサービス
+	 * @param loginService ログインサービス
 	 */
 	@Autowired
 	public SignupCompleteController(
 			UserService userService,
 			LoginService loginService) {
 		// コンストラクタ
-		this.userService = userService;
+		this.userService  = userService;
 		this.loginService = loginService;
 	}
 	
@@ -66,17 +74,22 @@ public class SignupCompleteController implements SuperUserController {
 			BindingResult result,
 			Model model,
 			RedirectAttributes redirectAttributes) {
-		// サインアップ処理
+		this.appLogger.start("サインアップ実行受信...");
+		
 		if(result.hasErrors()) {
 			// 何もしない
+			this.appLogger.error("バリデーションエラー: " + result);
 			return WebConsts.URL_REDIRECT_ROOM_INDEX;
 		}
 		
 		// ユーザーの生成
 		UserIdStatus userId =  this.createUser(userSignupForm);
+		this.appLogger.successed("ユーザーの生成成功: userId : " + userId.getId());
 		// ログイン情報の追加
 		LoginIdStatus loginId = this.addSignIn(userId);
+		this.appLogger.successed("ログイン情報の追加成功 : loginId : " + loginId.getId());
 		
+		this.appLogger.successed("サインアップ実行成功");
 		redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, loginId.getId());
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
 	}
