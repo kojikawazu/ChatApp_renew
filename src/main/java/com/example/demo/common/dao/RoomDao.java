@@ -30,5 +30,7 @@ public interface RoomDao {
 	
 	RoomModel select(RoomIdStatus id);
 	
+	RoomModelEx select_plusUserName(RoomIdStatus id);
+	
 	boolean isSelect_byId(RoomIdStatus id);
 }

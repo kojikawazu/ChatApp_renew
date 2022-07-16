@@ -15,6 +15,7 @@ import com.example.demo.app.entity.EnterModel;
 import com.example.demo.app.entity.LoginModel;
 import com.example.demo.app.entity.RoomModel;
 import com.example.demo.app.form.UserEnterForm;
+import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.service.CommentService;
 import com.example.demo.common.service.EnterService;
@@ -39,6 +40,19 @@ import com.example.demo.common.word.ChatCommentWord;
 public class EnterController implements SuperRoomController {
 
 	/**
+	 * サービス
+	 */
+	private RoomService    roomService;
+	private CommentService commentService;
+	private LoginService   loginService;
+	private EnterService   enterService;
+	
+	/**
+	 * ログクラス
+	 */
+	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
+	
+	/**
 	 * メッセージ
 	 */
 	/** ログイン促し */
@@ -52,14 +66,6 @@ public class EnterController implements SuperRoomController {
 	
 	/** ログインID(初期化番号) */
 	public static int NO_LOGIN_NUMBER = 0;
-	
-	/**
-	 * サービス
-	 */
-	private RoomService    roomService;
-	private CommentService commentService;
-	private LoginService   loginService;
-	private EnterService   enterService;
 	
 	/**
 	 * コンストラクタ
@@ -82,8 +88,8 @@ public class EnterController implements SuperRoomController {
 	
 	/**
 	 * 入室受信
-	 * @param userEnterForm 入室フォーム
-	 * @param model モデル
+	 * @param userEnterForm      入室フォーム
+	 * @param model              モデル
 	 * @param redirectAttributes リダイレクト
 	 * @return (redirect:/room, redirect:/chat)
 	 */
@@ -92,11 +98,13 @@ public class EnterController implements SuperRoomController {
 			UserEnterForm userEnterForm,
 			Model model,
 			RedirectAttributes redirectAttributes) {
-		// 入室
+		this.appLogger.start("入室受信...");
 		
 		// 入室チェック
 		if( !isEnter(userEnterForm, redirectAttributes) ) {
+			// [ERROR]
 			// 何もしない
+			this.appLogger.error("入室失敗...ルーム画面へ");
 			return WebConsts.URL_REDIRECT_ROOM_INDEX;
 		}
 		
@@ -108,21 +116,18 @@ public class EnterController implements SuperRoomController {
 		
 		// 入室チェック
 		if(this.enterService.isSelect_byUserId(user_id)) {
-			// 既に入室している
-			// 入室情報更新
+			// 既に入室している - 入室情報更新
 			EnterIdStatus out_enterId = this.updateEnter(room_id, loginModel);
 			redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, out_enterId.getId());
 		}else {
-			// 入室情報なし
-			// 入室情報登録
+			// 入室情報なし - 入室情報登録
 			this.setEnter(userEnterForm, model, redirectAttributes);
 		}
 		
 		// ログイン情報のルーム番号更新
-		this.loginService.updateRoomId_byId(
-				room_id, 
-				login_id);
+		this.updateRoomId_byLoginId(room_id, login_id);
 		
+		this.appLogger.successed("入室成功");
 		return WebConsts.URL_REDIRECT_CHAT_INDEX;
 	}
 	
@@ -135,10 +140,12 @@ public class EnterController implements SuperRoomController {
 	private boolean isEnter(
 			UserEnterForm userEnterForm,
 			RedirectAttributes redirectAttributes) {
+		this.appLogger.start("入室チェック...");
 		
-		// 入室チェック
 		if(userEnterForm.getLogin_id() == 0) {
-			// ログインしてない
+			// [ERROR]
+			this.appLogger.error("ログインしてない。");
+			
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_MESSAGE_NO_LOGIN);
 			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, NO_LOGIN_NUMBER);
 			return WebConsts.CHECK_COMMON_NG;
@@ -150,7 +157,12 @@ public class EnterController implements SuperRoomController {
 		
 		// 満室チェック
 		if((userEnterForm.getCount_sum() + 1) > userEnterForm.getMax_sum()) {
-			// 既に満室
+			// [ERROR]
+			this.appLogger.error("既に満室: "
+					+ "count(): " + (userEnterForm.getCount_sum() + 1) 
+					+ " max(): " + userEnterForm.getMax_sum()
+					);
+			
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_MESSAGE_MAX_ENTER_ROOM);
 			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id.getId());
 			return WebConsts.CHECK_COMMON_NG;
@@ -159,14 +171,16 @@ public class EnterController implements SuperRoomController {
 		
 		// ルームチェック
 		if(!this.roomService.isSelect_byId(room_id)) {
-			// ルームがない
+			// [ERROR]
+			this.appLogger.error("ルームがない: roomId: " + room_id);
+			
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_MESSAGE_CLOSUER);
 			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id.getId());
 			return WebConsts.CHECK_COMMON_NG;
 		}
 		// ルームあり
 		
-		// 入室OK
+		this.appLogger.successed("入室OK");
 		return WebConsts.CHECK_COMMON_OK;
 	}
 	
@@ -180,7 +194,7 @@ public class EnterController implements SuperRoomController {
 			UserEnterForm userEnterForm,
 			Model model,
 			RedirectAttributes redirectAttributes) {
-		// 入室処理
+		this.appLogger.start("入室処理...");
 		
 		// 情報取得
 		RoomIdStatus  room_id     = new RoomIdStatus(userEnterForm.getRoom_id());
@@ -196,6 +210,10 @@ public class EnterController implements SuperRoomController {
 				new RoomMaxNumber(roomModel.getMax_roomsum()),
 				LocalDateTime.now());
 		EnterIdStatus enter_id = this.enterService.save_returnId(enterModel);
+		this.appLogger.successed("入室情報の保存成功: enterId: " + enter_id.getId());
+		this.appLogger.successed("               : roomId:  "  + room_id.getId());
+		this.appLogger.successed("               : userId:  "  + loginModel.getUser_id());
+		this.appLogger.successed("               : loginId: "  + login_id.getId());
 		
 		// 入室通知保存
 		CommentModel commentModel = new CommentModel(
@@ -204,8 +222,11 @@ public class EnterController implements SuperRoomController {
 				new UserIdStatus(loginModel.getUser_id()),
 				LocalDateTime.now());
 		this.commentService.save(commentModel);
+		this.appLogger.successed("入室コメント通知成功");
 		
 		redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, enter_id.getId());
+		
+		this.appLogger.successed("入室処理成功: enterId: " + enter_id.getId());
 	}
 	
 	
@@ -216,7 +237,8 @@ public class EnterController implements SuperRoomController {
 	 * @return            入室ID
 	 */
 	private EnterIdStatus updateEnter(RoomIdStatus room_id, LoginModel loginModel) {
-		// 入室情報更新
+		this.appLogger.start("入室情報更新...");
+		
 		RoomModel roomModel = this.roomService.select(room_id);
 		this.enterService.update_byUserId(
 				room_id, 
@@ -225,7 +247,27 @@ public class EnterController implements SuperRoomController {
 				new UserIdStatus(loginModel.getUser_id()));
 		
 		// 入室IDを返す
-		return this.enterService.selectId_byUserId(
+		EnterIdStatus enterIdStatus = this.enterService.selectId_byUserId(
 				new UserIdStatus(loginModel.getUser_id()));
+		
+		this.appLogger.successed("入室情報更新成功: enterId " + enterIdStatus.getId());
+		this.appLogger.successed("              : userId: " + loginModel.getUser_id());
+		return enterIdStatus;
+	}
+	
+	/**
+	 * ログイン情報のルーム番号の更新
+	 * @param room_id
+	 * @param login_id
+	 */
+	private void updateRoomId_byLoginId(RoomIdStatus room_id, LoginIdStatus login_id) {
+		this.appLogger.start("ログイン情報のルーム番号の更新...");
+		
+		this.loginService.updateRoomId_byId(
+				room_id, 
+				login_id);
+		
+		this.appLogger.successed("ログイン情報のルーム番号の更新成功: roomId: " + room_id.getId());
+		this.appLogger.successed("                          : loginId: " + login_id.getId());
 	}
 }

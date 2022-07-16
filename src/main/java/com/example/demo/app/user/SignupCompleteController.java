@@ -77,6 +77,7 @@ public class SignupCompleteController implements SuperUserController {
 		this.appLogger.start("サインアップ実行受信...");
 		
 		if(result.hasErrors()) {
+			// [ERROR]
 			// 何もしない
 			this.appLogger.error("バリデーションエラー: " + result);
 			return WebConsts.URL_REDIRECT_ROOM_INDEX;
@@ -84,13 +85,14 @@ public class SignupCompleteController implements SuperUserController {
 		
 		// ユーザーの生成
 		UserIdStatus userId =  this.createUser(userSignupForm);
-		this.appLogger.successed("ユーザーの生成成功: userId : " + userId.getId());
+		
 		// ログイン情報の追加
 		LoginIdStatus loginId = this.addSignIn(userId);
-		this.appLogger.successed("ログイン情報の追加成功 : loginId : " + loginId.getId());
 		
-		this.appLogger.successed("サインアップ実行成功");
 		redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, loginId.getId());
+		
+		this.appLogger.successed("サインアップ実行成功: userId: " + userId.getId());
+		this.appLogger.successed("               : loginId: " + loginId.getId());
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
 	}
 	
@@ -100,7 +102,8 @@ public class SignupCompleteController implements SuperUserController {
 	 * @return               ユーザID
 	 */
 	private UserIdStatus createUser(UserSignupForm userSignupForm) {
-		// ユーザの追加
+		this.appLogger.start("ユーザーの生成...");
+		
 		UserModel userModel = new UserModel(
 				new NameWord(userSignupForm.getName()),
 				new EmailWord(userSignupForm.getEmail()),
@@ -109,7 +112,10 @@ public class SignupCompleteController implements SuperUserController {
 				LocalDateTime.now(),
 				LocalDateTime.now()
 				);
-		return this.userService.save_returnId(userModel);
+		UserIdStatus userIdStatus = this.userService.save_returnId(userModel);
+		
+		this.appLogger.successed("ユーザーの生成成功: userId : " + userIdStatus.getId());
+		return userIdStatus;
 	}
 	
 	/**
@@ -118,13 +124,16 @@ public class SignupCompleteController implements SuperUserController {
 	 * @return        ログインID
 	 */
 	private LoginIdStatus addSignIn(UserIdStatus userId) {
-		// サインイン情報登録
+		this.appLogger.start("サインイン情報の追加...");
+		
 		LoginModel loginModel = new LoginModel(
 				new RoomIdStatus(0),
 				new UserIdStatus(userId.getId()),
 				LocalDateTime.now()
 				);
-		return this.loginService.save_returnId(loginModel);
+		LoginIdStatus loginIdStatus = this.loginService.save_returnId(loginModel);
+		
+		this.appLogger.successed("ログイン情報の追加成功 : loginId : " + loginIdStatus.getId());
+		return loginIdStatus;
 	}
-	
 }

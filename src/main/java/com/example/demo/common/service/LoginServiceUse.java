@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.LoginModel;
+import com.example.demo.app.entity.LoginModelEx;
 import com.example.demo.app.exception.WebMvcConfig;
 import com.example.demo.common.dao.LoginDao;
 import com.example.demo.common.status.LoginIdStatus;
@@ -153,6 +154,17 @@ public class LoginServiceUse implements LoginService {
 	}
 	
 	/**
+	 * ルームIDによる選択+ユーザー名選択
+	 * @param roomId ルームID
+	 * @return ログインモデル拡張版リスト
+	 */
+	@Override
+	public List<LoginModelEx> selectList_plusUserName_byRoomId(RoomIdStatus roomId) {
+		// ルームIDによる選択+ユーザー名選択
+		return this.dao.selectList_plusUserName_byRoomId(roomId);
+	}
+	
+	/**
 	 * 選択
 	 * @param userId ユーザID
 	 * @return ログインID
@@ -206,5 +218,4 @@ public class LoginServiceUse implements LoginService {
 		// ユーザIDによるIDの有無確認
 		return this.dao.isSelect_byUserId(userId);
 	}
-
 }

@@ -1,0 +1,16 @@
+7月 17, 2022 2:20:12 午前 com.example.demo.common.log.AppLogger start
+情報: isEnterCheck(ChatController.java:140):[start]入室チェック...
+7月 17, 2022 2:20:12 午前 com.example.demo.common.log.AppLogger successed
+情報: isEnterCheck(ChatController.java:178):[successed]入室OK
+7月 17, 2022 2:20:23 午前 com.example.demo.common.log.AppLogger start
+情報: isEnterCheck(ChatController.java:140):[start]入室チェック...
+7月 17, 2022 2:20:23 午前 com.example.demo.common.log.AppLogger successed
+情報: isEnterCheck(ChatController.java:178):[successed]入室OK
+7月 17, 2022 2:20:26 午前 com.example.demo.common.log.AppLogger start
+情報: isEnterCheck(ChatController.java:140):[start]入室チェック...
+7月 17, 2022 2:20:26 午前 com.example.demo.common.log.AppLogger successed
+情報: isEnterCheck(ChatController.java:178):[successed]入室OK
+7月 17, 2022 2:20:50 午前 com.example.demo.common.log.AppLogger start
+情報: isEnterCheck(ChatController.java:140):[start]入室チェック...
+7月 17, 2022 2:20:50 午前 com.example.demo.common.log.AppLogger successed
+情報: isEnterCheck(ChatController.java:178):[successed]入室OK

@@ -20,10 +20,12 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.CommentModel;
+import com.example.demo.app.entity.CommentModelEx;
 import com.example.demo.common.status.CommentIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 import com.example.demo.common.word.ChatCommentWord;
+import com.example.demo.common.word.NameWord;
 
 /**
  * 【コメントDaoパターン】
@@ -182,6 +184,45 @@ public class CommentDaoSql implements CommentDao {
 		}
 		return list;
 	}
+	
+	/**
+	 * 全選択+ユーザー名を選択
+	 * @return コメントモデル拡張版リスト
+	 */
+	@Override
+	public List<CommentModelEx> getAll_plusUserName() {
+		// 全選択+ユーザー名を選択
+		
+		List<CommentModelEx> list = new ArrayList<CommentModelEx>();
+		try {
+			// 全ルームのデータを取得
+			// ルームのユーザーIDからユーザー名を取得
+			String sql = "SELECT chat_comment.*, chat_user.name AS user_name "
+					+ "FROM chat_comment LEFT OUTER JOIN chat_user ON "
+					+ "chat_comment.user_id = chat_user.id "
+					+ "ORDER BY created DESC";
+			List<Map<String, Object>> resultList = jdbcTemp.queryForList(sql);
+			
+			for( Map<String, Object> result : resultList ) {
+				CommentModel superModel = new CommentModel(
+						new CommentIdStatus((int)result.get("id")),
+						new ChatCommentWord((String)result.get("comment")),
+						new RoomIdStatus((int)result.get("room_id")),
+						new UserIdStatus((int)result.get("user_id")),
+						((Timestamp)result.get("created")).toLocalDateTime());
+				
+				CommentModelEx model = new CommentModelEx(
+						superModel,
+						new NameWord((String)result.get("user_name")));
+				
+				list.add(model);
+			}
+		} catch(DataAccessException ex) {
+			ex.printStackTrace();
+			list.clear();
+		}
+		return list;
+	}
 
 	/**
 	 * コメントIDから選択
@@ -233,6 +274,46 @@ public class CommentDaoSql implements CommentDao {
 						new RoomIdStatus((int)result.get("room_id")),
 						new UserIdStatus((int)result.get("user_id")),
 						((Timestamp)result.get("created")).toLocalDateTime());
+				list.add(model);
+			}
+		} catch(EmptyResultDataAccessException ex) {
+			ex.printStackTrace();
+			list.clear();
+		}
+		return list;
+	}
+	
+	/**
+	 * ルームIDから選択+ユーザー名を選択
+	 * @param ルームID
+	 * @return コメントモデル拡張版
+	 */
+	@Override
+	public List<CommentModelEx> select_plusUserName_byRoomId(RoomIdStatus roomId) {
+		// ルームIDから選択+ユーザー名を選択
+		List<CommentModelEx> list = new ArrayList<CommentModelEx>();
+		if(roomId == null)	return list;
+		
+		try {
+			String sql = "SELECT chat_comment.*, chat_user.name AS user_name "
+					+ "FROM chat_comment LEFT OUTER JOIN chat_user ON "
+					+ "chat_comment.user_id = chat_user.id "
+					+ "WHERE room_id = ? "
+					+ "ORDER BY created DESC";
+			List<Map<String, Object>> resultList = jdbcTemp.queryForList(sql, roomId.getId());
+			
+			for( Map<String, Object> result : resultList ) {
+				CommentModel superModel = new CommentModel(
+						new CommentIdStatus((int)result.get("id")),
+						new ChatCommentWord((String)result.get("comment")),
+						new RoomIdStatus((int)result.get("room_id")),
+						new UserIdStatus((int)result.get("user_id")),
+						((Timestamp)result.get("created")).toLocalDateTime());
+				
+				CommentModelEx model = new CommentModelEx(
+						superModel, 
+						new NameWord((String)result.get("user_name")));
+				
 				list.add(model);
 			}
 		} catch(EmptyResultDataAccessException ex) {

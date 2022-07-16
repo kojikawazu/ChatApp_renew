@@ -58,14 +58,16 @@ public class SignupConfirmController implements SuperUserController {
 		this.appLogger.start("サインアップ確認受信...");
 		
 		if(result.hasErrors()) {
+			// [ERROR]
 			this.appLogger.error("バリデーションエラー: " + result);
 			this.setSignup_form(model);
 			// サインアップフォーム画面へ
 			return WebConsts.URL_USER_SIGNUP_FORM;
 		}
 		// サインアップ確認画面へ
-		this.appLogger.successed("サインアップ確認成功");
 		this.setSignup_confirm(model);
+		
+		this.appLogger.successed("サインアップ確認成功");
 		return WebConsts.URL_USER_SIGNUP_CONFIRM;
 	}
 	

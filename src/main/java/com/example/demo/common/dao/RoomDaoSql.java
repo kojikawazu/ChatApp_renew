@@ -282,6 +282,57 @@ public class RoomDaoSql implements RoomDao {
 		}
 		return model;
 	}
+	
+	/**
+	 * ルームIDによる選択
+	 * ルームのユーザーIDからユーザー名を取得
+	 * ルームIDから入室数を取得
+	 * @param  id ルームID
+	 * @return ルームモデル
+	 */
+	@Override
+	public RoomModelEx select_plusUserName(RoomIdStatus id) {
+		// IDによるデータ取得
+		if(id == null) return new RoomModelEx(null);
+		
+		RoomModelEx model = null;
+		try {
+			// IDによるデータを取得
+			// ルームのユーザーIDからユーザー名を取得
+			// ルームIDから入室数を取得
+			String sql = "SELECT chat_room.*,chat_user.name AS user_name,"
+					+ "CAST("
+					+ "("
+					+ "SELECT COUNT(*) FROM chat_enter WHERE chat_enter.room_id = chat_room.id"
+					+ ") "
+					+ "AS SIGNED INTEGER) AS enter_cnt "
+					+ "FROM chat_room LEFT OUTER JOIN chat_user ON "
+					+ "chat_room.user_id = chat_user.id "
+					+ "WHERE chat_room.id = ?";
+			
+			Map<String, Object> result = jdbcTemp.queryForMap(sql, id.getId());
+				
+			RoomModel superModel = new RoomModel(
+					new RoomIdStatus((int)result.get("id")),
+					new RoomNameWord((String)result.get("name")),
+					new RoomCommentWord((String)result.get("comment")),
+					new RoomTagWord((String)result.get("tag")),
+					new RoomMaxNumber((int)result.get("max_roomsum")),
+					new UserIdStatus((int)result.get("user_id")),
+					((Timestamp)result.get("created")).toLocalDateTime(),
+					((Timestamp)result.get("updated")).toLocalDateTime());
+			
+			model = new RoomModelEx(
+					superModel,
+					new NameWord((String)result.get("user_name")),
+					new RoomEnterCntNumber((int)((long)result.get("enter_cnt"))));
+			
+		} catch(EmptyResultDataAccessException ex) {
+			ex.printStackTrace();
+			model = new RoomModelEx(null);
+		}
+		return model;
+	}
 
 	/**
 	 * ルームIDによる有無チェック

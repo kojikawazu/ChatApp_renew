@@ -123,6 +123,17 @@ public class RoomServiceUse implements RoomService {
 		// IDによる選択
 		return this.dao.select(id);
 	}
+	
+	/**
+	 * IDによる選択+ユーザー名+入室数を選択
+	 * @param id ルームID
+	 * @return ルームモデル
+	 */
+	@Override
+	public RoomModelEx select_plusUserName_EnterCnt(RoomIdStatus id) {
+		// IDによる選択+ユーザー名+入室数を選択
+		return this.dao.select_plusUserName(id);
+	}
 
 	/**
 	 * ルームモデルの有無確認

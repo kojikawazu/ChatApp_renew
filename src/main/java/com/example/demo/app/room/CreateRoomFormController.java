@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.form.RoomCreateForm;
 import com.example.demo.app.form.RoomUserForm;
+import com.example.demo.common.log.ChatAppLogger;
 
 /**
  * ---------------------------------------------------------------------------
@@ -21,6 +22,11 @@ import com.example.demo.app.form.RoomUserForm;
 @RequestMapping("/createroom_form")
 public class CreateRoomFormController implements SuperRoomController {
 
+	/**
+	 * ログクラス
+	 */
+	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
+	
 	/** ルーム生成フォーム画面タイトル */
 	public static String CREATE_ROOM_FORM_TITTLE = "ルーム作成";
 	
@@ -37,7 +43,7 @@ public class CreateRoomFormController implements SuperRoomController {
 	
 	/**
 	 * ルーム作成受信
-	 * @param roomUserForm ルーム情報フォーム
+	 * @param roomUserForm   ルーム情報フォーム
 	 * @param roomCreateForm ルーム作成フォーム
 	 * @param model
 	 * @return Webパス(room/create_room)
@@ -48,11 +54,12 @@ public class CreateRoomFormController implements SuperRoomController {
 			RoomCreateForm roomCreateForm,
 			Model model) {
 		// ルーム作成フォーム
+		this.appLogger.info("ルーム作成フォーム受信... loginId: " + roomUserForm.getLogin_id());
 		
 		// ルーム作成画面設定
 		this.setCreateroom_form(model);
-		
 		model.addAttribute(WebConsts.BIND_LOGIN_ID, roomUserForm.getLogin_id());
+		
 		return WebConsts.URL_ROOM_CREATE_FORM;
 	}
 	

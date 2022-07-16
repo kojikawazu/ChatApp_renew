@@ -20,9 +20,11 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.LoginModel;
+import com.example.demo.app.entity.LoginModelEx;
 import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
+import com.example.demo.common.word.NameWord;
 
 /**
  * ログインDaoパターン
@@ -232,6 +234,42 @@ public class LoginDaoSql implements LoginDao {
 						new RoomIdStatus((int)result.get("room_id")),
 						new UserIdStatus((int)result.get("user_id")),
 						((Timestamp)result.get("created")).toLocalDateTime());
+				list.add(model);
+			}
+		} catch(EmptyResultDataAccessException ex) {
+			ex.printStackTrace();
+			list.clear();
+		}
+		return list;
+	}
+	
+	/**
+	 * ルームIDによる選択 + ユーザ名選択
+	 * @param ルームID
+	 * @return ログインモデル拡張版リスト
+	 */
+	@Override
+	public List<LoginModelEx> selectList_plusUserName_byRoomId(RoomIdStatus roomId) {
+		// ルームIDによる選択 + ユーザー名選択
+		List<LoginModelEx> list = new ArrayList<LoginModelEx>();
+		try {
+			String sql = "SELECT chat_login.*, chat_user.name AS user_name "
+					+ "FROM chat_login LEFT OUTER JOIN chat_user ON "
+					+ "chat_login.user_id = chat_user.id "
+					+ "WHERE room_id = ?";
+			List<Map<String, Object>> resultList = jdbcTemp.queryForList(sql, roomId.getId());
+			
+			for( Map<String, Object> result : resultList ) {
+				LoginModel superModel = new LoginModel(
+						new LoginIdStatus((int)result.get("id")),
+						new RoomIdStatus((int)result.get("room_id")),
+						new UserIdStatus((int)result.get("user_id")),
+						((Timestamp)result.get("created")).toLocalDateTime());
+				
+				LoginModelEx model = new LoginModelEx(
+						superModel,
+						new NameWord((String)result.get("user_name")));
+				
 				list.add(model);
 			}
 		} catch(EmptyResultDataAccessException ex) {

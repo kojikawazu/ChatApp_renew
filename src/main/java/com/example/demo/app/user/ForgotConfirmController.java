@@ -108,12 +108,14 @@ public class ForgotConfirmController implements SuperUserController {
 		
 		// エラーチェック
 		if(!this.isCheck_changepasswd(userForgotForm, result, model)) {
+			// [ERROR]
 			this.appLogger.error("パスワード変更画面へ");
 			return WebConsts.URL_USER_FORGOT_FORM;
 		}
 		
-		this.appLogger.successed("パスワード変更確認成功");
 		this.setForgot_confirm(userForgotForm, model);
+		
+		this.appLogger.successed("パスワード変更確認成功");
 		return WebConsts.URL_USER_FORGOT_CONFIRM;
 	}
 	
@@ -131,7 +133,7 @@ public class ForgotConfirmController implements SuperUserController {
 		this.appLogger.start("パスワード変更確認チェック...");
 		
 		if(result.hasErrors()) {
-			// エラーあり
+			// [ERROR]
 			this.appLogger.error("バリデーションエラー : " + result);
 			this.setErrorMessage(result, model);
 			this.setForgot_form(model);
@@ -143,9 +145,10 @@ public class ForgotConfirmController implements SuperUserController {
 				new UserNameEmail(
 						userForgotForm.getName(), 
 						userForgotForm.getEmail()))) {
-			// ユーザ名、Eメール一致しない
+			// [ERROR]
 			this.appLogger.error("ユーザ名、Eメール一致しない : name  : " + userForgotForm.getName());
 			this.appLogger.error("                     : email : " + userForgotForm.getEmail());
+			
 			model.addAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_FORGOTPASSWD_NAMEEMAIL);
 			this.setForgot_form(model);
 			return WebConsts.CHECK_COMMON_NG;
@@ -158,10 +161,11 @@ public class ForgotConfirmController implements SuperUserController {
 						userForgotForm.getName(), 
 						userForgotForm.getEmail(), 
 						userForgotForm.getForgot_passwd() ) ) ) {
-			// ユーザ名、Eメール、忘れたとき用パスワード一致しない
+			// [ERROR]
 			this.appLogger.error("ユーザ名、Eメール、忘れたとき用パスワード一致しない : name        : " + userForgotForm.getName());
 			this.appLogger.error("                                     : email        : " + userForgotForm.getEmail());
 			this.appLogger.error("                                     : forgotPasswd : " + userForgotForm.getForgot_passwd());
+			
 			model.addAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_FORGOTPASSWD);
 			this.setForgot_form(model);
 			return WebConsts.CHECK_COMMON_NG;

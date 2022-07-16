@@ -25,6 +25,7 @@ import com.example.demo.app.entity.UserModel;
 import com.example.demo.app.form.RoomLeaveForm;
 import com.example.demo.app.form.RoomOutForm;
 import com.example.demo.app.form.UserSpeechForm;
+import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.number.RoomEnterCntNumber;
 import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.service.CommentService;
@@ -56,6 +57,17 @@ public class ChatController {
 	private CommentService commentService;
 	private LoginService   loginService;
 	private EnterService   enterService;
+	
+	/**
+	 * ログクラス
+	 */
+	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
+	
+	/** 部屋閉鎖された通知 */
+	private final String NOTICE_ROOM_CLOSE = "部屋が閉鎖されました。";
+	
+	/** 強制退室通知 */
+	private final String NOTICE_FORCE_LEFT_THE_ROOM = "強制退室されました。";
 	
 	/**
 	 * コンストラクタ
@@ -93,132 +105,82 @@ public class ChatController {
 			Model model,
 			RoomLeaveForm roomLeaveForm,
 			RedirectAttributes redirectAttributes) {
+		this.appLogger.start("チャットルーム受信...");
 		EnterIdStatus enterIdStatus = new EnterIdStatus(enter_id);
 		
 		// エラーチェック
 		if( !this.enterService.isSelect_byId(enterIdStatus) ) {
+			// [ERROR]
 			// 入室IDがない場合、ルーム画面へリダイレクト
+			this.appLogger.error("入室IDなし...ルーム画面へ");
 			return WebConsts.URL_REDIRECT_ROOM_INDEX;
 		}
 		
 		EnterModel enterModel = this.enterService.select(enterIdStatus);
-		if(!this.isEnterCheck(enterModel, redirectAttributes)) {
+		if( !this.isEnterCheck(enterModel, redirectAttributes) ) {
+			// [ERROR]
 			// 入室NGな場合、ルーム画面へリダイレクト
+			this.appLogger.error("入室NG...ルーム画面へ");
 			return WebConsts.URL_REDIRECT_ROOM_INDEX;
 		}
 		
 		// ビュー画面へ設定
 		this.setIndex(enterModel, model, enter_id);
 		
-		// ルーム画面へ
+		this.appLogger.successed("チャットルーム成功");
 		return WebConsts.URL_CHAT_INDEX;
 	}
 	
 	// -------------------------------------------------------------------------------------------------------
 	
 	/**
-	 * 【ルームモデル拡張版へ変換】
-	 * @param roomModel ルームモデル
-	 * @return ルームモデル拡張版
-	 */
-	public RoomModelEx changeRoomModel(RoomModel roomModel) {
-		// ルームモデル拡張版へ変換
-		int count = this.enterService.getCount_roomId(new RoomIdStatus(roomModel.getId()));
-		RoomModelEx roomModelEx = new RoomModelEx(
-				roomModel,
-				new NameWord(""),
-				new RoomEnterCntNumber(count));
-		return roomModelEx;
-	}
-	
-	/**
-	 * コメントモデルリスト拡張版へ変換
-	 * @param commentModelList コメントモデルリスト
-	 * @return コメントモデルリスト拡張版
-	 */
-	public List<CommentModelEx> changeCommentModelList(List<CommentModel> commentModelList){
-		// コメントモデルリスト拡張版へ変換
-		List<CommentModelEx> list = new ArrayList<CommentModelEx>();
-		
-		// 拡張版へ移行
-		for( CommentModel commentModel : commentModelList ) {
-			UserModel userModel =  this.userService.select(new UserIdStatus(commentModel.getUser_id()));
-			CommentModelEx ex = new CommentModelEx(
-					commentModel,
-					new NameWord(userModel.getName()));
-			list.add(ex);
-		}
-		
-		// 旧版は使用しないので、旧リストの中身をクリア
-		commentModelList.clear();
-		
-		return list;
-	}
-	
-	/**
-	 * ログインモデルリスト拡張版へ変換
-	 * @param loginModelList: ログインモデルリスト
-	 * @return ログインモデルリスト拡張版
-	 */
-	private List<LoginModelEx> changeLoginModelList(List<LoginModel> loginModelList) {
-		// ログインリスト拡張版に変換
-		List<LoginModelEx> loginModelExList = new ArrayList<LoginModelEx>();
-		
-		// 拡張版へ移行
-		for( LoginModel lnModel : loginModelList) {
-			UserModel usModel = this.userService.select(new UserIdStatus(lnModel.getUser_id()));
-			LoginModelEx ex = new LoginModelEx(
-					lnModel, 
-					new NameWord(usModel.getName()));
-			loginModelExList.add(ex);
-		}
-		
-		// 旧版は使用しないので、旧リストの中身をクリア
-		loginModelList.clear();
-		
-		return loginModelExList;
-	}
-	
-	/**
 	 * [入室チェック]
-	 * @param enterModel : 入室モデル
-	 * @param redirectAttributes : リダイレクト
-	 * @return true : 入室OK false : 入室NG
+	 * @param enterModel           入室モデル
+	 * @param redirectAttributes   リダイレクト
+	 * @return true   入室OK false 入室NG
 	 */
 	private boolean isEnterCheck(
 			EnterModel enterModel,
 			RedirectAttributes redirectAttributes) {
+		this.appLogger.start("入室チェック...");
+		UserIdStatus  user_id  = new UserIdStatus(enterModel.getUser_id());
 		
 		// エラーチェック
-		if( !this.roomService.isSelect_byId(new RoomIdStatus(enterModel.getRoom_id())) ) {
-			// 既に閉鎖されている
+		RoomIdStatus room_id_check1 = new RoomIdStatus(enterModel.getRoom_id());
+		if( !this.roomService.isSelect_byId(room_id_check1) ) {
+			// [ERROR]
+			this.appLogger.error("既に閉鎖: roomId: " + enterModel.getRoom_id());
 			
 			// ユーザIDからログインIDを取得
-			LoginIdStatus login_id = this.loginService.selectId_byUserId(new UserIdStatus(enterModel.getUser_id()));
+			LoginIdStatus login_id = this.loginService.selectId_byUserId(user_id);
 			
 			// ログインIDをリダイレクト
-			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, "部屋が閉鎖されました。");
+			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, NOTICE_ROOM_CLOSE);
+			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id.getId());
+			
+			return false;
+		}
+		
+		RoomIdStatus room_id_check2 = this.loginService.selectRoomId_byUserId(user_id);
+		if( room_id_check2.getId() == WebConsts.ERROR_DB_STATUS ) {
+			// [ERROR]
+			this.appLogger.error("強制退室された: roomId: " + room_id_check2.getId());
+			this.appLogger.error("           : userId: " + user_id.getId());
+			
+			// 入室IDを削除
+			EnterIdStatus enter_id = new EnterIdStatus(enterModel.getId());
+			this.enterService.delete(enter_id);
+			
+			// ユーザIDからログインIDを取得
+			LoginIdStatus login_id = this.loginService.selectId_byUserId(user_id);
+			
+			// ログインIDをリダイレクト
+			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, NOTICE_FORCE_LEFT_THE_ROOM);
 			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id.getId());
 			return false;
 		}
 		
-		RoomIdStatus room_id = this.loginService.selectRoomId_byUserId(new UserIdStatus(enterModel.getUser_id()));
-		if( room_id.getId() == WebConsts.ERROR_DB_STATUS ) {
-			// 強制退室された
-			
-			// ログインIDを削除
-			this.enterService.delete(new EnterIdStatus(enterModel.getId()));
-			
-			// ユーザIDからログインIDを取得
-			LoginIdStatus login_id = this.loginService.selectId_byUserId(new UserIdStatus(enterModel.getUser_id()));
-			
-			// ログインIDをリダイレクト
-			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, "強制退室されました。");
-			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id.getId());
-			return false;
-		}
-		
-		// 入室OK
+		this.appLogger.successed("入室OK");
 		return true;
 	}
 	
@@ -229,52 +191,62 @@ public class ChatController {
 	 * @param enter_id   入室ID
 	 */
 	private void setIndex(EnterModel enterModel, Model model, int enter_id) {
-		// チャットルーム設定
+		this.appLogger.start("チャットルーム設定...");
 		
 		// ホストユーザチェック
 		LoginModel lnModel = this.loginService.select_byUserId(new UserIdStatus(enterModel.getManager_id()));
 		if(lnModel.getRoom_id() != enterModel.getRoom_id()) {
 			// 既にホストが変更されている場合
-			
 			// ホストユーザIDを変更
-			this.enterService.updateManagerId_byId(
-					new UserIdStatus(enterModel.getUser_id()), 
-					new EnterIdStatus(enterModel.getId()));
-			this.roomService.updateUserId_byUserId(
-					new UserIdStatus(enterModel.getManager_id()),
-					new UserIdStatus(enterModel.getUser_id()));
-			//enterModel.setManager_id(enterModel.getUser_id());
-			
-			enterModel = new EnterModel(
-					new EnterIdStatus(enterModel.getId()),
-					new RoomIdStatus(enterModel.getRoom_id()),
-					new UserIdStatus(enterModel.getUser_id()),
-					new UserIdStatus(enterModel.getUser_id()),
-					new RoomMaxNumber(enterModel.getMax_sum()),
-					enterModel.getCreated());
+			enterModel = this.updateEnterModel(enterModel);
 		}
 		
 		// ルーム情報を取得
-		RoomModel          roomModel        = this.roomService.select(new RoomIdStatus(enterModel.getRoom_id()));
-		UserModel          userModel        = this.userService.select(new UserIdStatus(enterModel.getUser_id()));
-		UserModel          hostModel        = this.userService.select(new UserIdStatus(enterModel.getManager_id()));
-		RoomIdStatus       room_id          = this.loginService.selectRoomId_byUserId(new UserIdStatus(enterModel.getUser_id()));
-		List<CommentModel> commentModelList = this.commentService.select_byRoomId(new RoomIdStatus(enterModel.getRoom_id()));
-		List<LoginModel>   loginModelList   = this.loginService.selectList_byRoomId(room_id);
+		RoomIdStatus         enterRoomId        = new RoomIdStatus(enterModel.getRoom_id());
+		UserIdStatus         enterUserId        = new UserIdStatus(enterModel.getUser_id());
+		UserIdStatus         enterManagerId     = new UserIdStatus(enterModel.getManager_id());
 		
-		// 拡張版変換
-		RoomModelEx roomModelEx = this.changeRoomModel(roomModel);
-		List<CommentModelEx> commentModelExList = this.changeCommentModelList(commentModelList);
-		List<LoginModelEx> loginModelExList = this.changeLoginModelList(loginModelList);
+		RoomModelEx          roomModelEx        = this.roomService.select_plusUserName_EnterCnt(enterRoomId);
+		UserModel            userModel          = this.userService.select(enterUserId);
+		UserModel            hostModel          = this.userService.select(enterManagerId);
+		RoomIdStatus         room_id            = this.loginService.selectRoomId_byUserId(enterUserId);
+		List<CommentModelEx> commentModelExList = this.commentService.select_plusUserName_byRoomId(enterRoomId);
+		List<LoginModelEx>   loginModelExList   = this.loginService.selectList_plusUserName_byRoomId(room_id);
 		
 		// データをバインド
-		model.addAttribute(WebConsts.BIND_TITLE, "チャットルームへようこそ");
-		model.addAttribute(WebConsts.BIND_CONT, "自由に遊んでください。");
-		model.addAttribute(WebConsts.BIND_ENTER_ID, enter_id);
-		model.addAttribute(WebConsts.BIND_ROOMMODEL, roomModelEx);
-		model.addAttribute(WebConsts.BIND_USERMODEL, userModel);
-		model.addAttribute(WebConsts.BIND_HOSTMODEL, hostModel);
+		model.addAttribute(WebConsts.BIND_TITLE,            "チャットルームへようこそ");
+		model.addAttribute(WebConsts.BIND_CONT,             "自由に遊んでください。");
+		model.addAttribute(WebConsts.BIND_ENTER_ID,          enter_id);
+		model.addAttribute(WebConsts.BIND_ROOMMODEL,         roomModelEx);
+		model.addAttribute(WebConsts.BIND_USERMODEL,         userModel);
+		model.addAttribute(WebConsts.BIND_HOSTMODEL,         hostModel);
 		model.addAttribute(WebConsts.BIND_COMMENTMODEL_LIST, commentModelExList);
-		model.addAttribute(WebConsts.BIND_LOGINMODEL_LIST, loginModelExList);
+		model.addAttribute(WebConsts.BIND_LOGINMODEL_LIST,   loginModelExList);
+		
+		this.appLogger.successed("チャットルーム設定完了");
+	}
+	
+	
+	private EnterModel updateEnterModel(EnterModel enterModel) {
+		this.appLogger.start("ホストユーザーID変更...");
+		
+		this.enterService.updateManagerId_byId(
+				new UserIdStatus(enterModel.getUser_id()), 
+				new EnterIdStatus(enterModel.getId()));
+		this.roomService.updateUserId_byUserId(
+				new UserIdStatus(enterModel.getManager_id()),
+				new UserIdStatus(enterModel.getUser_id()));
+		
+		// 入室モデルチェンジ
+		EnterModel newEnterModel = new EnterModel(
+				new EnterIdStatus(enterModel.getId()),
+				new RoomIdStatus(enterModel.getRoom_id()),
+				new UserIdStatus(enterModel.getUser_id()),
+				new UserIdStatus(enterModel.getUser_id()),
+				new RoomMaxNumber(enterModel.getMax_sum()),
+				enterModel.getCreated());
+		
+		this.appLogger.successed("ホストユーザーID変更完了");
+		return newEnterModel;
 	}
 }
