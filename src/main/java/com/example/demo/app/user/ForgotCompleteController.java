@@ -11,6 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.form.UserForgotForm;
+import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.UserService;
 import com.example.demo.common.word.UserNameEmailPassword;
 
@@ -26,16 +27,17 @@ import com.example.demo.common.word.UserNameEmailPassword;
 public class ForgotCompleteController implements SuperUserController {
 
 	/**
-	 * フィールド 
-	 * 
-	 */
-	/** パスワード変更実行メッセージ */
-	public static String FORGOT_PASSWORD_ACTION_MESSAGE = "パスワードを変更しました。";
-	
-	/**
 	 * サービス
 	 */
 	private UserService userService;
+	
+	/**
+	 * ログクラス
+	 */
+	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
+	
+	/** パスワード変更実行メッセージ */
+	public static String FORGOT_PASSWORD_ACTION_MESSAGE = "パスワードを変更しました。";
 	
 	/**
 	 * コンストラクタ
@@ -43,7 +45,6 @@ public class ForgotCompleteController implements SuperUserController {
 	@Autowired
 	public ForgotCompleteController(
 			UserService userService) {
-		// コンストラクタ
 		this.userService = userService;
 	}
 	
@@ -61,11 +62,12 @@ public class ForgotCompleteController implements SuperUserController {
 			BindingResult result,
 			Model model,
 			RedirectAttributes redirectAttributes) {
-		// パスワード変更処理
+		this.appLogger.start("パスワード変更実行受信...");
 		
 		// エラーチェック
 		if(result.hasErrors()) {
 			// 何もしない
+			this.appLogger.error("バリデーションエラー: " + result);
 			return WebConsts.URL_REDIRECT_ROOM_INDEX;
 		}
 		
@@ -81,6 +83,7 @@ public class ForgotCompleteController implements SuperUserController {
 				WebConsts.BIND_NOTICE_SUCCESS, 
 				FORGOT_PASSWORD_ACTION_MESSAGE);
 		
+		this.appLogger.successed("パスワード変更実行成功");
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
 	}
 }

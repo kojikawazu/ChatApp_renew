@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.form.UserSignupForm;
+import com.example.demo.common.log.ChatAppLogger;
 
 /**
  * ---------------------------------------------------------------------------
@@ -23,9 +24,10 @@ import com.example.demo.app.form.UserSignupForm;
 public class SignupConfirmController implements SuperUserController {
 
 	/**
-	 * フィールド 
-	 * 
+	 * ログクラス
 	 */
+	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
+	
 	/** サインアップ確認画面タイトル */
 	public static String SIGNUP_CONFIRM_TITTLE = "サインアップ確認";
 	
@@ -37,7 +39,7 @@ public class SignupConfirmController implements SuperUserController {
 	 */
 	@Autowired
 	public SignupConfirmController() {
-		// コンストラクタ
+		
 	}
 	
 	/**
@@ -53,13 +55,16 @@ public class SignupConfirmController implements SuperUserController {
 			@Validated UserSignupForm userSignupForm,
 			BindingResult result,
 			Model model) {
-		// サインアップ確認
+		this.appLogger.start("サインアップ確認受信...");
+		
 		if(result.hasErrors()) {
+			this.appLogger.error("バリデーションエラー: " + result);
 			this.setSignup_form(model);
 			// サインアップフォーム画面へ
 			return WebConsts.URL_USER_SIGNUP_FORM;
 		}
 		// サインアップ確認画面へ
+		this.appLogger.successed("サインアップ確認成功");
 		this.setSignup_confirm(model);
 		return WebConsts.URL_USER_SIGNUP_CONFIRM;
 	}

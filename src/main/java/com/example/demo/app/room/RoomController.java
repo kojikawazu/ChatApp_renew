@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.RoomModelEx;
 import com.example.demo.app.entity.UserModel;
+import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.RoomService;
 import com.example.demo.common.service.UserService;
 import com.example.demo.common.status.LoginIdStatus;
@@ -27,17 +28,22 @@ import com.example.demo.common.status.LoginIdStatus;
 @RequestMapping("/room")
 public class RoomController implements SuperRoomController {
 
-	/** ルームタイトル */
-	public static String ROOM_TITTLE  = "ルーム選択";
-	
-	/** ルームメッセージ */
-	public static String ROOM_MESSAGE = "チャットルーム一覧です。";
-	
 	/**
 	 * サービス
 	 */
 	private UserService    userService;
 	private RoomService    roomService;
+	
+	/**
+	 * ログクラス
+	 */
+	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
+	
+	/** ルームタイトル */
+	public static String ROOM_TITTLE  = "ルーム選択";
+	
+	/** ルームメッセージ */
+	public static String ROOM_MESSAGE = "チャットルーム一覧です。";
 	
 	/**
 	 * コンストラクタ
@@ -66,11 +72,13 @@ public class RoomController implements SuperRoomController {
 			@ModelAttribute("noticeSuccess") String noticeSuccess,
 			@ModelAttribute("noticeError")   String noticeError) {
 		// ホーム画面
+		this.appLogger.start("ルーム画面受信... loginId: " + login_id);
 		
 		// ログインID設定
 		model.addAttribute(WebConsts.BIND_LOGIN_ID, login_id);
 		if( login_id > 0) {
 			// ログイン情報設定
+			this.appLogger.info("ログイン中 : loginId: " + login_id);
 			UserModel userModel = this.userService.selectModel_subLoginId(new LoginIdStatus(login_id));
 			model.addAttribute(WebConsts.BIND_USER_MODEL, userModel);
 		}
@@ -78,6 +86,7 @@ public class RoomController implements SuperRoomController {
 		// ルームリスト拡張版取得
 		List<RoomModelEx> roomModelListExList = this.changeRoomModel();
 		model.addAttribute(WebConsts.BIND_ROOMMODEL_LIST, roomModelListExList);
+		this.appLogger.info("ルーム一覧 : roomModelExList.size(): " + roomModelListExList.size());
 		
 		// ルームホーム画面設定
 		this.setIndex(model);
