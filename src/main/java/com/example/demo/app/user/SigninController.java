@@ -88,8 +88,8 @@ public class SigninController implements SuperUserController {
 					userLoginForm, 
 					result, 
 					redirectAttributes);
-			
 			if( userIdStatus.isError() ) {
+				// [ERROR]
 				// エラーの場合何もしない
 				this.appLogger.error("ルーム画面へ");
 				return WebConsts.URL_REDIRECT_ROOM_INDEX;
@@ -98,15 +98,17 @@ public class SigninController implements SuperUserController {
 			// サインイン情報登録
 			loginIdStatus = this.addSignin(userIdStatus);
 			if( loginIdStatus.isError() ) {
+				// [ERROR]
 				// エラーの場合何もしない
 				this.appLogger.error("ルーム画面へ");
 				return WebConsts.URL_REDIRECT_ROOM_INDEX;
 			}
 			
 			// ログインIDをWebに登録
+			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, loginIdStatus.getId());
+			
 			this.appLogger.successed("サインイン成功 : userId : "  + userIdStatus.getId());
 			this.appLogger.successed("             loginId : " + loginIdStatus.getId());
-			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, loginIdStatus.getId());
 		} catch(Exception ex) {
 			this.appLogger.error(ex.getMessage());
 			ex.printStackTrace();
@@ -170,8 +172,7 @@ public class SigninController implements SuperUserController {
 			return new UserIdStatus(WebConsts.ERROR_NUMBER);
 		}
 		
-		// サインインOK
-		this.appLogger.successed("サインインチェック[done]");
+		this.appLogger.successed("サインインチェックOK");
 		return userIdStatus;
 	}
 	
@@ -181,11 +182,15 @@ public class SigninController implements SuperUserController {
 	 * @return        ログインIDクラス
 	 */
 	private LoginIdStatus addSignin(UserIdStatus userStatus) {
-		// サインイン情報登録
+		this.appLogger.start("サインイン登録...");
+		
 		LoginModel loginModel = new LoginModel(
 				 new RoomIdStatus(0),
 				 userStatus,
 				 LocalDateTime.now());
-		return loginService.save_returnId(loginModel);
+		LoginIdStatus loginIdStatus = this.loginService.save_returnId(loginModel);
+		
+		this.appLogger.successed("サインイン登録成功: loginId: " + loginIdStatus.getId());
+		return loginIdStatus;
 	}
 }

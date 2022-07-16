@@ -15,6 +15,7 @@ import com.example.demo.app.entity.EnterModel;
 import com.example.demo.app.entity.LoginModel;
 import com.example.demo.app.entity.UserModel;
 import com.example.demo.app.form.RoomLeaveForm;
+import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.CommentService;
 import com.example.demo.common.service.EnterService;
 import com.example.demo.common.service.LoginService;
@@ -44,6 +45,14 @@ public class RoomLeaveController implements SuperChatController {
 	private EnterService   enterService;
 	
 	/**
+	 * ログクラス
+	 */
+	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
+	
+	/** 強制退室通知 */
+	private final String NOTICE_FORCE_LEFT_THE_ROOM = "さんを強制退室させました。";
+	
+	/**
 	 * コンストラクタ
 	 * @param userService
 	 * @param commentService
@@ -70,14 +79,16 @@ public class RoomLeaveController implements SuperChatController {
 	 * @return Webパス: (redirect:/chat)
 	 */
 	@PostMapping
-	public String user_closeroom(
+	public String index(
 			RoomLeaveForm roomLeaveForm,
 			Model model,
 			RedirectAttributes redirectAttributes) {
-		// 強制退室
+		this.appLogger.start("強制退室受信...");
 		
 		// エラーチェック
 		if(roomLeaveForm.getIn_id() == 0) {
+			// [ERROR]
+			this.appLogger.error("強制退室失敗");
 			// 何もせずリダイレクト
 			redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, roomLeaveForm.getEnter_id());
 			return WebConsts.URL_REDIRECT_CHAT_INDEX;
@@ -91,6 +102,8 @@ public class RoomLeaveController implements SuperChatController {
 		
 		// チャットリダイレクト
 		redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, roomLeaveForm.getEnter_id());
+		
+		this.appLogger.successed("強制退室成功");
 		return WebConsts.URL_REDIRECT_CHAT_INDEX;
 	}
 	
@@ -99,6 +112,8 @@ public class RoomLeaveController implements SuperChatController {
 	 * @param roomLeaveForm
 	 */
 	private void noticeLeave(RoomLeaveForm roomLeaveForm) {
+		this.appLogger.start("強制退室通知...");
+		
 		// 情報取得
 		EnterModel enterModel = this.enterService.select(new EnterIdStatus(roomLeaveForm.getEnter_id()));
 		LoginModel loginModel = this.loginService.select(new LoginIdStatus(roomLeaveForm.getIn_id()));
@@ -106,11 +121,13 @@ public class RoomLeaveController implements SuperChatController {
 		
 		// 強制退室通知
 		CommentModel commentModel = new CommentModel(
-				new ChatCommentWord(userModel.getName() +  "さんを強制退室させました。"),
+				new ChatCommentWord(userModel.getName() +  NOTICE_FORCE_LEFT_THE_ROOM),
 				new RoomIdStatus(enterModel.getRoom_id()),
 				new UserIdStatus(enterModel.getUser_id()),
 				LocalDateTime.now());
 		this.commentService.save(commentModel);
+		
+		this.appLogger.successed("強制退室通知成功");
 	}
 	
 	/**
@@ -118,8 +135,12 @@ public class RoomLeaveController implements SuperChatController {
 	 * @param roomLeaveForm
 	 */
 	private void initRoomId_byLoginId(RoomLeaveForm roomLeaveForm) {
+		this.appLogger.start("ログインIDによるルームIDの初期化...");
+		
 		this.loginService.updateRoomId_byId(
 				new RoomIdStatus(0), 
 				new LoginIdStatus(roomLeaveForm.getIn_id()));
+		
+		this.appLogger.successed("ログインIDによるルームIDの初期化成功: roomId: " + roomLeaveForm.getIn_id());
 	}
 }

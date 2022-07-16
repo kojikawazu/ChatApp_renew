@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.CommentModel;
+import com.example.demo.app.entity.CommentModelEx;
 import com.example.demo.app.exception.WebMvcConfig;
 import com.example.demo.common.dao.CommentDao;
 import com.example.demo.common.status.CommentIdStatus;
@@ -100,6 +101,16 @@ public class CommentServiceUse implements CommentService {
 		// 全選択
 		return this.dao.getAll();
 	}
+	
+	/**
+	 * 全選択 + ユーザー名を選択
+	 * @return コメント漏れる拡張版リスト
+	 */
+	@Override
+	public List<CommentModelEx> getAll_plusUserName() {
+		// 全選択+ユーザー名を選択
+		return this.dao.getAll_plusUserName();
+	}
 
 	/**
 	 * 選択
@@ -122,6 +133,17 @@ public class CommentServiceUse implements CommentService {
 		// 選択
 		return this.dao.select_byRoomId(roomId);
 	}
+	
+	/**
+	 * ルームIDにより選択+ユーザー名選択
+	 * @param ルームID
+	 * @return コメントモデル拡張版リスト
+	 */
+	@Override
+	public List<CommentModelEx> select_plusUserName_byRoomId(RoomIdStatus roomId) {
+		// 選択+ユーザー名選択
+		return this.dao.select_plusUserName_byRoomId(roomId);
+	}
 
 	/**
 	 * コメント有無チェック
@@ -133,5 +155,4 @@ public class CommentServiceUse implements CommentService {
 		// IDによる有無の確認
 		return this.dao.isSelect_byId(id);
 	}
-
 }

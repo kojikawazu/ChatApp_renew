@@ -56,8 +56,7 @@ public class SignoutController implements SuperUserController {
 		this.appLogger.start("サインアウト受信...");
 		
 		// ログイン情報削除
-		LoginIdStatus login_id = new LoginIdStatus(userLogoutForm.getId());
-		this.loginService.delete(login_id);
+		LoginIdStatus login_id = this.deleteLoginInfo(userLogoutForm);
 		
 		// Web側：ログインID初期化
 		redirectAttributes.addAttribute(
@@ -66,5 +65,20 @@ public class SignoutController implements SuperUserController {
 		
 		this.appLogger.successed("サインアウト成功 : loginId : " + login_id.getId());
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
+	}
+	
+	/**
+	 * ログイン情報の削除
+	 * @param userLogoutForm
+	 * @return ログインID
+	 */
+	private LoginIdStatus deleteLoginInfo(UserLogoutForm userLogoutForm) {
+		this.appLogger.start("ログイン情報の削除...");
+		
+		LoginIdStatus login_id = new LoginIdStatus(userLogoutForm.getId());
+		this.loginService.delete(login_id);
+		
+		this.appLogger.successed("ログイン情報の削除成功: loginId: " + login_id.getId());
+		return login_id;
 	}
 }

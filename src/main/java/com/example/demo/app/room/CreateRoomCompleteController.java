@@ -17,6 +17,7 @@ import com.example.demo.app.entity.EnterModel;
 import com.example.demo.app.entity.LoginModel;
 import com.example.demo.app.entity.RoomModel;
 import com.example.demo.app.form.RoomCreateForm;
+import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.service.CommentService;
 import com.example.demo.common.service.EnterService;
@@ -46,10 +47,15 @@ public class CreateRoomCompleteController implements SuperRoomController {
 	/**
 	 * サービス
 	 */
-	private RoomService roomService;
+	private RoomService    roomService;
 	private CommentService commentService;
-	private LoginService loginService;
-	private EnterService enterService;
+	private LoginService   loginService;
+	private EnterService   enterService;
+	
+	/**
+	 * ログクラス
+	 */
+	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
 	
 	/**
 	 * コンストラクタ
@@ -73,9 +79,9 @@ public class CreateRoomCompleteController implements SuperRoomController {
 	
 	/**
 	 * ルーム作成処理受信
-	 * @param roomCreateForm ルーム作成フォーム
-	 * @param result 結果
-	 * @param model モデル
+	 * @param roomCreateForm     ルーム作成フォーム
+	 * @param result             結果
+	 * @param model              モデル
 	 * @param redirectAttributes リダイレクト
 	 * @return Webパス(room/create_room, redirect:/chat)
 	 */
@@ -85,10 +91,13 @@ public class CreateRoomCompleteController implements SuperRoomController {
 			BindingResult result,
 			Model model,
 			RedirectAttributes redirectAttributes) {
-		// ルーム作成へ
+		this.appLogger.start("ルーム作成実行受信...");
 		
 		// エラーチェック
 		if(result.hasErrors()) {
+			// [ERROR]
+			this.appLogger.error("バリデーションエラー: " + result);
+			
 			// ルーム作成画面設定
 			this.setCreateroom_form(model);
 			
@@ -98,7 +107,8 @@ public class CreateRoomCompleteController implements SuperRoomController {
 		}
 		
 		// ルームの生成
-		LoginModel loginModel = this.loginService.select(new LoginIdStatus(roomCreateForm.getLogin_id()));
+		LoginModel loginModel = this.loginService.select(
+				new LoginIdStatus(roomCreateForm.getLogin_id()));
 		RoomIdStatus room_id  = this.setRoom(loginModel, roomCreateForm);
 		
 		// ログイン情報のルーム番号の更新
@@ -112,6 +122,9 @@ public class CreateRoomCompleteController implements SuperRoomController {
 		
 		// チャット画面へ
 		redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, enter_id.getId());
+		
+		this.appLogger.successed("ルーム生成実行成功: roomId: " + room_id.getId());
+		this.appLogger.successed("               : enterId: " + enter_id.getId());
 		return WebConsts.URL_REDIRECT_CHAT_INDEX;
 	}
 	
@@ -122,7 +135,8 @@ public class CreateRoomCompleteController implements SuperRoomController {
 	 * @return               ルームID
 	 */
 	private RoomIdStatus setRoom(LoginModel loginModel, RoomCreateForm roomCreateForm) {
-		// ルームの追加
+		this.appLogger.start("ルーム生成...");
+		
 		RoomModel roomModel = new RoomModel(
 				new RoomNameWord(roomCreateForm.getName()),
 				new RoomCommentWord(roomCreateForm.getComment()),
@@ -131,7 +145,10 @@ public class CreateRoomCompleteController implements SuperRoomController {
 				new UserIdStatus(loginModel.getUser_id()),
 				LocalDateTime.now(),
 				LocalDateTime.now());
-		return this.roomService.save_returnId(roomModel);
+		RoomIdStatus roomIdStatus = this.roomService.save_returnId(roomModel);
+		
+		this.appLogger.successed("ルーム生成の成功: roomId: " + roomIdStatus.getId());
+		return roomIdStatus;
 	}
 	
 	/**
@@ -140,9 +157,14 @@ public class CreateRoomCompleteController implements SuperRoomController {
 	 * @param roomCreateForm
 	 */
 	private void updateLoginInfo_roomId(RoomIdStatus room_id, RoomCreateForm roomCreateForm) {
+		this.appLogger.start("ログイン情報のルーム番号の更新...");
+		
 		this.loginService.updateRoomId_byId(
 				room_id, 
 				new LoginIdStatus(roomCreateForm.getLogin_id()));
+		
+		this.appLogger.info("ログイン情報のルーム番号の更新: roomId:  " + room_id.getId());
+		this.appLogger.info("ログイン情報のルーム番号の更新: loginId: " + roomCreateForm.getLogin_id());
 	}
 	
 	/**
@@ -153,14 +175,18 @@ public class CreateRoomCompleteController implements SuperRoomController {
 	 * @return               入室ID
 	 */
 	private EnterIdStatus setEnter_createroom(LoginModel loginModel, RoomCreateForm roomCreateForm, RoomIdStatus room_id) {
-		// 入室情報の追加
+		this.appLogger.start("入室情報生成...");
+		
 		EnterModel enterModel = new EnterModel(
 				room_id,
 				new UserIdStatus(loginModel.getUser_id()),
 				new UserIdStatus(loginModel.getUser_id()),
 				new RoomMaxNumber(roomCreateForm.getMax_roomsum()),
 				LocalDateTime.now());
-		return this.enterService.save_returnId(enterModel);
+		EnterIdStatus enterIdStatus = this.enterService.save_returnId(enterModel);
+		
+		this.appLogger.successed("入室情報生成の成功: enterId: " + enterIdStatus.getId());
+		return enterIdStatus;
 	}
 	
 	/**
@@ -169,13 +195,16 @@ public class CreateRoomCompleteController implements SuperRoomController {
 	 * @param room_id    ルームID
 	 */
 	private void setComment_createroom(LoginModel loginModel, RoomIdStatus room_id) {
-		// 部屋生成コメントの追加
+		this.appLogger.start("部屋生成コメント追加...");
+		
 		CommentModel commentModel = new CommentModel(
 				new ChatCommentWord("部屋が作られました。"),
 				room_id,
-				new UserIdStatus(loginModel.getId()),
+				new UserIdStatus(loginModel.getUser_id()),
 				LocalDateTime.now());
 		this.commentService.save(commentModel);
+
+		this.appLogger.successed("部屋の生成コメントを追加しました。");
 	}
 	
 	/**

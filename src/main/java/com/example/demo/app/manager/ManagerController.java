@@ -32,11 +32,11 @@ public class ManagerController {
 	/**
 	 * サービス
 	 */
-	private UserService userService;
-	private RoomService roomService;
+	private UserService    userService;
+	private RoomService    roomService;
 	private CommentService commentService;
-	private LoginService loginService;
-	private EnterService enterService;
+	private LoginService   loginService;
+	private EnterService   enterService;
 	
 	/**
 	 * コンストラクタ
@@ -53,11 +53,11 @@ public class ManagerController {
 			CommentService commentService,
 			LoginService loginService,
 			EnterService enterService) {
-		this.userService = userService;
-		this.roomService = roomService;
+		this.userService    = userService;
+		this.roomService    = roomService;
 		this.commentService = commentService;
-		this.loginService = loginService;
-		this.enterService = enterService;
+		this.loginService   = loginService;
+		this.enterService   = enterService;
 	}
 	
 	/**

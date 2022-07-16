@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.CommentModel;
 import com.example.demo.app.form.UserSpeechForm;
+import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.CommentService;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
@@ -32,6 +33,11 @@ public class RoomSpeechController implements SuperChatController {
 	private CommentService commentService;
 	
 	/**
+	 * ログクラス
+	 */
+	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
+	
+	/**
 	 * コンストラクタ
 	 * @param commentService
 	 */
@@ -49,14 +55,17 @@ public class RoomSpeechController implements SuperChatController {
 	 * @return Webパス(redirect:/chat)
 	 */
 	@PostMapping
-	public String speech(
+	public String index(
 			UserSpeechForm userSpeechForm,
 			Model model,
 			RedirectAttributes redirectAttributes) {
+		this.appLogger.start("コメント受信...");
 		
 		// エラーチェック
 		if(userSpeechForm.getComment() == null || userSpeechForm.getComment().isBlank()) {
 			// コメント追加なしでリダイレクト
+			this.appLogger.info("コメントなし");
+			
 			redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, userSpeechForm.getEnter_id());
 			return WebConsts.URL_REDIRECT_CHAT_INDEX;
 		}
@@ -66,6 +75,8 @@ public class RoomSpeechController implements SuperChatController {
 		
 		// コメント追加後にリダイレクト
 		redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, userSpeechForm.getEnter_id());
+		
+		this.appLogger.successed("コメント成功");
 		return WebConsts.URL_REDIRECT_CHAT_INDEX;
 	}
 	
@@ -74,12 +85,15 @@ public class RoomSpeechController implements SuperChatController {
 	 * @param userSpeechForm
 	 */
 	public void setSpeech(UserSpeechForm userSpeechForm) {
-		// 投稿情報の追加
+		this.appLogger.start("投稿情報の追加");
+		
 		CommentModel commentModel = new CommentModel(
 				new ChatCommentWord(userSpeechForm.getComment()),
 				new RoomIdStatus(userSpeechForm.getRoom_id()),
 				new UserIdStatus(userSpeechForm.getUser_id()),
 				LocalDateTime.now());
 		this.commentService.save(commentModel);
+		
+		this.appLogger.successed("投稿情報の追加成功");
 	}
 }

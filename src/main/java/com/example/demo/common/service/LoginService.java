@@ -3,6 +3,7 @@ package com.example.demo.common.service;
 import java.util.List;
 
 import com.example.demo.app.entity.LoginModel;
+import com.example.demo.app.entity.LoginModelEx;
 import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
@@ -32,6 +33,8 @@ public interface LoginService {
 	LoginModel select(LoginIdStatus id);
 	
 	List<LoginModel> selectList_byRoomId(RoomIdStatus roomId);
+	
+	List<LoginModelEx> selectList_plusUserName_byRoomId(RoomIdStatus roomId);
 	
 	LoginIdStatus selectId_byUserId(UserIdStatus userId);
 	

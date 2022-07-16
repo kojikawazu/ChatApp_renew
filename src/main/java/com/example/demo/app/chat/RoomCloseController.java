@@ -10,6 +10,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.EnterModel;
 import com.example.demo.app.form.RoomOutForm;
+import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.CommentService;
 import com.example.demo.common.service.EnterService;
 import com.example.demo.common.service.LoginService;
@@ -21,7 +22,7 @@ import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 
 /**
- * 退室コントローラー
+ * 部屋閉鎖コントローラー
  * @author nanai
  *
  */
@@ -36,6 +37,11 @@ public class RoomCloseController implements SuperChatController {
 	private CommentService commentService;
 	private LoginService   loginService;
 	private EnterService   enterService;
+	
+	/**
+	 * ログクラス
+	 */
+	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
 	
 	/**
 	 * コンストラクタ
@@ -64,11 +70,11 @@ public class RoomCloseController implements SuperChatController {
 	 * @return Webパス(redirect:/room)
 	 */
 	@PostMapping
-	public String closeroom(
+	public String index(
 			RoomOutForm roomOutForm,
 			Model model,
 			RedirectAttributes redirectAttributes) {
-		// 部屋閉鎖
+		this.appLogger.start("部屋閉鎖受信...");
 		
 		// 情報取得
 		EnterIdStatus enter_id   = new EnterIdStatus(roomOutForm.getEnter_id());
@@ -78,21 +84,71 @@ public class RoomCloseController implements SuperChatController {
 		RoomIdStatus  room_id    = new RoomIdStatus(enterModel.getRoom_id());
 		
 		// ログイン情報のルームIDの初期化
+		this.initRoomId_byRoomId(room_id);
+		
+		// コメント情報の削除(ルームID)
+		this.deleteComment_byRoomId(room_id);
+		
+		// 自身の入室情報の削除
+		this.deleteEnterInfo(enter_id);
+		
+		// ルーム情報の削除
+		this.deleteRoomInfo(room_id);
+		
+		// リダイレクト設定
+		redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id.getId());
+		
+		this.appLogger.successed("部屋閉鎖成功");
+		return WebConsts.URL_REDIRECT_ROOM_INDEX;
+	}
+	
+	/**
+	 * ログイン情報のルームID初期化
+	 * @param room_id
+	 */
+	private void initRoomId_byRoomId(RoomIdStatus room_id) {
+		this.appLogger.start("ログイン情報のルームID初期化...");
+		
 		this.loginService.updateRoomId_byRoomId(
 				room_id, 
 				new RoomIdStatus(0));
 		
-		// コメント情報の削除(ルームID)
-		this.commentService.delete_byRoomId(room_id);
+		this.appLogger.successed("ログイン情報のルームID初期化成功: roomId: " + room_id.getId());
+	}
+	
+	/**
+	 * コメント情報削除
+	 * @param room_id
+	 */
+	private void deleteComment_byRoomId(RoomIdStatus room_id) {
+		this.appLogger.start("コメント情報削除...");
 		
-		// 自身の入室情報の削除
+		this.commentService.delete_byRoomId(room_id);
+
+		this.appLogger.successed("コメント情報削除成功: roomId: " + room_id.getId());			
+	}
+	
+	/**
+	 * 自身の入室情報の削除
+	 * @param enter_id
+	 */
+	private void deleteEnterInfo(EnterIdStatus enter_id) {
+		this.appLogger.start("自身の入室情報の削除...");
+		
 		this.enterService.delete(enter_id);
 		
-		// ルーム情報の削除
+		this.appLogger.successed("自身の入室情報の削除成功: enterId: " + enter_id.getId());
+	}
+	
+	/**
+	 * ルーム情報の削除
+	 * @param room_id
+	 */
+	private void deleteRoomInfo(RoomIdStatus room_id) {
+		this.appLogger.start("ルーム情報の削除...");
+		
 		this.roomService.delete(room_id);
 		
-		// リダイレクト設定
-		redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id.getId());
-		return WebConsts.URL_REDIRECT_ROOM_INDEX;
+		this.appLogger.successed("ルーム情報の削除成功: roomId: " + room_id.getId());
 	}
 }

@@ -76,7 +76,7 @@ public class RoomController implements SuperRoomController {
 		
 		// ログインID設定
 		model.addAttribute(WebConsts.BIND_LOGIN_ID, login_id);
-		if( login_id > 0) {
+		if( login_id > 0 ) {
 			// ログイン情報設定
 			this.appLogger.info("ログイン中 : loginId: " + login_id);
 			UserModel userModel = this.userService.selectModel_subLoginId(new LoginIdStatus(login_id));
@@ -91,6 +91,7 @@ public class RoomController implements SuperRoomController {
 		// ルームホーム画面設定
 		this.setIndex(model);
 		
+		this.appLogger.start("ルーム画面完了: loginId: " + login_id);
 		return WebConsts.URL_ROOM_INDEX;
 	}
 	

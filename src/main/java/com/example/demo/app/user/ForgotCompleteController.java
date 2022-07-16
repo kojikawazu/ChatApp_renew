@@ -66,17 +66,14 @@ public class ForgotCompleteController implements SuperUserController {
 		
 		// エラーチェック
 		if(result.hasErrors()) {
+			// [ERROR]
 			// 何もしない
 			this.appLogger.error("バリデーションエラー: " + result);
 			return WebConsts.URL_REDIRECT_ROOM_INDEX;
 		}
 		
 		// パスワード変更
-		this.userService.update_passwd(
-				new UserNameEmailPassword(
-						userForgotForm.getName(), 
-						userForgotForm.getEmail(), 
-						userForgotForm.getNew_passwd()));
+		this.updatePassword(userForgotForm);
 		
 		// パスワード変更実行通知
 		redirectAttributes.addFlashAttribute(
@@ -85,5 +82,21 @@ public class ForgotCompleteController implements SuperUserController {
 		
 		this.appLogger.successed("パスワード変更実行成功");
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
+	}
+	
+	/**
+	 * パスワード変更
+	 * @param userForgotForm
+	 */
+	private void updatePassword(UserForgotForm userForgotForm) {
+		this.appLogger.start("パスワード変更...");
+		
+		this.userService.update_passwd(
+				new UserNameEmailPassword(
+						userForgotForm.getName(), 
+						userForgotForm.getEmail(), 
+						userForgotForm.getNew_passwd()));
+		
+		this.appLogger.successed("パスワード変更成功");
 	}
 }

@@ -3,6 +3,7 @@ package com.example.demo.common.dao;
 import java.util.List;
 
 import com.example.demo.app.entity.CommentModel;
+import com.example.demo.app.entity.CommentModelEx;
 import com.example.demo.common.status.CommentIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
 
@@ -24,9 +25,13 @@ public interface CommentDao {
 	
 	List<CommentModel> getAll();
 	
+	List<CommentModelEx> getAll_plusUserName();
+	
 	CommentModel select(CommentIdStatus id);
 	
 	List<CommentModel> select_byRoomId(RoomIdStatus roomId);
+	
+	List<CommentModelEx> select_plusUserName_byRoomId(RoomIdStatus roomId);
 	
 	boolean isSelect_byId(CommentIdStatus id);
 }
