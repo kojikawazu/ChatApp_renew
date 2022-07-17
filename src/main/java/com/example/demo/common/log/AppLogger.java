@@ -2,6 +2,9 @@ package com.example.demo.common.log;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -16,14 +19,28 @@ import java.util.logging.SimpleFormatter;
  */
 public class AppLogger {
 	
-	/** ログクラス */
-	private Logger logger = null;
+	/** 固定 */
 	
 	/** ログ名 */
 	private final String logName = "ChatApp_Log";
 	
+	/** Linux ディレクトリ */
+	private final String LINUX_APP_LOG_DIR = "/var/tomcat/chatapp";
+	
+	/** ---------------------------------------------------------------------------------- */
+	
+	/** ログクラス */
+	private Logger logger = null;
+	
+	
 	/** ログファイル名 */
 	private String SuperlogFileName = "AppLogger.log";
+	
+	/** ログファイルフルパス */
+	private String SuperLogFileFullPath = "";
+	
+	/** OS名 */
+	private String os_name = "windows";
 	
 	/**
 	 * コンストラクタ
@@ -44,11 +61,25 @@ public class AppLogger {
 			
 			try {
 				// ファイル出力の設定
-				String path = System.getProperty("user.dir");
-				path = new File(path, this.SuperlogFileName).getPath();
-				System.out.println("Create Log File Path: " + path);
+				this.os_name = System.getProperty("os.name").toLowerCase();
+				if( this.os_name.indexOf("windows") != -1 ) {
+					// windows
+					this.SuperLogFileFullPath = System.getProperty("user.dir");
+					this.SuperLogFileFullPath = new File(this.SuperLogFileFullPath, this.SuperlogFileName).getPath();
+				} else {
+					// Linux
+					Path directoryPath = Paths.get(this.LINUX_APP_LOG_DIR);
+					// ディレクトリチェック
+					if( !Files.isDirectory(directoryPath) ) {
+						// ディレクトリ作成
+						Files.createDirectories(directoryPath);
+					}
+					System.out.println(directoryPath);
+					this.SuperLogFileFullPath = this.LINUX_APP_LOG_DIR + "/" + this.SuperlogFileName;
+				}
 				
-				Handler handler = new FileHandler(path);
+				System.out.println("Create Log File Path: " + this.SuperLogFileFullPath);
+				Handler handler = new FileHandler(this.SuperLogFileFullPath);
 				handler.setFormatter(new SimpleFormatter());
 				
 				this.logger.addHandler(handler);
