@@ -15,7 +15,7 @@ repositories {
 apply plugin: 'war'
 
 war {
-    archiveName 'ChatApp_renew.war'
+    archiveName 'ChatApp_Renew.war'
 }
 
 dependencies {
