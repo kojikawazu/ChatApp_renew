@@ -73,13 +73,12 @@ public class EnterServiceUse implements EnterService {
 	 * 更新
 	 * @param room_id    ルームID
 	 * @param manager_id 管理ID
-	 * @param sum        入室最大数
 	 * @param user_id    ユーザID
 	 */
 	@Override
-	public void update_byUserId(RoomIdStatus room_id, UserIdStatus manager_id, RoomMaxNumber sum, UserIdStatus user_id) {
+	public void update_byUserId(RoomIdStatus room_id, UserIdStatus manager_id, UserIdStatus user_id) {
 		// 更新
-		if( this.dao.update_byUserId(room_id, manager_id, sum, user_id) <= WebConsts.ERROR_DB_STATUS ) {
+		if( this.dao.update_byUserId(room_id, manager_id, user_id) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}

@@ -30,7 +30,6 @@ class EnterModelTest {
 		Assertions.assertEquals(test.getRoom_id(), 0);
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertEquals(test.getManager_id(), 0);
-		Assertions.assertEquals(test.getMax_sum(), 0);
 		Assertions.assertNotNull(test.getCreated());
 	}
 	
@@ -45,14 +44,12 @@ class EnterModelTest {
 						new RoomIdStatus(0), 
 						new UserIdStatus(0), 
 						new UserIdStatus(0),
-						new RoomMaxNumber(0),
 						now);
 		
 		Assertions.assertEquals(test.getId(), 0);
 		Assertions.assertEquals(test.getRoom_id(), 0);
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertEquals(test.getManager_id(), 0);
-		Assertions.assertEquals(test.getMax_sum(), 0);
 		Assertions.assertNotNull(test.getCreated());
 	}
 
@@ -67,14 +64,12 @@ class EnterModelTest {
 				null, 
 				null, 
 				null,
-				null,
 				now);
 
 		Assertions.assertEquals(test.getId(), 0);
 		Assertions.assertEquals(test.getRoom_id(), 0);
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertEquals(test.getManager_id(), 0);
-		Assertions.assertEquals(test.getMax_sum(), 0);
 		Assertions.assertNotNull(test.getCreated());
 	}
 	
@@ -89,7 +84,6 @@ class EnterModelTest {
 						new RoomIdStatus(2), 
 						new UserIdStatus(3), 
 						new UserIdStatus(4),
-						new RoomMaxNumber(5),
 						now);
 		
 		
@@ -99,7 +93,6 @@ class EnterModelTest {
 		Assertions.assertEquals(test.getRoom_id(), 2);
 		Assertions.assertEquals(test.getUser_id(), 3);
 		Assertions.assertEquals(test.getManager_id(), 4);
-		Assertions.assertEquals(test.getMax_sum(), 5);
 		Assertions.assertNotNull(test.getCreated());
 	}
 	
@@ -113,14 +106,12 @@ class EnterModelTest {
 						new RoomIdStatus(0), 
 						new UserIdStatus(0), 
 						new UserIdStatus(0),
-						new RoomMaxNumber(0),
 						now);
 		
 		Assertions.assertEquals(test.getId(), 0);
 		Assertions.assertEquals(test.getRoom_id(), 0);
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertEquals(test.getManager_id(), 0);
-		Assertions.assertEquals(test.getMax_sum(), 0);
 		Assertions.assertNotNull(test.getCreated());
 	}
 }

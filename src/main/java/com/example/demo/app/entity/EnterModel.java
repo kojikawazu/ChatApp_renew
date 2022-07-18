@@ -22,7 +22,6 @@ public class EnterModel implements SuperModel {
 	private RoomIdStatus room_id;		/** ルームID */
 	private UserIdStatus user_id;		/** ユーザID */
 	private UserIdStatus manager_id;	/** ホストID */
-	private RoomMaxNumber max_sum;		/** 入室数  */
 	private LocalDateTime created;		/** 生成日時 */
 	
 	/**
@@ -39,7 +38,6 @@ public class EnterModel implements SuperModel {
 			RoomIdStatus room_id,
 			UserIdStatus user_id,
 			UserIdStatus manager_id,
-			RoomMaxNumber max_sum,
 			LocalDateTime created) {
 		
 		this.id = (id == null ?
@@ -58,10 +56,6 @@ public class EnterModel implements SuperModel {
 				new UserIdStatus(0) :
 				new UserIdStatus(manager_id.getId()));
 		
-		this.max_sum = (max_sum == null ?
-				new RoomMaxNumber(0) :
-				new RoomMaxNumber(max_sum.getNumber()));
-		
 		this.created = (created == null ?
 				LocalDateTime.now() :
 				created);
@@ -79,7 +73,6 @@ public class EnterModel implements SuperModel {
 			RoomIdStatus room_id,
 			UserIdStatus user_id,
 			UserIdStatus manager_id,
-			RoomMaxNumber max_sum,
 			LocalDateTime created) {
 		this.id = new EnterIdStatus(0);
 		
@@ -94,10 +87,6 @@ public class EnterModel implements SuperModel {
 		this.manager_id = (manager_id == null ?
 				new UserIdStatus(0) :
 				new UserIdStatus(manager_id.getId()));
-		
-		this.max_sum = (max_sum == null ?
-				new RoomMaxNumber(0) :
-				new RoomMaxNumber(max_sum.getNumber()));
 		
 		this.created = (created == null ?
 				LocalDateTime.now() :
@@ -115,14 +104,12 @@ public class EnterModel implements SuperModel {
 			this.room_id 	= new RoomIdStatus(0);
 			this.user_id 	= new UserIdStatus(0);
 			this.manager_id = new UserIdStatus(0);
-			this.max_sum 	= new RoomMaxNumber(0);
 			this.created 	= LocalDateTime.now();
 		} else {
 			this.id 		= new EnterIdStatus(model.getId());
 			this.room_id 	= new RoomIdStatus(model.getRoom_id());
 			this.user_id 	= new UserIdStatus(model.getUser_id());
 			this.manager_id = new UserIdStatus(model.getManager_id());
-			this.max_sum 	= new RoomMaxNumber(model.getMax_sum());
 			this.created 	= model.created;
 		}
 	}
@@ -157,14 +144,6 @@ public class EnterModel implements SuperModel {
 
 	protected void setManager_id(int manager_id) {
 		this.manager_id = new UserIdStatus(manager_id);
-	}
-
-	public int getMax_sum() {
-		return max_sum.getNumber();
-	}
-
-	protected void setMax_sum(int max_sum) {
-		this.max_sum = new RoomMaxNumber(max_sum);
 	}
 
 	public LocalDateTime getCreated() {
