@@ -30,6 +30,11 @@
 	 		
 	 		<!-- サインアップフォーム -->
 	 		<div class="forgot-form">
+	 			<!-- アラート -->
+				<div th:unless="${#strings.isEmpty(noticeError)}">
+					<div th:text="${noticeError}"class="alert alert-danger"></div>
+				</div>
+	 		
 	 			<form method="post" th:action="@{/signup_confirm}" th:object="${userSignupForm}">
 	 				<!-- ユーザ名 -->
 	 				<div class="form-group">
@@ -64,10 +69,6 @@
 			  		<button type="submit" class="btn btn-primary">確認する</button>
 	 			</form>
 	 			
-	 			<!-- アラート -->
-				<div th:unless="${#strings.isEmpty(noticeError)}">
-					<div th:text="${noticeError}"class="alert alert-danger"></div>
-				</div>
 	 		</div>
 	 	</div>	 	
 	</main>

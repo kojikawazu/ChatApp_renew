@@ -157,6 +157,17 @@ public class UserServiceUse implements UserService {
 		// 有無確認
 		return this.dao.isSelect_byNameEmail(user);
 	}
+	
+	/**
+	 * ユーザー名、又はEメールの有無確認
+	 * @param user ユーザ名, Eメールクラス
+	 * @return true あり false なし
+	 */
+	@Override
+	public boolean isSelect_byNameOrEmail(UserNameEmail user) {
+		// 有無確認
+		return this.dao.isSelect_byNameOrEmail(user);
+	}
 
 	/**
 	 * ユーザモデルの有無確認

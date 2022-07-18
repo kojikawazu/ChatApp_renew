@@ -38,7 +38,7 @@ public class UserForgotForm implements SuperUserForm {
 	private String forgot_passwd;
 	
 	/** 新しいパスワード */
-	@NotNull
+	@NotNull(message = ERROR_NULL_STRING_MESSAGE)
 	@Size(min           = PASSWD_NAME_MIN_VALUE, 
 			max         = PASSWD_NAME_MAX_VALUE, 
 			message     = ERROR_PASSWD_NAME_MAX_MESSAGE)

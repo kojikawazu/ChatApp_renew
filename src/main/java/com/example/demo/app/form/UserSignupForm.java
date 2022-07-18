@@ -13,14 +13,14 @@ import javax.validation.constraints.Size;
 public class UserSignupForm implements SuperUserForm {
 
 	/** ユーザ名 */
-	@NotNull
+	@NotNull(message = ERROR_NULL_STRING_MESSAGE)
 	@Size(min       = USER_NAME_MIN_VALUE, 
 			max     = USER_NAME_MAX_VALUE, 
 			message = ERROR_USER_NAME_MAX_MESSAGE)
 	private String name;
 	
 	/** Eメール */
-	@NotNull
+	@NotNull(message = ERROR_NULL_STRING_MESSAGE)
 	@Email
 	@Size(min       = EMAIL_NAME_MIN_VALUE, 
 			max     = EMAIL_NAME_MAX_VALUE, 
@@ -28,7 +28,7 @@ public class UserSignupForm implements SuperUserForm {
 	private String email;
 	
 	/** 新しいパスワード */
-	@NotNull
+	@NotNull(message = ERROR_NULL_STRING_MESSAGE)
 	@Size(min           = PASSWD_NAME_MIN_VALUE, 
 			max         = PASSWD_NAME_MAX_VALUE, 
 			message     = ERROR_PASSWD_NAME_MAX_MESSAGE)
@@ -37,7 +37,7 @@ public class UserSignupForm implements SuperUserForm {
 	private String new_passwd;
 	
 	/** 忘れたとき用パスワード */
-	@NotNull
+	@NotNull(message = ERROR_NULL_STRING_MESSAGE)
 	@Size(min           = FORGOT_PASSWD_NAME_MIN_VALUE, 
 			max         = FORGOT_PASSWD_NAME_MAX_VALUE, 
 			message     = ERROR_FORGOT_PASSWD_NAME_MAX_MESSAGE)

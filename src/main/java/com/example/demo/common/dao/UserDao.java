@@ -37,6 +37,8 @@ public interface UserDao {
 	
 	boolean isSelect_byNameEmail(UserNameEmail user);
 	
+	boolean isSelect_byNameOrEmail(UserNameEmail user);
+	
 	boolean isSelect_byNameEmailForgotPW(UserNameEmailPassword user);
 	
 	boolean isSelect_byNameEmailPass(UserNameEmailPassword user);
