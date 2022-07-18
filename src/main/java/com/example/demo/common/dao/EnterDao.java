@@ -20,7 +20,7 @@ public interface EnterDao {
 	
 	int update(EnterModel model);
 	
-	int update_byUserId(RoomIdStatus room_id, UserIdStatus manager_id, RoomMaxNumber sum, UserIdStatus user_id);
+	int update_byUserId(RoomIdStatus room_id, UserIdStatus manager_id, UserIdStatus user_id);
 	
 	int updateManagerId_byId(UserIdStatus managerId, EnterIdStatus id);
 	

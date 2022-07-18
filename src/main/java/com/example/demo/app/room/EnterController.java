@@ -207,7 +207,6 @@ public class EnterController implements SuperRoomController {
 				room_id,
 				new UserIdStatus(loginModel.getUser_id()),
 				new UserIdStatus(roomModel.getUser_id()),
-				new RoomMaxNumber(roomModel.getMax_roomsum()),
 				LocalDateTime.now());
 		EnterIdStatus enter_id = this.enterService.save_returnId(enterModel);
 		this.appLogger.successed("入室情報の保存成功: enterId: " + enter_id.getId());
@@ -243,7 +242,6 @@ public class EnterController implements SuperRoomController {
 		this.enterService.update_byUserId(
 				room_id, 
 				new UserIdStatus(roomModel.getUser_id()), 
-				new RoomMaxNumber(roomModel.getMax_roomsum()), 
 				new UserIdStatus(loginModel.getUser_id()));
 		
 		// 入室IDを返す

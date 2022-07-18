@@ -247,7 +247,6 @@ public class ChatController {
 				new RoomIdStatus(enterModel.getRoom_id()),
 				new UserIdStatus(enterModel.getUser_id()),
 				new UserIdStatus(enterModel.getUser_id()),
-				new RoomMaxNumber(enterModel.getMax_sum()),
 				enterModel.getCreated());
 		
 		this.appLogger.successed("ホストユーザーID変更完了");

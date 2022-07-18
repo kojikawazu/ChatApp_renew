@@ -59,11 +59,10 @@ public class EnterDaoSql implements EnterDao {
 		
 		try {
 			this.jdbcTemp.update(
-					"INSERT INTO chat_enter(room_id, user_id, manager_id, max_sum, created) VALUES(?,?,?,?,?)",
+					"INSERT INTO chat_enter(room_id, user_id, manager_id, created) VALUES(?,?,?,?)",
 					model.getRoom_id(),
 					model.getUser_id(),
 					model.getManager_id(),
-					model.getMax_sum(),
 					model.getCreated());
 		} catch(DataAccessException ex) {
 			ex.printStackTrace();
@@ -81,7 +80,7 @@ public class EnterDaoSql implements EnterDao {
 		if(model == null)	return new EnterIdStatus(WebConsts.ERROR_NUMBER);
 		
 		KeyHolder keyHolder = new GeneratedKeyHolder();
-		String sql = "INSERT INTO chat_enter(room_id, user_id, manager_id, max_sum, created) VALUES(?,?,?,?,?)";
+		String sql = "INSERT INTO chat_enter(room_id, user_id, manager_id, created) VALUES(?,?,?,?)";
 		Timestamp timestamp = Timestamp.valueOf(model.getCreated());
 		int return_key = 0;
 		
@@ -94,8 +93,7 @@ public class EnterDaoSql implements EnterDao {
 		                   ps.setInt(1, model.getRoom_id());
 		                   ps.setInt(2, model.getUser_id());
 		                   ps.setInt(3, model.getManager_id());
-		                   ps.setInt(4, model.getMax_sum());
-		                   ps.setTimestamp(5, timestamp);
+		                   ps.setTimestamp(4, timestamp);
 		                   return ps;
 		               }
 		           }, keyHolder);
@@ -118,11 +116,10 @@ public class EnterDaoSql implements EnterDao {
 		if(model == null)	return WebConsts.ERROR_NUMBER;
 		
 		return jdbcTemp.update(
-				"UPDATE chat_enter SET room_id = ?, user_id = ?, manager_id = ?, max_sum = ?, created = ? WHERE id = ?",
+				"UPDATE chat_enter SET room_id = ?, user_id = ?, manager_id = ?, created = ? WHERE id = ?",
 				model.getRoom_id(),
 				model.getUser_id(),
 				model.getManager_id(),
-				model.getMax_sum(),
 				model.getCreated(),
 				model.getId());
 	}
@@ -131,23 +128,20 @@ public class EnterDaoSql implements EnterDao {
 	 * ユーザIDから更新処理
 	 * @param room_id    ルームID
 	 * @param manager_id 管理ID
-	 * @param sum        ユーザ合計
 	 * @param user_id    ユーザID
 	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
-	public int update_byUserId(RoomIdStatus room_id, UserIdStatus manager_id, RoomMaxNumber sum, UserIdStatus user_id) {
+	public int update_byUserId(RoomIdStatus room_id, UserIdStatus manager_id, UserIdStatus user_id) {
 		// ユーザIDによる更新
 		if(room_id == null  ||
 			user_id == null ||
-			sum == null     ||
 			user_id == null) return WebConsts.ERROR_NUMBER;
 		
 		return jdbcTemp.update(
-				"UPDATE chat_enter SET room_id = ?, manager_id = ?, max_sum = ?, created = ? WHERE user_id = ?",
+				"UPDATE chat_enter SET room_id = ?, manager_id = ?, created = ? WHERE user_id = ?",
 				room_id.getId(),
 				manager_id.getId(),
-				sum.getNumber(),
 				LocalDateTime.now(),
 				user_id.getId());
 	}
@@ -195,7 +189,7 @@ public class EnterDaoSql implements EnterDao {
 		
 		List<EnterModel> list = new ArrayList<EnterModel>();
 		try {
-			String sql = "SELECT id, room_id, user_id, manager_id, max_sum, created FROM chat_enter";
+			String sql = "SELECT id, room_id, user_id, manager_id, created FROM chat_enter";
 			List<Map<String, Object>> resultList = jdbcTemp.queryForList(sql);
 			
 			for( Map<String, Object> result : resultList ) {
@@ -204,7 +198,6 @@ public class EnterDaoSql implements EnterDao {
 						new RoomIdStatus((int)result.get("room_id")),
 						new UserIdStatus((int)result.get("user_id")),
 						new UserIdStatus((int)result.get("manager_id")),
-						new RoomMaxNumber((int)result.get("max_sum")),
 						((Timestamp)result.get("created")).toLocalDateTime());
 				list.add(model);
 			}
@@ -227,7 +220,7 @@ public class EnterDaoSql implements EnterDao {
 		
 		EnterModel model = new EnterModel(null);
 		try {
-			String sql = "SELECT id, room_id, user_id, manager_id, max_sum, created FROM chat_enter WHERE id = ?";
+			String sql = "SELECT id, room_id, user_id, manager_id, created FROM chat_enter WHERE id = ?";
 			Map<String, Object> result = jdbcTemp.queryForMap(sql, id.getId());
 				
 			model = new EnterModel(
@@ -235,7 +228,6 @@ public class EnterDaoSql implements EnterDao {
 					new RoomIdStatus((int)result.get("room_id")),
 					new UserIdStatus((int)result.get("user_id")),
 					new UserIdStatus((int)result.get("manager_id")),
-					new RoomMaxNumber((int)result.get("max_sum")),
 					((Timestamp)result.get("created")).toLocalDateTime());
 		} catch(EmptyResultDataAccessException ex) {
 			ex.printStackTrace();

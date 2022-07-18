@@ -181,7 +181,6 @@ public class CreateRoomCompleteController implements SuperRoomController {
 				room_id,
 				new UserIdStatus(loginModel.getUser_id()),
 				new UserIdStatus(loginModel.getUser_id()),
-				new RoomMaxNumber(roomCreateForm.getMax_roomsum()),
 				LocalDateTime.now());
 		EnterIdStatus enterIdStatus = this.enterService.save_returnId(enterModel);
 		

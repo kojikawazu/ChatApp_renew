@@ -20,7 +20,7 @@ public interface EnterService {
 	
 	void update(EnterModel model);
 	
-	void update_byUserId(RoomIdStatus room_id, UserIdStatus manager_id, RoomMaxNumber sum, UserIdStatus user_id);
+	void update_byUserId(RoomIdStatus room_id, UserIdStatus manager_id, UserIdStatus user_id);
 	
 	void updateManagerId_byId(UserIdStatus managerId, EnterIdStatus id);
 	
