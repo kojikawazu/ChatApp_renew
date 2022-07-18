@@ -13,21 +13,21 @@ import javax.validation.constraints.Size;
 public class RoomCreateForm implements SuperRoomForm {
 	
 	/** ルーム名 */
-	@NotNull
+	@NotNull(message = ERROR_NULL_STRING_MESSAGE)
 	@Size(min = ROOM_NAME_MIN_VALUE, 
 			max = ROOM_NAME_MAX_VALUE, 
 			message = ERROR_ROOM_NAME_MAX_MESSAGE)
 	private String name;
 	
 	/** ルームコメント */
-	@NotNull
+	@NotNull(message = ERROR_NULL_STRING_MESSAGE)
 	@Size(min = ROOM_COMMENT_MIN_VALUE, 
 			max = ROOM_COMMENT_MAX_VALUE, 
 			message = ERROR_ROOM_COMMENT_MAX_MESSAGE)
 	private String comment;
 	
 	/** ルームタグ */
-	@NotNull
+	@NotNull(message = ERROR_NULL_STRING_MESSAGE)
 	@Size(min = ROOM_TAG_MIN_VALUE, 
 			max = ROOM_TAG_MAX_VALUE, 
 			message = ERROR_ROOM_TAG_MAX_MESSAGE)

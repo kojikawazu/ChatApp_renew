@@ -30,6 +30,11 @@
 	 		
 	 		<!-- ログインフォーム -->
 	 		<div class="forgot-form">
+	 			<!-- アラート -->
+				<div th:unless="${#strings.isEmpty(noticeError)}">
+					<div th:text="${noticeError}"class="alert alert-danger"></div>
+				</div>
+				
 	 			<form method="post" th:action="@{/forgot_confirm}" th:object="${userForgotForm}">
 	 				<!-- ユーザ名 -->
 	 				<div class="form-group">
@@ -67,11 +72,6 @@
 			  		<a th:href="@{/room/}" class="btn btn-primary">ルーム選択画面へ戻る</a>
 			  		<button type="submit" class="btn btn-primary">パスワード変更する</button>
 	 			</form>
-	 			
-	 			<!-- アラート -->
-				<div th:unless="${#strings.isEmpty(noticeError)}">
-					<div th:text="${noticeError}"class="alert alert-danger"></div>
-				</div>
 	 		</div>
 	 	</div>	 	
 	</main>

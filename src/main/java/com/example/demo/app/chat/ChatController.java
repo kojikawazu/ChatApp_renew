@@ -151,6 +151,10 @@ public class ChatController {
 			// [ERROR]
 			this.appLogger.error("既に閉鎖: roomId: " + enterModel.getRoom_id());
 			
+			// 入室IDを削除
+			EnterIdStatus enter_id = new EnterIdStatus(enterModel.getId());
+			this.enterService.delete(enter_id);
+			
 			// ユーザIDからログインIDを取得
 			LoginIdStatus login_id = this.loginService.selectId_byUserId(user_id);
 			

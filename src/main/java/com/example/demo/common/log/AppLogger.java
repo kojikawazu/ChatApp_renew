@@ -74,7 +74,6 @@ public class AppLogger {
 						// ディレクトリ作成
 						Files.createDirectories(directoryPath);
 					}
-					System.out.println(directoryPath);
 					this.SuperLogFileFullPath = this.LINUX_APP_LOG_DIR + "/" + this.SuperlogFileName;
 				}
 				

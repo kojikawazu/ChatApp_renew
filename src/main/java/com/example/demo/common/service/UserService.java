@@ -36,6 +36,8 @@ public interface UserService {
 	
 	boolean isSelect_byNameEmail(UserNameEmail user);
 	
+	boolean isSelect_byNameOrEmail(UserNameEmail user);
+	
 	boolean isSelect_byNameEmailForgotPW(UserNameEmailPassword user);
 	
 	boolean isSelect_byNameEmailPasswd(UserNameEmailPassword user);

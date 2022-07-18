@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.form.UserSignupForm;
 import com.example.demo.common.log.ChatAppLogger;
+import com.example.demo.common.service.UserService;
+import com.example.demo.common.word.EmailWord;
+import com.example.demo.common.word.NameWord;
+import com.example.demo.common.word.UserNameEmail;
 
 /**
  * ---------------------------------------------------------------------------
@@ -24,6 +28,11 @@ import com.example.demo.common.log.ChatAppLogger;
 public class SignupConfirmController implements SuperUserController {
 
 	/**
+	 * サービス
+	 */
+	private UserService userService;
+	
+	/**
 	 * ログクラス
 	 */
 	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
@@ -36,10 +45,12 @@ public class SignupConfirmController implements SuperUserController {
 	
 	/**
 	 * コンストラクタ
+	 * @param userService ユーザーサービス
 	 */
 	@Autowired
-	public SignupConfirmController() {
-		
+	public SignupConfirmController(
+			UserService userService) {
+		this.userService = userService;
 	}
 	
 	/**
@@ -57,11 +68,11 @@ public class SignupConfirmController implements SuperUserController {
 			Model model) {
 		this.appLogger.start("サインアップ確認受信...");
 		
-		if(result.hasErrors()) {
+		if( !this.isCheckForm(userSignupForm, result, model) ) {
 			// [ERROR]
-			this.appLogger.error("バリデーションエラー: " + result);
-			this.setSignup_form(model);
 			// サインアップフォーム画面へ
+			this.appLogger.error("失敗...サインアップフォームへ");
+			this.setSignup_form(model);
 			return WebConsts.URL_USER_SIGNUP_FORM;
 		}
 		// サインアップ確認画面へ
@@ -69,6 +80,43 @@ public class SignupConfirmController implements SuperUserController {
 		
 		this.appLogger.successed("サインアップ確認成功");
 		return WebConsts.URL_USER_SIGNUP_CONFIRM;
+	}
+	
+	/**
+	 * サインアップ確認
+	 * @param userSignupForm  サインアップフォームクラス
+	 * @param result          バリデーション結果
+	 * @return true OK false NG
+	 */
+	private boolean isCheckForm(
+			UserSignupForm userSignupForm,
+			BindingResult result,
+			Model model) {
+		this.appLogger.start("サインアップ確認チェック...");
+		
+		// バリデーションチェック
+		if(result.hasErrors()) {
+			// [ERROR]
+			this.appLogger.error("バリデーションエラー: " + result);
+			return false;
+		}
+		
+		UserNameEmail userNameEmail = new UserNameEmail(
+				new NameWord(userSignupForm.getName()), 
+				new EmailWord(userSignupForm.getEmail()));
+		// DBチェック
+		if(this.userService.isSelect_byNameOrEmail(userNameEmail)) {
+			// [ERROR]
+			this.appLogger.error("ユーザー名又はEメール存在する: user:  " + userSignupForm.getName());
+			this.appLogger.error("                      : email: " + userSignupForm.getEmail());
+			
+			model.addAttribute(WebConsts.BIND_NOTICE_ERROR, 
+					"ユーザー名、またはEメールは既に登録済です。");
+			return false;
+		}
+		
+		this.appLogger.successed("サインアップ確認チェックOK");
+		return true;
 	}
 	
 	/**

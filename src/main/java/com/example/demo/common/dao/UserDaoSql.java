@@ -325,6 +325,27 @@ public class UserDaoSql implements UserDao {
 				}
 		);
 	}
+	
+	/**
+	 * ユーザ名またはEメールによる有無チェック
+	 * @param  user ユーザ名, Eメールクラス
+	 * @return true あり false なし
+	 */
+	@Override
+	public boolean isSelect_byNameOrEmail(UserNameEmail user) {
+		// 名前とメールアドレスの一致による有無確認
+		if(user == null)	return WebConsts.DB_ENTITY_NONE;
+		
+		String sql = "SELECT id FROM chat_user WHERE name = ? OR email = ?";
+		return this.jdbcTemp.query(
+				sql,
+				new Object[]{ user.getName(), user.getEmail() }, 
+				new int[] {	Types.VARCHAR, Types.VARCHAR },
+				rs -> {
+					return rs.next() ? WebConsts.DB_ENTITY_FINDED : WebConsts.DB_ENTITY_NONE;
+				}
+		);
+	}
 
 	/**
 	 * ユーザ名、Eメール、忘れたとき用パスワードによる有無チェック

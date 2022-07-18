@@ -14,6 +14,7 @@ import com.example.demo.app.entity.CommentModel;
 import com.example.demo.app.form.UserSpeechForm;
 import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.CommentService;
+import com.example.demo.common.service.RoomService;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 import com.example.demo.common.word.ChatCommentWord;
@@ -31,6 +32,7 @@ public class RoomSpeechController implements SuperChatController {
 	 * サービス 
 	 */
 	private CommentService commentService;
+	private RoomService    roomService;
 	
 	/**
 	 * ログクラス
@@ -39,11 +41,14 @@ public class RoomSpeechController implements SuperChatController {
 	
 	/**
 	 * コンストラクタ
-	 * @param commentService
+	 * @param roomService     ルームサービス
+	 * @param commentService  コメントサービス
 	 */
 	@Autowired
 	public RoomSpeechController(
+			RoomService    roomService,
 			CommentService commentService) {
+		this.roomService    = roomService;
 		this.commentService = commentService;
 	}
 	
@@ -62,10 +67,8 @@ public class RoomSpeechController implements SuperChatController {
 		this.appLogger.start("コメント受信...");
 		
 		// エラーチェック
-		if(userSpeechForm.getComment() == null || userSpeechForm.getComment().isBlank()) {
-			// コメント追加なしでリダイレクト
-			this.appLogger.info("コメントなし");
-			
+		if( !this.isSpeech(userSpeechForm, model) ) {
+			// コメント追加NGでリダイレクト
 			redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, userSpeechForm.getEnter_id());
 			return WebConsts.URL_REDIRECT_CHAT_INDEX;
 		}
@@ -78,6 +81,37 @@ public class RoomSpeechController implements SuperChatController {
 		
 		this.appLogger.successed("コメント成功");
 		return WebConsts.URL_REDIRECT_CHAT_INDEX;
+	}
+	
+	/**
+	 * チャット投稿チェック
+	 * @param userSpeechForm      スピーチフォーム
+	 * @param model               モデル
+	 * @param redirectAttributes  リダイレクトクラス
+	 * @return true OK false NG
+	 */
+	private boolean isSpeech(UserSpeechForm userSpeechForm,
+			Model model) {
+		this.appLogger.start("チャット投稿チェック...");
+		
+		// コメント内容チェック
+		if(userSpeechForm.getComment() == null || userSpeechForm.getComment().isBlank()) {
+			// [ERROR]
+			// コメント追加なしでリダイレクト
+			this.appLogger.info("コメントなし");
+			return false;
+		}
+		
+		// 部屋あるかチェック
+		if( !this.roomService.isSelect_byId(new RoomIdStatus(userSpeechForm.getRoom_id())) ) {
+			// [ERROR]
+			// 部屋なしでリダイレクト
+			this.appLogger.info("部屋なし");
+			return false;
+		}
+		
+		this.appLogger.successed("チャット投稿チェックOK");
+		return true;
 	}
 	
 	/**
