@@ -8,6 +8,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.form.UserLogoutForm;
+import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.LoginService;
 import com.example.demo.common.status.LoginIdStatus;
@@ -59,9 +60,8 @@ public class SignoutController implements SuperUserController {
 		LoginIdStatus login_id = this.deleteLoginInfo(userLogoutForm);
 		
 		// Web側：ログインID初期化
-		redirectAttributes.addAttribute(
-				WebConsts.BIND_LOGIN_ID, 
-				WebConsts.LOGIN_ID_INIT_NUMBER);
+		String encryptNumber = CommonEncript.encrypt(String.valueOf(WebConsts.LOGIN_ID_INIT_NUMBER));
+		redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, encryptNumber);
 		
 		this.appLogger.successed("サインアウト成功 : loginId : " + login_id.getId());
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
