@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.LoginModel;
 import com.example.demo.app.form.UserLoginForm;
+import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.LoginService;
 import com.example.demo.common.service.UserService;
@@ -105,7 +106,8 @@ public class SigninController implements SuperUserController {
 			}
 			
 			// ログインIDをWebに登録
-			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, loginIdStatus.getId());
+			String encryptNumber = CommonEncript.encrypt(String.valueOf(loginIdStatus.getId()));
+			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, encryptNumber);
 			
 			this.appLogger.successed("サインイン成功 : userId : "  + userIdStatus.getId());
 			this.appLogger.successed("             loginId : " + loginIdStatus.getId());

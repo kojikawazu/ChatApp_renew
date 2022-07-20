@@ -15,6 +15,7 @@ import com.example.demo.app.entity.EnterModel;
 import com.example.demo.app.entity.LoginModel;
 import com.example.demo.app.entity.RoomModel;
 import com.example.demo.app.form.UserEnterForm;
+import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.service.CommentService;
@@ -147,7 +148,8 @@ public class EnterController implements SuperRoomController {
 			this.appLogger.error("ログインしてない。");
 			
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_MESSAGE_NO_LOGIN);
-			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, NO_LOGIN_NUMBER);
+			String encryptNumber = CommonEncript.encrypt(String.valueOf(NO_LOGIN_NUMBER));
+			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, encryptNumber);
 			return WebConsts.CHECK_COMMON_NG;
 		}
 		// ログインしてる
@@ -164,7 +166,8 @@ public class EnterController implements SuperRoomController {
 					);
 			
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_MESSAGE_MAX_ENTER_ROOM);
-			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id.getId());
+			String encryptNumber = CommonEncript.encrypt(String.valueOf(login_id.getId()));
+			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, encryptNumber);
 			return WebConsts.CHECK_COMMON_NG;
 		}
 		// 空きあり
@@ -175,7 +178,8 @@ public class EnterController implements SuperRoomController {
 			this.appLogger.error("ルームがない: roomId: " + room_id);
 			
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_MESSAGE_CLOSUER);
-			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id.getId());
+			String encryptNumber = CommonEncript.encrypt(String.valueOf(login_id.getId()));
+			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, encryptNumber);
 			return WebConsts.CHECK_COMMON_NG;
 		}
 		// ルームあり

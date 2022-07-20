@@ -14,6 +14,7 @@ import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.LoginModel;
 import com.example.demo.app.entity.UserModel;
 import com.example.demo.app.form.UserSignupForm;
+import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.LoginService;
 import com.example.demo.common.service.UserService;
@@ -89,7 +90,8 @@ public class SignupCompleteController implements SuperUserController {
 		// ログイン情報の追加
 		LoginIdStatus loginId = this.addSignIn(userId);
 		
-		redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, loginId.getId());
+		String encryptNumber = CommonEncript.encrypt(String.valueOf(loginId.getId()));
+		redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, encryptNumber);
 		
 		this.appLogger.successed("サインアップ実行成功: userId: " + userId.getId());
 		this.appLogger.successed("               : loginId: " + loginId.getId());

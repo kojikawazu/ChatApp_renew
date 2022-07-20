@@ -13,6 +13,7 @@ import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.CommentModel;
 import com.example.demo.app.entity.EnterModel;
 import com.example.demo.app.form.RoomOutForm;
+import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.CommentService;
 import com.example.demo.common.service.EnterService;
@@ -94,7 +95,8 @@ public class RoomOutController implements SuperChatController {
 		this.deleteEnterInfo(enter_id);
 		
 		// リダイレクト設定
-		redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id.getId());
+		String encryptNumber = CommonEncript.encrypt(String.valueOf(login_id.getId()));
+		redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, encryptNumber);
 
 		this.appLogger.successed("退室成功");
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
