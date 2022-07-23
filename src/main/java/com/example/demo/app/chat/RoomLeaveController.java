@@ -15,6 +15,7 @@ import com.example.demo.app.entity.EnterModel;
 import com.example.demo.app.entity.LoginModel;
 import com.example.demo.app.entity.UserModel;
 import com.example.demo.app.form.RoomLeaveForm;
+import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.CommentService;
 import com.example.demo.common.service.EnterService;
@@ -90,7 +91,8 @@ public class RoomLeaveController implements SuperChatController {
 			// [ERROR]
 			this.appLogger.error("強制退室失敗");
 			// 何もせずリダイレクト
-			redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, roomLeaveForm.getEnter_id());
+			String encryptNumber = CommonEncript.encrypt(roomLeaveForm.getEnter_id());
+			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_ENTER_ID, encryptNumber);
 			return WebConsts.URL_REDIRECT_CHAT_INDEX;
 		}
 		
@@ -101,7 +103,8 @@ public class RoomLeaveController implements SuperChatController {
 		this.initRoomId_byLoginId(roomLeaveForm);
 		
 		// チャットリダイレクト
-		redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, roomLeaveForm.getEnter_id());
+		String encryptNumber = CommonEncript.encrypt(roomLeaveForm.getEnter_id());
+		redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_ENTER_ID, encryptNumber);
 		
 		this.appLogger.successed("強制退室成功");
 		return WebConsts.URL_REDIRECT_CHAT_INDEX;

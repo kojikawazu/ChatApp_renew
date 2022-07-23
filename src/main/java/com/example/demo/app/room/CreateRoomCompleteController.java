@@ -17,6 +17,7 @@ import com.example.demo.app.entity.EnterModel;
 import com.example.demo.app.entity.LoginModel;
 import com.example.demo.app.entity.RoomModel;
 import com.example.demo.app.form.RoomCreateForm;
+import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.service.CommentService;
@@ -121,7 +122,8 @@ public class CreateRoomCompleteController implements SuperRoomController {
 		this.setComment_createroom(loginModel, room_id);
 		
 		// チャット画面へ
-		redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, enter_id.getId());
+		String encryptNumber = CommonEncript.encrypt(enter_id.getId());
+		redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_ENTER_ID, encryptNumber);
 		
 		this.appLogger.successed("ルーム生成実行成功: roomId: " + room_id.getId());
 		this.appLogger.successed("               : enterId: " + enter_id.getId());

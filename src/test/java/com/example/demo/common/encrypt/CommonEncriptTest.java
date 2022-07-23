@@ -37,7 +37,8 @@ class CommonEncriptTest {
 		String testData = "1";
 		
 		String outputData = CommonEncript.encrypt(testData);
-		Assertions.assertEquals(outputData, "2NuZi0LYL18=");
+		System.out.println(outputData);
+		Assertions.assertEquals(outputData, "if2NGDmSZO0=");
 	}
 	
 	/**
@@ -72,7 +73,7 @@ class CommonEncriptTest {
 	@Test
 	void testEncrypt_null() {
 		String outputData = CommonEncript.encrypt(null);
-		System.out.println(outputData);
+		
 		Assertions.assertNotNull(outputData);
 		Assertions.assertEquals(outputData, "");
 	}
@@ -82,7 +83,7 @@ class CommonEncriptTest {
 	 */
 	@Test
 	void testDecrypt(){
-		String testData = "2NuZi0LYL18=";
+		String testData = "if2NGDmSZO0=";
 		
 		String outputData = CommonEncript.decrypt(testData);
 		Assertions.assertEquals(outputData, "1");

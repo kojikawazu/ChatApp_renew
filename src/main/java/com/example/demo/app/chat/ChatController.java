@@ -25,6 +25,7 @@ import com.example.demo.app.entity.UserModel;
 import com.example.demo.app.form.RoomLeaveForm;
 import com.example.demo.app.form.RoomOutForm;
 import com.example.demo.app.form.UserSpeechForm;
+import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.number.RoomEnterCntNumber;
 import com.example.demo.common.number.RoomMaxNumber;
@@ -101,11 +102,16 @@ public class ChatController {
 	 */
 	@GetMapping
 	public String index(
-			@RequestParam(value = "enter_id", required = false, defaultValue = "0") int enter_id,
+			@RequestParam(value = WebConsts.BIND_ENCRYPT_ENTER_ID, 
+							required = false, 
+							defaultValue = "wfssM4JI4nk=") String e_enterId,
 			Model model,
 			RoomLeaveForm roomLeaveForm,
 			RedirectAttributes redirectAttributes) {
-		this.appLogger.start("チャットルーム受信...");
+		this.appLogger.start("チャットルーム受信... enterId: " + e_enterId);
+		
+		int enter_id = Integer.parseInt(CommonEncript.decrypt(e_enterId));
+		this.appLogger.info("復号化... enterId: " + enter_id);
 		EnterIdStatus enterIdStatus = new EnterIdStatus(enter_id);
 		
 		// エラーチェック
@@ -160,7 +166,8 @@ public class ChatController {
 			
 			// ログインIDをリダイレクト
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, NOTICE_ROOM_CLOSE);
-			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id.getId());
+			String encryptNumber = CommonEncript.encrypt(login_id.getId());
+			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
 			
 			return false;
 		}
@@ -180,7 +187,8 @@ public class ChatController {
 			
 			// ログインIDをリダイレクト
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, NOTICE_FORCE_LEFT_THE_ROOM);
-			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, login_id.getId());
+			String encryptNumber = CommonEncript.encrypt(String.valueOf(login_id.getId()));
+			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
 			return false;
 		}
 		

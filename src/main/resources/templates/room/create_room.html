@@ -60,7 +60,7 @@
 			  		</div>
 			  		<div class="text-danger mb-4" th:if="${#fields.hasErrors('max_roomsum')}" th:errors="*{max_roomsum}"></div>
 			  		
-			  		<a th:href="@{'/room/?login_id=' + ${login_id}}" class="btn btn-primary">ルーム選択画面へ戻る</a>
+			  		<a th:href="@{'/room/?e_loginId=' + ${e_loginId}}" class="btn btn-primary">ルーム選択画面へ戻る</a>
 			  		<input type="hidden" name="login_id" th:value="${login_id}" />
 			  		<button type="submit" class="btn btn-primary">ルーム作成</button>
 	 			</form>

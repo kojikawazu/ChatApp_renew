@@ -60,8 +60,8 @@ public class SignoutController implements SuperUserController {
 		LoginIdStatus login_id = this.deleteLoginInfo(userLogoutForm);
 		
 		// Web側：ログインID初期化
-		String encryptNumber = CommonEncript.encrypt(String.valueOf(WebConsts.LOGIN_ID_INIT_NUMBER));
-		redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, encryptNumber);
+		String encryptNumber = CommonEncript.encrypt(WebConsts.LOGIN_ID_INIT_NUMBER);
+		redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
 		
 		this.appLogger.successed("サインアウト成功 : loginId : " + login_id.getId());
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;

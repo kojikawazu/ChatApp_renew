@@ -90,8 +90,8 @@ public class SignupCompleteController implements SuperUserController {
 		// ログイン情報の追加
 		LoginIdStatus loginId = this.addSignIn(userId);
 		
-		String encryptNumber = CommonEncript.encrypt(String.valueOf(loginId.getId()));
-		redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, encryptNumber);
+		String encryptNumber = CommonEncript.encrypt(loginId.getId());
+		redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
 		
 		this.appLogger.successed("サインアップ実行成功: userId: " + userId.getId());
 		this.appLogger.successed("               : loginId: " + loginId.getId());

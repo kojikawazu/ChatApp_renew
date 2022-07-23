@@ -97,8 +97,8 @@ public class RoomCloseController implements SuperChatController {
 		this.deleteRoomInfo(room_id);
 		
 		// リダイレクト設定
-		String encryptNumber = CommonEncript.encrypt(String.valueOf(login_id.getId()));
-		redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, encryptNumber);
+		String encryptNumber = CommonEncript.encrypt(login_id.getId());
+		redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
 		
 		this.appLogger.successed("部屋閉鎖成功");
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;

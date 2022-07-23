@@ -73,16 +73,18 @@ public class RoomController implements SuperRoomController {
 	 */
 	@GetMapping
 	public String index(
-			@RequestParam(value = "login_id", required = false, defaultValue = "wlekf8n7hk8=") String EncryptLoginId,
+			@RequestParam(value = WebConsts.BIND_ENCRYPT_LOGIN_ID, 
+							required = false, 
+							defaultValue = "wfssM4JI4nk=") String e_loginId,
 			Model model,
 			@ModelAttribute("noticeSuccess") String noticeSuccess,
 			@ModelAttribute("noticeError")   String noticeError) {
 		// ホーム画面
-		this.appLogger.start("ルーム画面受信... loginId: " + EncryptLoginId);
+		this.appLogger.start("ルーム画面受信... loginId: " + e_loginId);
 		
 		// 復号化
-		int login_id = Integer.parseInt(CommonEncript.decrypt(EncryptLoginId));
-		this.appLogger.start("復号化... loginId: " + login_id);
+		int login_id = Integer.parseInt(CommonEncript.decrypt(e_loginId));
+		this.appLogger.info("復号化... loginId: " + login_id);
 		
 		if( login_id > 0 ) {
 			// ログインチェック
@@ -96,13 +98,13 @@ public class RoomController implements SuperRoomController {
 			} else {
 				// ログイン情報なし
 				login_id = 0;
-				model.addAttribute("login_id", login_id);
+				model.addAttribute(WebConsts.BIND_LOGIN_ID, login_id);
 				return WebConsts.URL_REDIRECT_ROOM_INDEX;
 			}
 		} else if( login_id < 0 ) {
 			// 負の数は0に設定してリダイレクト
 			login_id = 0;
-			model.addAttribute("login_id", login_id);
+			model.addAttribute(WebConsts.BIND_LOGIN_ID, login_id);
 			return WebConsts.URL_REDIRECT_ROOM_INDEX;
 		}
 		
