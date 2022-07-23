@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.CommentModel;
 import com.example.demo.app.form.UserSpeechForm;
+import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.CommentService;
 import com.example.demo.common.service.RoomService;
@@ -69,7 +70,8 @@ public class RoomSpeechController implements SuperChatController {
 		// エラーチェック
 		if( !this.isSpeech(userSpeechForm, model) ) {
 			// コメント追加NGでリダイレクト
-			redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, userSpeechForm.getEnter_id());
+			String encryptNumber = CommonEncript.encrypt(userSpeechForm.getEnter_id());
+			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_ENTER_ID, encryptNumber);
 			return WebConsts.URL_REDIRECT_CHAT_INDEX;
 		}
 		
@@ -77,7 +79,8 @@ public class RoomSpeechController implements SuperChatController {
 		this.setSpeech(userSpeechForm);
 		
 		// コメント追加後にリダイレクト
-		redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, userSpeechForm.getEnter_id());
+		String encryptNumber = CommonEncript.encrypt(userSpeechForm.getEnter_id());
+		redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_ENTER_ID, encryptNumber);
 		
 		this.appLogger.successed("コメント成功");
 		return WebConsts.URL_REDIRECT_CHAT_INDEX;

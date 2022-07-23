@@ -36,7 +36,11 @@ public class WebConsts {
 	
 	public static final String BIND_LOGIN_ID = "login_id";
 	
+	public static final String BIND_ENCRYPT_LOGIN_ID = "e_loginId";
+	
 	public static final String BIND_ENTER_ID = "enter_id";
+	
+	public static final String BIND_ENCRYPT_ENTER_ID = "e_enterId";
 	
 	public static final String BIND_USER_MODEL = "userModel";
 	

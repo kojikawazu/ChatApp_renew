@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.form.RoomCreateForm;
 import com.example.demo.app.form.RoomUserForm;
+import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
 
 /**
@@ -59,6 +60,8 @@ public class CreateRoomFormController implements SuperRoomController {
 		// ルーム作成画面設定
 		this.setCreateroom_form(model);
 		model.addAttribute(WebConsts.BIND_LOGIN_ID, roomUserForm.getLogin_id());
+		model.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID,
+				CommonEncript.encrypt(roomUserForm.getLogin_id()));
 		
 		return WebConsts.URL_ROOM_CREATE_FORM;
 	}

@@ -119,7 +119,8 @@ public class EnterController implements SuperRoomController {
 		if(this.enterService.isSelect_byUserId(user_id)) {
 			// 既に入室している - 入室情報更新
 			EnterIdStatus out_enterId = this.updateEnter(room_id, loginModel);
-			redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, out_enterId.getId());
+			String encryptNumber = CommonEncript.encrypt(out_enterId.getId());
+			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_ENTER_ID, encryptNumber);
 		}else {
 			// 入室情報なし - 入室情報登録
 			this.setEnter(userEnterForm, model, redirectAttributes);
@@ -148,8 +149,8 @@ public class EnterController implements SuperRoomController {
 			this.appLogger.error("ログインしてない。");
 			
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_MESSAGE_NO_LOGIN);
-			String encryptNumber = CommonEncript.encrypt(String.valueOf(NO_LOGIN_NUMBER));
-			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, encryptNumber);
+			String encryptNumber = CommonEncript.encrypt(NO_LOGIN_NUMBER);
+			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
 			return WebConsts.CHECK_COMMON_NG;
 		}
 		// ログインしてる
@@ -166,8 +167,8 @@ public class EnterController implements SuperRoomController {
 					);
 			
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_MESSAGE_MAX_ENTER_ROOM);
-			String encryptNumber = CommonEncript.encrypt(String.valueOf(login_id.getId()));
-			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, encryptNumber);
+			String encryptNumber = CommonEncript.encrypt(login_id.getId());
+			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
 			return WebConsts.CHECK_COMMON_NG;
 		}
 		// 空きあり
@@ -178,8 +179,8 @@ public class EnterController implements SuperRoomController {
 			this.appLogger.error("ルームがない: roomId: " + room_id);
 			
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_MESSAGE_CLOSUER);
-			String encryptNumber = CommonEncript.encrypt(String.valueOf(login_id.getId()));
-			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, encryptNumber);
+			String encryptNumber = CommonEncript.encrypt(login_id.getId());
+			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
 			return WebConsts.CHECK_COMMON_NG;
 		}
 		// ルームあり
@@ -227,7 +228,8 @@ public class EnterController implements SuperRoomController {
 		this.commentService.save(commentModel);
 		this.appLogger.successed("入室コメント通知成功");
 		
-		redirectAttributes.addAttribute(WebConsts.BIND_ENTER_ID, enter_id.getId());
+		String encryptNumber = CommonEncript.encrypt(enter_id.getId());
+		redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_ENTER_ID, encryptNumber);
 		
 		this.appLogger.successed("入室処理成功: enterId: " + enter_id.getId());
 	}

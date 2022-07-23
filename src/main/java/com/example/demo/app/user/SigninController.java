@@ -106,8 +106,8 @@ public class SigninController implements SuperUserController {
 			}
 			
 			// ログインIDをWebに登録
-			String encryptNumber = CommonEncript.encrypt(String.valueOf(loginIdStatus.getId()));
-			redirectAttributes.addAttribute(WebConsts.BIND_LOGIN_ID, encryptNumber);
+			String encryptNumber = CommonEncript.encrypt(loginIdStatus.getId());
+			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
 			
 			this.appLogger.successed("サインイン成功 : userId : "  + userIdStatus.getId());
 			this.appLogger.successed("             loginId : " + loginIdStatus.getId());

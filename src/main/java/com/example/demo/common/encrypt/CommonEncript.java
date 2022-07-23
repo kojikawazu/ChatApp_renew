@@ -19,7 +19,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 public class CommonEncript {
 
 	/** 暗号化/復号化の秘密鍵 */
-	private static final String ENCRYPT_KEY = "encrypt";
+	private static final String ENCRYPT_KEY = "al34c871qpl";
 	
 	/** 暗号化アルゴリズム */
 	private static final String ALGORITHM = "BLOWFISH";
@@ -61,6 +61,21 @@ public class CommonEncript {
 			ex.printStackTrace();
 			outputData = "";
 		}  
+		return outputData;
+	}
+	
+	/**
+	 * 暗号化
+	 * @param inDataNumber 暗号化したい文字列
+	 * @return             暗号化済文字列
+	 */
+	public static String encrypt(int inDataNumber) {
+		final String decryptString = String.valueOf(inDataNumber);
+		String outputData = "";
+		
+		// 暗号化
+		outputData = CommonEncript.encrypt(decryptString);
+		
 		return outputData;
 	}
 	
