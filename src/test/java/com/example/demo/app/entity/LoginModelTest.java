@@ -29,6 +29,7 @@ class LoginModelTest {
 		Assertions.assertEquals(test.getRoom_id(), 0);
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertNotNull(test.getCreated());
+		Assertions.assertNotNull(test.getUpdated());
 	}
 	
 	/**
@@ -41,12 +42,14 @@ class LoginModelTest {
 						new LoginIdStatus(0), 
 						new RoomIdStatus(0), 
 						new UserIdStatus(0), 
+						now, 
 						now);
 		
 		Assertions.assertEquals(test.getId(), 0);
 		Assertions.assertEquals(test.getRoom_id(), 0);
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertNotNull(test.getCreated());
+		Assertions.assertNotNull(test.getUpdated());
 	}
 	
 	/**
@@ -59,12 +62,14 @@ class LoginModelTest {
 						null, 
 						null, 
 						null, 
+						now,
 						now);
 		
 		Assertions.assertEquals(test.getId(), 0);
 		Assertions.assertEquals(test.getRoom_id(), 0);
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertNotNull(test.getCreated());
+		Assertions.assertNotNull(test.getUpdated());
 	}
 	
 	/**
@@ -78,6 +83,7 @@ class LoginModelTest {
 				new LoginIdStatus(0), 
 				new RoomIdStatus(0), 
 				new UserIdStatus(0), 
+				now,
 				now);
 		
 		LoginModel test = new LoginModel(dummy);
@@ -86,6 +92,7 @@ class LoginModelTest {
 		Assertions.assertEquals(test.getRoom_id(), 0);
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertEquals(test.getCreated(), now);
+		Assertions.assertEquals(test.getUpdated(), now);
 	}
 	
 	/**
@@ -98,11 +105,13 @@ class LoginModelTest {
 		LoginModel test = new LoginModel(
 				new RoomIdStatus(0), 
 				new UserIdStatus(0), 
+				now,
 				now);
 		
 		Assertions.assertEquals(test.getId(), 0);
 		Assertions.assertEquals(test.getRoom_id(), 0);
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertEquals(test.getCreated(), now);
+		Assertions.assertEquals(test.getUpdated(), now);
 	}
 }

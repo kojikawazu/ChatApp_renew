@@ -39,6 +39,7 @@ CREATE TABLE chat_login
    room_id INTEGER NOT NULL,
    user_id INTEGER NOT NULL,
    created TIMESTAMP NOT NULL,
+   updated TIMESTAMP NOT NULL,
    PRIMARY KEY(id)
 );
 
@@ -48,7 +49,6 @@ CREATE TABLE chat_enter
    room_id INTEGER NOT NULL,
    user_id INTEGER NOT NULL,
    manager_id INTEGER NOT NULL,
-   max_sum INTEGER NOT NULL,
    created TIMESTAMP NOT NULL,
    PRIMARY KEY(id)
 );

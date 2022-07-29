@@ -17,6 +17,7 @@ import com.example.demo.common.service.EnterService;
 import com.example.demo.common.service.LoginService;
 import com.example.demo.common.service.RoomService;
 import com.example.demo.common.service.UserService;
+import com.example.demo.common.session.SessionLoginId;
 import com.example.demo.common.status.EnterIdStatus;
 import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
@@ -43,6 +44,12 @@ public class RoomCloseController implements SuperChatController {
 	 * ログクラス
 	 */
 	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
+	
+	/**
+	 * セッションクラス
+	 */
+	@Autowired
+	private SessionLoginId sessionLoginId;
 	
 	/**
 	 * コンストラクタ
@@ -99,6 +106,7 @@ public class RoomCloseController implements SuperChatController {
 		// リダイレクト設定
 		String encryptNumber = CommonEncript.encrypt(login_id.getId());
 		redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
+		this.sessionLoginId.setLoginId(encryptNumber);
 		
 		this.appLogger.successed("部屋閉鎖成功");
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;

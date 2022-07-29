@@ -22,6 +22,7 @@ import com.example.demo.common.service.CommentService;
 import com.example.demo.common.service.EnterService;
 import com.example.demo.common.service.LoginService;
 import com.example.demo.common.service.RoomService;
+import com.example.demo.common.session.SessionLoginId;
 import com.example.demo.common.status.CommentIdStatus;
 import com.example.demo.common.status.EnterIdStatus;
 import com.example.demo.common.status.LoginIdStatus;
@@ -52,6 +53,12 @@ public class EnterController implements SuperRoomController {
 	 * ログクラス
 	 */
 	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
+	
+	/**
+	 * セッションクラス
+	 */
+	@Autowired
+	private SessionLoginId sessionLoginId;
 	
 	/**
 	 * メッセージ
@@ -147,10 +154,12 @@ public class EnterController implements SuperRoomController {
 		if(userEnterForm.getLogin_id() == 0) {
 			// [ERROR]
 			this.appLogger.error("ログインしてない。");
-			
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_MESSAGE_NO_LOGIN);
+			
 			String encryptNumber = CommonEncript.encrypt(NO_LOGIN_NUMBER);
 			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
+			this.sessionLoginId.setLoginId(encryptNumber);
+			
 			return WebConsts.CHECK_COMMON_NG;
 		}
 		// ログインしてる
@@ -165,10 +174,12 @@ public class EnterController implements SuperRoomController {
 					+ "count(): " + (userEnterForm.getCount_sum() + 1) 
 					+ " max(): " + userEnterForm.getMax_sum()
 					);
-			
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_MESSAGE_MAX_ENTER_ROOM);
+			
 			String encryptNumber = CommonEncript.encrypt(login_id.getId());
 			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
+			this.sessionLoginId.setLoginId(encryptNumber);
+			
 			return WebConsts.CHECK_COMMON_NG;
 		}
 		// 空きあり
@@ -177,10 +188,12 @@ public class EnterController implements SuperRoomController {
 		if(!this.roomService.isSelect_byId(room_id)) {
 			// [ERROR]
 			this.appLogger.error("ルームがない: roomId: " + room_id);
-			
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_MESSAGE_CLOSUER);
+			
 			String encryptNumber = CommonEncript.encrypt(login_id.getId());
 			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
+			this.sessionLoginId.setLoginId(encryptNumber);
+			
 			return WebConsts.CHECK_COMMON_NG;
 		}
 		// ルームあり

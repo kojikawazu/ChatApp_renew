@@ -1,5 +1,6 @@
 package com.example.demo.common.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,41 +73,49 @@ public class LoginServiceUse implements LoginService {
 	/**
 	 * 更新
 	 * @param roomId ルームID
-	 * @param id ログインID
+	 * @param id     ログインID
+	 * @return 更新日時
 	 */
 	@Override
-	public void updateRoomId_byId(RoomIdStatus roomId, LoginIdStatus id) {
+	public LocalDateTime updateRoomId_byId(RoomIdStatus roomId, LoginIdStatus id) {
 		// ルームID更新
-		if( this.dao.updateRoomId_byId(roomId, id) <= WebConsts.ERROR_DB_STATUS ) {
+		LocalDateTime now = LocalDateTime.now();
+		if( this.dao.updateRoomId_byId(roomId, id, now) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
+		return now;
 	}
 
 	/**
 	 * 更新
 	 * @param roomId ルームID
 	 * @param userId ユーザID
+	 * @return 更新日時
 	 */
 	@Override
-	public void updateRoomId_byUserId(RoomIdStatus roomId, UserIdStatus userId) {
+	public LocalDateTime updateRoomId_byUserId(RoomIdStatus roomId, UserIdStatus userId) {
 		// ユーザIDによるルームIDの更新
-		if( this.dao.updateRoomId_byUserId(roomId, userId) <= WebConsts.ERROR_DB_STATUS ) {
+		LocalDateTime now = LocalDateTime.now();
+		if( this.dao.updateRoomId_byUserId(roomId, userId, now) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
+		return now;
 	}
 	
 	/**
 	 * 更新
-	 * @param roomId ルームID
+	 * @param roomId   ルームID
 	 * @param changeId 新しいルームID
+	 * @return 更新日時
 	 */
 	@Override
-	public void updateRoomId_byRoomId(RoomIdStatus roomId, RoomIdStatus changeId) {
+	public LocalDateTime updateRoomId_byRoomId(RoomIdStatus roomId, RoomIdStatus changeId) {
 		// ルームIDによるルームIDの更新
-		if( this.dao.updateRoomId_byRoomId(roomId, changeId) <= WebConsts.ERROR_DB_STATUS ) {
+		LocalDateTime now = LocalDateTime.now();
+		if( this.dao.updateRoomId_byRoomId(roomId, changeId, now) <= WebConsts.ERROR_DB_STATUS ) {
 			throw WebMvcConfig.NOT_FOUND();
 		}
-		
+		return now;
 	}
 
 	/**

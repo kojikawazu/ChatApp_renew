@@ -11,6 +11,7 @@ import com.example.demo.app.form.UserLogoutForm;
 import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.LoginService;
+import com.example.demo.common.session.SessionLoginId;
 import com.example.demo.common.status.LoginIdStatus;
 
 /**
@@ -33,6 +34,12 @@ public class SignoutController implements SuperUserController {
 	 * ログクラス
 	 */
 	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
+	
+	/**
+	 * セッションクラス
+	 */
+	@Autowired
+	SessionLoginId sessionLoginId;
 
 	/**
 	 * コンストラクタ
@@ -60,8 +67,7 @@ public class SignoutController implements SuperUserController {
 		LoginIdStatus login_id = this.deleteLoginInfo(userLogoutForm);
 		
 		// Web側：ログインID初期化
-		String encryptNumber = CommonEncript.encrypt(WebConsts.LOGIN_ID_INIT_NUMBER);
-		redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
+		this.setAttribute(redirectAttributes);
 		
 		this.appLogger.successed("サインアウト成功 : loginId : " + login_id.getId());
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
@@ -80,5 +86,18 @@ public class SignoutController implements SuperUserController {
 		
 		this.appLogger.successed("ログイン情報の削除成功: loginId: " + login_id.getId());
 		return login_id;
+	}
+	
+	/**
+	 * Web側登録中のログインIDを初期化
+	 * @param redirectAttributes
+	 */
+	private void setAttribute(RedirectAttributes redirectAttributes) {
+		// Web側：ログインID初期化
+		String encryptNumber = CommonEncript.encrypt(WebConsts.LOGIN_ID_INIT_NUMBER);
+		redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
+		
+		// セッション：ログインIDの削除
+		this.sessionLoginId.setBlank();
 	}
 }

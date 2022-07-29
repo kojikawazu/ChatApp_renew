@@ -24,7 +24,6 @@ import com.example.demo.common.service.CommentService;
 import com.example.demo.common.service.EnterService;
 import com.example.demo.common.service.LoginService;
 import com.example.demo.common.service.RoomService;
-import com.example.demo.common.status.CommentIdStatus;
 import com.example.demo.common.status.EnterIdStatus;
 import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
