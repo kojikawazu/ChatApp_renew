@@ -18,6 +18,7 @@ import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.LoginService;
 import com.example.demo.common.service.RoomService;
 import com.example.demo.common.service.UserService;
+import com.example.demo.common.session.SessionLoginId;
 import com.example.demo.common.status.LoginIdStatus;
 
 /**
@@ -41,6 +42,12 @@ public class RoomController implements SuperRoomController {
 	 * ログクラス
 	 */
 	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
+	
+	/**
+	 * セッションクラス
+	 */
+	@Autowired
+	private SessionLoginId sessionLoginId;
 	
 	/** ルームタイトル */
 	public static String ROOM_TITTLE  = "ルーム選択";
@@ -81,6 +88,12 @@ public class RoomController implements SuperRoomController {
 			@ModelAttribute("noticeError")   String noticeError) {
 		// ホーム画面
 		this.appLogger.start("ルーム画面受信... loginId: " + e_loginId);
+		
+		// debugPrint
+		System.out.println(
+				( this.sessionLoginId.getLoginId().isBlank() ?
+					"Not Session Login ID" :
+						this.sessionLoginId.getLoginId()));
 		
 		// 復号化
 		int login_id = Integer.parseInt(CommonEncript.decrypt(e_loginId));

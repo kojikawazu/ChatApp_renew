@@ -1,5 +1,6 @@
 package com.example.demo.common.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.demo.app.entity.LoginModel;
@@ -20,11 +21,11 @@ public interface LoginDao {
 	
 	int update(LoginModel model);
 	
-	int updateRoomId_byId(RoomIdStatus roomId, LoginIdStatus id);
+	int updateRoomId_byId(RoomIdStatus roomId, LoginIdStatus id, LocalDateTime updated);
 	
-	int updateRoomId_byUserId(RoomIdStatus roomId, UserIdStatus userId);
+	int updateRoomId_byUserId(RoomIdStatus roomId, UserIdStatus userId, LocalDateTime updated);
 	
-	int updateRoomId_byRoomId(RoomIdStatus roomId, RoomIdStatus changeId);
+	int updateRoomId_byRoomId(RoomIdStatus roomId, RoomIdStatus changeId, LocalDateTime updated);
 	
 	int delete(LoginIdStatus id);
 	

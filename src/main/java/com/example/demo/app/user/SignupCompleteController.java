@@ -18,6 +18,7 @@ import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.LoginService;
 import com.example.demo.common.service.UserService;
+import com.example.demo.common.session.SessionLoginId;
 import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
@@ -48,6 +49,12 @@ public class SignupCompleteController implements SuperUserController {
 	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
 	
 	/**
+	 * セッションクラス
+	 */
+	@Autowired
+	SessionLoginId sessionLoginId;
+	
+	/**
 	 * コンストラクタ
 	 * @param userService  ユーザーサービス
 	 * @param loginService ログインサービス
@@ -56,7 +63,6 @@ public class SignupCompleteController implements SuperUserController {
 	public SignupCompleteController(
 			UserService userService,
 			LoginService loginService) {
-		// コンストラクタ
 		this.userService  = userService;
 		this.loginService = loginService;
 	}
@@ -90,11 +96,12 @@ public class SignupCompleteController implements SuperUserController {
 		// ログイン情報の追加
 		LoginIdStatus loginId = this.addSignIn(userId);
 		
-		String encryptNumber = CommonEncript.encrypt(loginId.getId());
-		redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
+		// ログインIDをWebに登録
+		this.setAttribute(loginId, redirectAttributes);
 		
 		this.appLogger.successed("サインアップ実行成功: userId: " + userId.getId());
 		this.appLogger.successed("               : loginId: " + loginId.getId());
+		
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
 	}
 	
@@ -131,11 +138,26 @@ public class SignupCompleteController implements SuperUserController {
 		LoginModel loginModel = new LoginModel(
 				new RoomIdStatus(0),
 				new UserIdStatus(userId.getId()),
+				LocalDateTime.now(),
 				LocalDateTime.now()
 				);
 		LoginIdStatus loginIdStatus = this.loginService.save_returnId(loginModel);
 		
 		this.appLogger.successed("ログイン情報の追加成功 : loginId : " + loginIdStatus.getId());
 		return loginIdStatus;
+	}
+	
+	/**
+	 * ログインIDをWebに登録
+	 * @param loginIdStatus
+	 * @param redirectAttributes
+	 */
+	private void setAttribute(LoginIdStatus loginIdStatus, RedirectAttributes redirectAttributes) {
+		// Web側：ログインIDをWebに登録
+		String encryptNumber = CommonEncript.encrypt(loginIdStatus.getId());
+		redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
+		
+		// セッション：ログインIDをセッションに登録
+		this.sessionLoginId.setLoginId(encryptNumber);
 	}
 }

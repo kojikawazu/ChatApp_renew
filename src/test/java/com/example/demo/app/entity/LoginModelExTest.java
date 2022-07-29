@@ -30,6 +30,7 @@ class LoginModelExTest {
 				new LoginIdStatus(0), 
 				new RoomIdStatus(0), 
 				new UserIdStatus(0), 
+				now,
 				now);
 		
 		LoginModelEx test = new LoginModelEx(dummy);
@@ -38,6 +39,7 @@ class LoginModelExTest {
 		Assertions.assertEquals(test.getRoom_id(), 0);
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertEquals(test.getCreated(), now);
+		Assertions.assertEquals(test.getUpdated(), now);
 		Assertions.assertEquals(test.getUserName(), "");
 	}
 	
@@ -52,6 +54,7 @@ class LoginModelExTest {
 		Assertions.assertEquals(test.getRoom_id(), 0);
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertNotNull(test.getCreated());
+		Assertions.assertNotNull(test.getUpdated());
 		Assertions.assertEquals(test.getUserName(), "");
 	}
 	
@@ -66,6 +69,7 @@ class LoginModelExTest {
 				new LoginIdStatus(0), 
 				new RoomIdStatus(0), 
 				new UserIdStatus(0), 
+				now,
 				now);
 		
 		LoginModelEx test = new LoginModelEx(
@@ -76,6 +80,7 @@ class LoginModelExTest {
 		Assertions.assertEquals(test.getRoom_id(), 0);
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertEquals(test.getCreated(), now);
+		Assertions.assertEquals(test.getUpdated(), now);
 		Assertions.assertEquals(test.getUserName(), "test");
 	}
 	
@@ -90,6 +95,7 @@ class LoginModelExTest {
 				new LoginIdStatus(0), 
 				new RoomIdStatus(0), 
 				new UserIdStatus(0), 
+				now,
 				now);
 		
 		LoginModel test = new LoginModelEx(dummy);
@@ -98,6 +104,7 @@ class LoginModelExTest {
 		Assertions.assertEquals(test.getRoom_id(), 0);
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertNotNull(test.getCreated());
+		Assertions.assertNotNull(test.getUpdated());
 	}
 	
 	/**
@@ -111,6 +118,7 @@ class LoginModelExTest {
 				new LoginIdStatus(0), 
 				new RoomIdStatus(0), 
 				new UserIdStatus(0), 
+				now,
 				now);
 		
 		LoginModelEx dummy = new LoginModelEx(
@@ -123,6 +131,7 @@ class LoginModelExTest {
 		Assertions.assertEquals(test.getRoom_id(), 0);
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertEquals(test.getCreated(), now);
+		Assertions.assertEquals(test.getUpdated(), now);
 		Assertions.assertEquals(test.getUserName(), "test");
 	}
 }

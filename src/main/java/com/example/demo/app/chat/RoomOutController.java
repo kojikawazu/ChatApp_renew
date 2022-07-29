@@ -18,6 +18,7 @@ import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.CommentService;
 import com.example.demo.common.service.EnterService;
 import com.example.demo.common.service.LoginService;
+import com.example.demo.common.session.SessionLoginId;
 import com.example.demo.common.status.EnterIdStatus;
 import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
@@ -44,6 +45,12 @@ public class RoomOutController implements SuperChatController {
 	 * ログクラス
 	 */
 	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
+	
+	/**
+	 * セッションクラス
+	 */
+	@Autowired
+	private SessionLoginId sessionLoginId;
 	
 	/** 退室された通知 */
 	private final String NOTICE_LEFT_THE_ROOM = "退室されました。";
@@ -97,6 +104,7 @@ public class RoomOutController implements SuperChatController {
 		// リダイレクト設定
 		String encryptNumber = CommonEncript.encrypt(login_id.getId());
 		redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
+		this.sessionLoginId.setLoginId(encryptNumber);
 
 		this.appLogger.successed("退室成功");
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;

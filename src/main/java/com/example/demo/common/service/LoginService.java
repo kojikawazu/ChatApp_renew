@@ -1,5 +1,6 @@
 package com.example.demo.common.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.demo.app.entity.LoginModel;
@@ -20,11 +21,11 @@ public interface LoginService {
 	
 	void update(LoginModel model);
 	
-	void updateRoomId_byId(RoomIdStatus roomId, LoginIdStatus id);
+	LocalDateTime updateRoomId_byId(RoomIdStatus roomId, LoginIdStatus id);
 	
-	void updateRoomId_byUserId(RoomIdStatus roomId, UserIdStatus userId);
+	LocalDateTime updateRoomId_byUserId(RoomIdStatus roomId, UserIdStatus userId);
 	
-	void updateRoomId_byRoomId(RoomIdStatus roomId, RoomIdStatus changeId);
+	LocalDateTime updateRoomId_byRoomId(RoomIdStatus roomId, RoomIdStatus changeId);
 	
 	void delete(LoginIdStatus id);
 	

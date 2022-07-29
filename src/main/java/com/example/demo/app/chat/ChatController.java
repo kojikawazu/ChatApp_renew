@@ -34,6 +34,7 @@ import com.example.demo.common.service.EnterService;
 import com.example.demo.common.service.LoginService;
 import com.example.demo.common.service.RoomService;
 import com.example.demo.common.service.UserService;
+import com.example.demo.common.session.SessionLoginId;
 import com.example.demo.common.status.CommentIdStatus;
 import com.example.demo.common.status.EnterIdStatus;
 import com.example.demo.common.status.LoginIdStatus;
@@ -63,6 +64,12 @@ public class ChatController {
 	 * ログクラス
 	 */
 	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
+	
+	/**
+	 * セッションクラス
+	 */
+	@Autowired
+	private SessionLoginId sessionLoginId;
 	
 	/** 部屋閉鎖された通知 */
 	private final String NOTICE_ROOM_CLOSE = "部屋が閉鎖されました。";
@@ -166,8 +173,10 @@ public class ChatController {
 			
 			// ログインIDをリダイレクト
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, NOTICE_ROOM_CLOSE);
+			
 			String encryptNumber = CommonEncript.encrypt(login_id.getId());
 			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
+			this.sessionLoginId.setLoginId(encryptNumber);
 			
 			return false;
 		}
@@ -187,8 +196,11 @@ public class ChatController {
 			
 			// ログインIDをリダイレクト
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, NOTICE_FORCE_LEFT_THE_ROOM);
+			
 			String encryptNumber = CommonEncript.encrypt(String.valueOf(login_id.getId()));
 			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
+			this.sessionLoginId.setLoginId(encryptNumber);
+			
 			return false;
 		}
 		
