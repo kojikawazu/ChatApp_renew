@@ -27,6 +27,8 @@ public interface LoginDao {
 	
 	int updateRoomId_byRoomId(RoomIdStatus roomId, RoomIdStatus changeId, LocalDateTime updated);
 	
+	int updateUpdated_byId(LocalDateTime updated, LoginIdStatus id);
+	
 	int delete(LoginIdStatus id);
 	
 	List<LoginModel> getAll();

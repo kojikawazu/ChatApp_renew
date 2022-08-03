@@ -1,5 +1,7 @@
 package com.example.demo.app.room;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.app.config.WebConsts;
+import com.example.demo.app.config.WebFunctions;
+import com.example.demo.app.entity.LoginModel;
 import com.example.demo.app.entity.RoomModelEx;
 import com.example.demo.app.entity.UserModel;
+import com.example.demo.app.form.RoomUserForm;
 import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.LoginService;
@@ -59,6 +64,7 @@ public class RoomController implements SuperRoomController {
 	 * コンストラクタ
 	 * @param userService
 	 * @param roomService
+	 * @param loginService
 	 */
 	@Autowired
 	public RoomController(
@@ -101,20 +107,12 @@ public class RoomController implements SuperRoomController {
 		
 		if( login_id > 0 ) {
 			// ログインチェック
-			LoginIdStatus loginIdStatus = new LoginIdStatus(login_id);
-			if( this.loginService.isSelect_byId(loginIdStatus) ) {
-				this.appLogger.info("ログイン中 : loginId: " + login_id);
-				// ログイン情報あり
-				// ログイン情報設定
-				UserModel userModel = this.userService.selectModel_subLoginId(new LoginIdStatus(login_id));
-				model.addAttribute(WebConsts.BIND_USER_MODEL, userModel);
-			} else {
+			if(!this.isLogin(login_id, model)) {
 				// ログイン情報なし
-				login_id = 0;
-				model.addAttribute(WebConsts.BIND_LOGIN_ID, login_id);
 				return WebConsts.URL_REDIRECT_ROOM_INDEX;
 			}
 		} else if( login_id < 0 ) {
+			// [ERROR]
 			// 負の数は0に設定してリダイレクト
 			login_id = 0;
 			model.addAttribute(WebConsts.BIND_LOGIN_ID, login_id);
@@ -125,9 +123,7 @@ public class RoomController implements SuperRoomController {
 		model.addAttribute(WebConsts.BIND_LOGIN_ID, login_id);
 		
 		// ルームリスト拡張版取得
-		List<RoomModelEx> roomModelListExList = this.changeRoomModel();
-		model.addAttribute(WebConsts.BIND_ROOMMODEL_LIST, roomModelListExList);
-		this.appLogger.info("ルーム一覧 : roomModelExList.size(): " + roomModelListExList.size());
+		this.changeRoomModel(model);
 		
 		// ルームホーム画面設定
 		this.setIndex(model);
@@ -138,14 +134,61 @@ public class RoomController implements SuperRoomController {
 	
 	// ----------------------------------------------
 	
+	
+	/**
+	 * ログイン中か確認
+	 * @param login_id ログインID
+	 * @param model    モデル
+	 * @return         true ログイン中 false ログイン情報なし
+	 */
+	private boolean isLogin(int login_id, Model model) {
+		boolean is_check = false;
+		
+		// ログインチェック
+		LoginIdStatus loginIdStatus = new LoginIdStatus(login_id);
+		
+		// ログイン情報チェック
+		if( !this.loginService.isSelect_byId(loginIdStatus) ) {
+			// [ERROR]
+			this.appLogger.error("ログイン情報なし : loginId: " + login_id);
+			login_id = 0;
+			model.addAttribute(WebConsts.BIND_LOGIN_ID, login_id);
+			return is_check;
+		}
+		
+		LoginModel loginModel = this.loginService.select(loginIdStatus);
+		
+		// 更新日付チェック
+		if(!WebFunctions.checkDiffMinutes(
+				loginModel.getUpdated(), 1)) {
+			// [ERROR]
+			this.appLogger.error("更新日からだいぶ経っている : loginId: " + login_id);
+			this.loginService.delete(loginIdStatus);
+			
+			login_id = 0;
+			model.addAttribute(WebConsts.BIND_LOGIN_ID, login_id);
+			return is_check;
+		}
+		
+		// ログイン情報あり
+		this.appLogger.info("ログイン中 : loginId: " + login_id);
+		// ログイン情報設定
+		UserModel userModel = this.userService.selectModel_subLoginId(new LoginIdStatus(login_id));
+		model.addAttribute(WebConsts.BIND_USER_MODEL, userModel);
+		is_check = true;
+		
+		return is_check;
+	}
+	
 	/**
 	 * ルームモデル拡張版取得
-	 * @return ルームモデル拡張版
 	 */
-	private List<RoomModelEx> changeRoomModel(){
+	private void changeRoomModel(Model model){
 		// ルームリストを拡張版へ変換
 		List<RoomModelEx> roomModelListExList = this.roomService.getAll_plusUserName_EnterCnt();
-		return roomModelListExList;
+		model.addAttribute(WebConsts.BIND_ROOMMODEL_LIST, roomModelListExList);
+		
+		this.appLogger.info("ルーム一覧 : roomModelExList.size(): " + roomModelListExList.size());
 	}
 	
 	/**

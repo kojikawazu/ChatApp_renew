@@ -194,6 +194,26 @@ public class LoginDaoSql implements LoginDao {
 				updated,
 				roomId.getId());
 	}
+	
+	/**
+	 * 更新日付だけの更新
+	 * @param updated 更新日付
+	 * @param id      ログインID
+	 * @return        0以下 失敗 それ以外 成功
+	 */
+	@Override
+	public int updateUpdated_byId(LocalDateTime updated, LoginIdStatus id) {
+		// ログインIDによる更新日付の更新
+		
+		if(updated == null || id == null)	return WebConsts.ERROR_NUMBER;
+		
+		return this.jdbcTemp.update(
+				"UPDATE chat_login SET "
+				+ "updated = ? "
+				+ "WHERE id = ?",
+				updated,
+				id.getId());
+	}
 
 	/**
 	 * 削除処理

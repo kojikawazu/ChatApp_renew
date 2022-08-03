@@ -25,7 +25,17 @@ public class WebConsts {
 	/** DB選択し見つかった */
 	public static final boolean DB_ENTITY_FINDED = true;
 	
+	/** 時間がだいぶ経っている */
+	public static final boolean TIME_RUNNING_OUT = false;
+	
+	/** 時間内 */
+	public static final boolean TIME_WITHIN = true;
+	
 	/** */
+	public static final int TIME_TIMER_NUMBER_HOUR = 12;
+	
+	
+	/** ログインID初期化番号 */
 	public static final int LOGIN_ID_INIT_NUMBER = 0;
 	
 	// ---------------------------------------------------------------------------

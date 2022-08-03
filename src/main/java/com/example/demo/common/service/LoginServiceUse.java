@@ -117,6 +117,18 @@ public class LoginServiceUse implements LoginService {
 		}
 		return now;
 	}
+	
+	/**
+	 * 更新日付だけの更新
+	 * @param updated 更新日付
+	 * @param id      ログインID
+	 */
+	@Override
+	public void updateUpdated_byId(LocalDateTime updated, LoginIdStatus id) {
+		if( this.dao.updateUpdated_byId(updated, id) <= WebConsts.ERROR_DB_STATUS ) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+	}
 
 	/**
 	 * 削除
