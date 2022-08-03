@@ -27,6 +27,8 @@ public interface LoginService {
 	
 	LocalDateTime updateRoomId_byRoomId(RoomIdStatus roomId, RoomIdStatus changeId);
 	
+	void updateUpdated_byId(LocalDateTime updated, LoginIdStatus id);
+	
 	void delete(LoginIdStatus id);
 	
 	List<LoginModel> getAll();
