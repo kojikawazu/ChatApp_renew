@@ -207,7 +207,7 @@ public class UserDaoSql implements UserDao {
 	@Override
 	public UserModel select(UserIdStatus id) {
 		// IDによるデータ取得
-		if(id == null)	return new UserModel(null);
+		if(id == null)	return null;
 		
 		UserModel model = null;
 		try {
@@ -224,7 +224,7 @@ public class UserDaoSql implements UserDao {
 					((Timestamp)result.get("updated")).toLocalDateTime());
 		} catch(EmptyResultDataAccessException ex) {
 			ex.printStackTrace();
-			model = new UserModel(null);
+			model = null;
 		}
 		
 		return model;
@@ -237,7 +237,7 @@ public class UserDaoSql implements UserDao {
 	 */
 	@Override
 	public UserModel select_byId_subLoginId(LoginIdStatus loginId) {
-		if(loginId == null)	return new UserModel(null);
+		if(loginId == null)	return null;
 		
 		UserModel model = null;
 		try {
@@ -256,7 +256,7 @@ public class UserDaoSql implements UserDao {
 					((Timestamp)result.get("updated")).toLocalDateTime());
 		} catch(EmptyResultDataAccessException ex) {
 			ex.printStackTrace();
-			model = new UserModel(null);
+			model = null;
 		}
 		
 		return model;
@@ -270,18 +270,26 @@ public class UserDaoSql implements UserDao {
 	@Override
 	public UserIdStatus selectId_byNameEmailPass(UserNameEmailPassword user) {
 		// ユーザ名、Eメール、パスワードによるユーザID選択
-		if(user == null)	return new UserIdStatus(WebConsts.ERROR_NUMBER);
+		if(user == null)	return null;
 		
 		String sql = "SELECT id FROM chat_user WHERE name = ? AND email = ? AND passwd = ?";
-		return this.jdbcTemp.query(
-				sql, 
-				new Object[]{ user.getName(), user.getEmail(), user.getPassword() }, 
-				new int[] {	Types.VARCHAR, Types.VARCHAR, Types.VARCHAR },
-				rs -> {
-					UserIdStatus status = new UserIdStatus(rs.next() ? (int)rs.getInt("id") : -1);
-					return status;
-				}
-		);
+		UserIdStatus userId = null;
+		try {
+			userId = this.jdbcTemp.query(
+					sql, 
+					new Object[]{ user.getName(), user.getEmail(), user.getPassword() }, 
+					new int[] {	Types.VARCHAR, Types.VARCHAR, Types.VARCHAR },
+					rs -> {
+						UserIdStatus status = new UserIdStatus(rs.next() ? (int)rs.getInt("id") : -1);
+						return status;
+					}
+			);
+		} catch(EmptyResultDataAccessException ex) {
+			ex.printStackTrace();
+			userId = null;
+		}
+		
+		return userId;
 	}
 
 	/**

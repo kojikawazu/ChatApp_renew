@@ -17,13 +17,11 @@ import com.example.demo.app.entity.RoomModel;
 import com.example.demo.app.form.UserEnterForm;
 import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
-import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.service.CommentService;
 import com.example.demo.common.service.EnterService;
 import com.example.demo.common.service.LoginService;
 import com.example.demo.common.service.RoomService;
 import com.example.demo.common.session.SessionLoginId;
-import com.example.demo.common.status.CommentIdStatus;
 import com.example.demo.common.status.EnterIdStatus;
 import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
@@ -63,8 +61,8 @@ public class EnterController implements SuperRoomController {
 	/**
 	 * メッセージ
 	 */
-	/** ログイン促し */
-	public static String ERROR_MESSAGE_NO_LOGIN = "ログインしてください。";
+	/** サインイン促し */
+	public static String ERROR_MESSAGE_NO_LOGIN = "サインインしてください。";
 	
 	/** 既に満室 */
 	public static String ERROR_MESSAGE_MAX_ENTER_ROOM = "既に満室でした。";
@@ -72,7 +70,7 @@ public class EnterController implements SuperRoomController {
 	/** 閉鎖された */
 	public static String ERROR_MESSAGE_CLOSUER = "部屋が既に閉鎖された可能性があります。";
 	
-	/** ログインID(初期化番号) */
+	/** サインインID(初期化番号) */
 	public static int NO_LOGIN_NUMBER = 0;
 	
 	/**
@@ -133,7 +131,7 @@ public class EnterController implements SuperRoomController {
 			this.setEnter(userEnterForm, model, redirectAttributes);
 		}
 		
-		// ログイン情報のルーム番号更新
+		// サインイン情報のルーム番号更新
 		this.updateRoomId_byLoginId(room_id, login_id);
 		
 		this.appLogger.successed("入室成功");
@@ -153,7 +151,7 @@ public class EnterController implements SuperRoomController {
 		
 		if(userEnterForm.getLogin_id() == 0) {
 			// [ERROR]
-			this.appLogger.error("ログインしてない。");
+			this.appLogger.error("サインインしてない。");
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, ERROR_MESSAGE_NO_LOGIN);
 			
 			String encryptNumber = CommonEncript.encrypt(NO_LOGIN_NUMBER);
@@ -162,7 +160,7 @@ public class EnterController implements SuperRoomController {
 			
 			return WebConsts.CHECK_COMMON_NG;
 		}
-		// ログインしてる
+		// サインインしてる
 		
 		RoomIdStatus  room_id   = new RoomIdStatus(userEnterForm.getRoom_id());
 		LoginIdStatus login_id  = new LoginIdStatus(userEnterForm.getLogin_id());
@@ -225,6 +223,7 @@ public class EnterController implements SuperRoomController {
 				room_id,
 				new UserIdStatus(loginModel.getUser_id()),
 				new UserIdStatus(roomModel.getUser_id()),
+				LocalDateTime.now(),
 				LocalDateTime.now());
 		EnterIdStatus enter_id = this.enterService.save_returnId(enterModel);
 		this.appLogger.successed("入室情報の保存成功: enterId: " + enter_id.getId());
@@ -251,7 +250,7 @@ public class EnterController implements SuperRoomController {
 	/**
 	 * 入室情報の更新
 	 * @param room_id     ルームID
-	 * @param loginModel  ログインモデル
+	 * @param loginModel  サインインモデル
 	 * @return            入室ID
 	 */
 	private EnterIdStatus updateEnter(RoomIdStatus room_id, LoginModel loginModel) {
@@ -273,18 +272,18 @@ public class EnterController implements SuperRoomController {
 	}
 	
 	/**
-	 * ログイン情報のルーム番号の更新
+	 * サインイン情報のルーム番号の更新
 	 * @param room_id
 	 * @param login_id
 	 */
 	private void updateRoomId_byLoginId(RoomIdStatus room_id, LoginIdStatus login_id) {
-		this.appLogger.start("ログイン情報のルーム番号の更新...");
+		this.appLogger.start("サインイン情報のルーム番号の更新...");
 		
 		this.loginService.updateRoomId_byId(
 				room_id, 
 				login_id);
 		
-		this.appLogger.successed("ログイン情報のルーム番号の更新成功: roomId: " + room_id.getId());
+		this.appLogger.successed("サインイン情報のルーム番号の更新成功: roomId: " + room_id.getId());
 		this.appLogger.successed("                          : loginId: " + login_id.getId());
 	}
 }

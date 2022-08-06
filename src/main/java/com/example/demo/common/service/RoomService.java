@@ -1,5 +1,6 @@
 package com.example.demo.common.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.demo.app.entity.RoomModel;
@@ -20,6 +21,8 @@ public interface RoomService {
 	void update(RoomModel model);
 	
 	void updateUserId_byUserId(UserIdStatus userId, UserIdStatus newId);
+	
+	void updateUpdated_byId(LocalDateTime updated, RoomIdStatus id);
 	
 	void delete(RoomIdStatus id);
 	

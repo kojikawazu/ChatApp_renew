@@ -87,6 +87,7 @@
 		  			<!-- 退室フォーム -->
 		  			<form method="post" th:action="@{/outroom}" th:object="${roomOutForm}">
 		  				<input type="hidden" name="enter_id" th:value="${enter_id}" />
+		  				<input type="hidden" name="login_id" th:each="lnModel: ${loginModelList}" th:if="${lnModel.user_id == userModel.id}"  th:value="${lnModel.id}" />
 		  				<button class="btn btn-primary">退室</button>
 		  			</form>
 		  		</div>

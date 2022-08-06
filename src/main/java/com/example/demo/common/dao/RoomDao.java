@@ -1,5 +1,6 @@
 package com.example.demo.common.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.demo.app.entity.RoomModel;
@@ -21,6 +22,8 @@ public interface RoomDao {
 	int update(RoomModel model);
 	
 	int updateUserId_byUserId(UserIdStatus userId, UserIdStatus newId);
+	
+	int updateUpdated_byId(LocalDateTime updated, RoomIdStatus id);
 	
 	int delete(RoomIdStatus id);
 	

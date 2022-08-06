@@ -1,9 +1,9 @@
 package com.example.demo.common.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.demo.app.entity.EnterModel;
-import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.status.EnterIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
@@ -18,13 +18,17 @@ public interface EnterService {
 	
 	EnterIdStatus save_returnId(EnterModel model);
 	
-	void update(EnterModel model);
+	LocalDateTime update(EnterModel model);
 	
-	void update_byUserId(RoomIdStatus room_id, UserIdStatus manager_id, UserIdStatus user_id);
+	LocalDateTime update_byUserId(RoomIdStatus room_id, UserIdStatus manager_id, UserIdStatus user_id);
 	
-	void updateManagerId_byId(UserIdStatus managerId, EnterIdStatus id);
+	LocalDateTime updateManagerId_byId(UserIdStatus managerId, EnterIdStatus id);
+	
+	void updateUpdated_byId(LocalDateTime updated, EnterIdStatus id);
 	
 	void delete(EnterIdStatus id);
+	
+	void delete_byUserId(UserIdStatus user_id);
 	
 	List<EnterModel> getAll();
 	

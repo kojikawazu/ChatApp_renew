@@ -2,6 +2,7 @@ package com.example.demo.app.exception;
 
 /**
  * NotFoundException
+ * @author nanai
  *
  */
 public class NotFoundException extends RuntimeException{

@@ -136,20 +136,18 @@ public class LoginDaoSql implements LoginDao {
 	 * ログインIDからルームID更新処理
 	 * @param roomId  ルームID
 	 * @param id      ログインID
-	 * @param updated 更新日時
 	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
-	public int updateRoomId_byId(RoomIdStatus roomId, LoginIdStatus id, LocalDateTime updated) {
+	public int updateRoomId_byId(RoomIdStatus roomId, LoginIdStatus id) {
 		// ルームIDの更新
-		if(roomId == null || id == null || updated == null)	return WebConsts.ERROR_NUMBER;
+		if(roomId == null || id == null)	return WebConsts.ERROR_NUMBER;
 		
 		return jdbcTemp.update(
 				"UPDATE chat_login SET "
-				+ "room_id = ?, updated = ? "
+				+ "room_id = ? "
 				+ "WHERE id = ?",
 				roomId.getId(),
-				updated,
 				id.getId());
 	}
 	
@@ -157,20 +155,18 @@ public class LoginDaoSql implements LoginDao {
 	 * ユーザIDからルームID更新処理
 	 * @param roomId  ルームID
 	 * @param userId  ユーザID
-	 * @param updated 更新日時
 	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
-	public int updateRoomId_byUserId(RoomIdStatus roomId, UserIdStatus userId, LocalDateTime updated) {
+	public int updateRoomId_byUserId(RoomIdStatus roomId, UserIdStatus userId) {
 		// ユーザIDによるルームIDの更新
-		if(roomId == null || userId == null || updated == null)	return WebConsts.ERROR_NUMBER;
+		if(roomId == null || userId == null)	return WebConsts.ERROR_NUMBER;
 		
 		return this.jdbcTemp.update(
 				"UPDATE chat_login SET "
-				+ "room_id = ?, updated = ? "
+				+ "room_id = ? "
 				+ "WHERE user_id = ?",
 				roomId.getId(),
-				updated,
 				userId.getId());
 	}
 	
@@ -178,20 +174,18 @@ public class LoginDaoSql implements LoginDao {
 	 * ルームIDから新規ルームIDへ更新処理
 	 * @param roomId   ルームID
 	 * @param changeId 新規ルームID
-	 * @param updated 更新日時
 	 * @return 0以下 失敗 それ以外 成功
 	 */
 	@Override
-	public int updateRoomId_byRoomId(RoomIdStatus roomId, RoomIdStatus changeId, LocalDateTime updated) {
+	public int updateRoomId_byRoomId(RoomIdStatus roomId, RoomIdStatus changeId) {
 		// ルームIDによるルームIDの初期化
-		if(roomId == null || changeId == null || updated == null)	return WebConsts.ERROR_NUMBER;
+		if(roomId == null || changeId == null)	return WebConsts.ERROR_NUMBER;
 		
 		return this.jdbcTemp.update(
 				"UPDATE chat_login SET "
-				+ "room_id = ?, updated = ? "
+				+ "room_id = ? "
 				+ "WHERE room_id = ?",
 				changeId.getId(),
-				updated,
 				roomId.getId());
 	}
 	
@@ -339,7 +333,7 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public LoginModel select(LoginIdStatus id) {
 		// IDによるデータ取得
-		LoginModel model = new LoginModel(null);
+		LoginModel model = null;
 		try {
 			String sql = "SELECT * "
 					+ "FROM chat_login "
@@ -355,7 +349,7 @@ public class LoginDaoSql implements LoginDao {
 					);
 		} catch(EmptyResultDataAccessException ex) {
 			ex.printStackTrace();
-			model = new LoginModel(null);
+			model = null;
 		}
 		return model;
 	}
@@ -368,7 +362,7 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public LoginIdStatus selectId_byUserId(UserIdStatus userId) {
 		// ユーザIDによるIDの選択
-		if( !this.isSelect_byUserId(userId) ) return new LoginIdStatus(WebConsts.ERROR_NUMBER);
+		if( !this.isSelect_byUserId(userId) ) return null;
 		int id = 0;
 		try {
 			String sql = "SELECT id FROM chat_login WHERE user_id = ?";
@@ -377,6 +371,7 @@ public class LoginDaoSql implements LoginDao {
 		} catch(EmptyResultDataAccessException ex) {
 			ex.printStackTrace();
 			id = WebConsts.ERROR_NUMBER;
+			return null;
 		}
 		return new LoginIdStatus(id);
 	}
@@ -389,7 +384,7 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public LoginModel select_byuserId(UserIdStatus userId) {
 		// ユーザIDによるデータ取得
-		if( !this.isSelect_byUserId(userId) ) return new LoginModel(null);
+		if( !this.isSelect_byUserId(userId) ) return null;
 		
 		LoginModel model = new LoginModel(null);
 		try {
@@ -407,7 +402,7 @@ public class LoginDaoSql implements LoginDao {
 					);
 		} catch(EmptyResultDataAccessException ex) {
 			ex.printStackTrace();
-			model = new LoginModel(null);
+			return null;
 		}
 		return model;
 	}
@@ -420,7 +415,7 @@ public class LoginDaoSql implements LoginDao {
 	@Override
 	public RoomIdStatus selectRoomId_byUserId(UserIdStatus userId) {
 		// ユーザIDによるルームIDの選択
-		if( !this.isSelect_byUserId(userId) ) return new RoomIdStatus(WebConsts.ERROR_NUMBER);
+		if( !this.isSelect_byUserId(userId) ) return null;
 		
 		int room_id = 0;
 		try {
@@ -431,7 +426,7 @@ public class LoginDaoSql implements LoginDao {
 			room_id = (int)result.get("room_id");
 		} catch(EmptyResultDataAccessException ex) {
 			ex.printStackTrace();
-			room_id = WebConsts.ERROR_NUMBER;
+			return null;
 		}
 		return new RoomIdStatus(room_id);
 	}

@@ -65,7 +65,7 @@ public class UserServiceUse implements UserService {
 	public void update(UserModel model) {
 		// 更新
 		if( this.dao.update(model) <= WebConsts.ERROR_DB_STATUS ) {
-			throw WebMvcConfig.NOT_FOUND();
+			throw WebMvcConfig.NOT_DATA_UPDATE();
 		}
 	}
 	
@@ -77,7 +77,7 @@ public class UserServiceUse implements UserService {
 	public void update_passwd(UserNameEmailPassword user) {
 		// パスワード更新
 		if( this.dao.update_passwd(user) <= WebConsts.ERROR_DB_STATUS ) {
-			throw WebMvcConfig.NOT_FOUND();
+			throw WebMvcConfig.NOT_DATA_UPDATE();
 		}
 	}
 
@@ -100,7 +100,11 @@ public class UserServiceUse implements UserService {
 	@Override
 	public List<UserModel> getAll() {
 		// 全選択
-		return this.dao.getAll();
+		List<UserModel> list = this.dao.getAll();
+		if(list.isEmpty()) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return list;
 	}
 
 	/**
@@ -111,7 +115,11 @@ public class UserServiceUse implements UserService {
 	@Override
 	public UserModel select(UserIdStatus id) {
 		// IDによる選択
-		return this.dao.select(id);
+		UserModel model = this.dao.select(id);
+		if(model == null) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return model;
 	}
 	
 	/**
@@ -122,7 +130,11 @@ public class UserServiceUse implements UserService {
 	@Override
 	public UserModel selectModel_subLoginId(LoginIdStatus loginId) {
 		// ログインIDを元にユーザーモデルを選択する
-		return this.dao.select_byId_subLoginId(loginId);
+		UserModel model = this.dao.select_byId_subLoginId(loginId);
+		if(model == null) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return model;
 	}
 	
 	/**
@@ -133,7 +145,11 @@ public class UserServiceUse implements UserService {
 	@Override
 	public UserIdStatus selectId_byNameEmailPasswd(UserNameEmailPassword user) {
 		// IDの取得
-		return this.dao.selectId_byNameEmailPass(user);
+		UserIdStatus userId = this.dao.selectId_byNameEmailPass(user);
+		if(userId == null) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return userId;
 	}
 
 	/**

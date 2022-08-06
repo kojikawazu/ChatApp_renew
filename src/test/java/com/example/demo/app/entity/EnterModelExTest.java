@@ -32,6 +32,7 @@ class EnterModelExTest {
 				new RoomIdStatus(0),
 				new UserIdStatus(0),
 				new UserIdStatus(0),
+				now,
 				now);
 		
 		EnterModelEx test = new EnterModelEx(superModel);
@@ -42,6 +43,7 @@ class EnterModelExTest {
 		Assertions.assertEquals(test.getManager_id(), 0);
 		Assertions.assertEquals(test.getMax_sum(), 0);
 		Assertions.assertNotNull(test.getCreated());
+		Assertions.assertNotNull(test.getUpdated());
 	}
 	
 	/**
@@ -58,6 +60,7 @@ class EnterModelExTest {
 		Assertions.assertEquals(test.getManager_id(), 0);
 		Assertions.assertEquals(test.getMax_sum(), 0);
 		Assertions.assertNotNull(test.getCreated());
+		Assertions.assertNotNull(test.getUpdated());
 	}
 	
 	/**
@@ -73,6 +76,7 @@ class EnterModelExTest {
 				new RoomIdStatus(0),
 				new UserIdStatus(0),
 				new UserIdStatus(0),
+				now,
 				now);
 		
 		EnterModelEx test = new EnterModelEx(
@@ -85,6 +89,7 @@ class EnterModelExTest {
 		Assertions.assertEquals(test.getManager_id(), 0);
 		Assertions.assertEquals(test.getMax_sum(), 1);
 		Assertions.assertNotNull(test.getCreated());
+		Assertions.assertNotNull(test.getUpdated());
 	}
 	
 	/**
@@ -100,6 +105,7 @@ class EnterModelExTest {
 				new RoomIdStatus(0),
 				new UserIdStatus(0),
 				new UserIdStatus(0),
+				now,
 				now);
 		
 		EnterModelEx model = new EnterModelEx(
@@ -114,5 +120,6 @@ class EnterModelExTest {
 		Assertions.assertEquals(test.getManager_id(), 0);
 		Assertions.assertEquals(test.getMax_sum(), 1);
 		Assertions.assertNotNull(test.getCreated());
+		Assertions.assertNotNull(test.getUpdated());
 	}
 }

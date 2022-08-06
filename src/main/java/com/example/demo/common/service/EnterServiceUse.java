@@ -1,5 +1,6 @@
 package com.example.demo.common.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.EnterModel;
 import com.example.demo.app.exception.WebMvcConfig;
 import com.example.demo.common.dao.EnterDao;
-import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.status.EnterIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
@@ -60,13 +60,17 @@ public class EnterServiceUse implements EnterService {
 	/**
 	 * 更新
 	 * @param model 入室モデル
+	 * @throws      更新されない場合
+	 * @return      更新日付
 	 */
 	@Override
-	public void update(EnterModel model) {
+	public LocalDateTime update(EnterModel model) {
 		// 更新
+		LocalDateTime now = LocalDateTime.now();
 		if( this.dao.update(model) <= WebConsts.ERROR_DB_STATUS ) {
-			throw WebMvcConfig.NOT_FOUND();
+			throw WebMvcConfig.NOT_DATA_UPDATE();
 		}
+		return now;
 	}
 	
 	/**
@@ -74,25 +78,47 @@ public class EnterServiceUse implements EnterService {
 	 * @param room_id    ルームID
 	 * @param manager_id 管理ID
 	 * @param user_id    ユーザID
+	 * @throws           更新されない場合
+	 * @return           更新日付
 	 */
 	@Override
-	public void update_byUserId(RoomIdStatus room_id, UserIdStatus manager_id, UserIdStatus user_id) {
+	public LocalDateTime update_byUserId(RoomIdStatus room_id, UserIdStatus manager_id, UserIdStatus user_id) {
 		// 更新
+		LocalDateTime now = LocalDateTime.now();
 		if( this.dao.update_byUserId(room_id, manager_id, user_id) <= WebConsts.ERROR_DB_STATUS ) {
-			throw WebMvcConfig.NOT_FOUND();
+			throw WebMvcConfig.NOT_DATA_UPDATE();
 		}
+		return now;
 	}
 	
 	/**
 	 * 更新
 	 * @param managerId 管理ID
 	 * @param id        入室ID
+	 * @throws          更新されない場合
+	 * @return          更新日付
 	 */
 	@Override
-	public void updateManagerId_byId(UserIdStatus managerId, EnterIdStatus id) {
+	public LocalDateTime updateManagerId_byId(UserIdStatus managerId, EnterIdStatus id) {
 		// 更新
+		LocalDateTime now = LocalDateTime.now();
 		if( this.dao.updateManagerId_byId(managerId, id) <= WebConsts.ERROR_DB_STATUS ) {
-			throw WebMvcConfig.NOT_FOUND();
+			throw WebMvcConfig.NOT_DATA_UPDATE();
+		}
+		return now;
+	}
+	
+	/**
+	 * 更新日付の更新
+	 * @param updated 更新日付
+	 * @param id      入室ID
+	 * @throws        更新されない場合
+	 */
+	@Override
+	public void updateUpdated_byId(LocalDateTime updated, EnterIdStatus id) {
+		// 更新日付の更新
+		if( this.dao.updateUpdated_byId(updated, id) <= WebConsts.ERROR_DB_STATUS ) {
+			throw WebMvcConfig.NOT_DATA_UPDATE();
 		}
 	}
 
@@ -107,6 +133,18 @@ public class EnterServiceUse implements EnterService {
 			throw WebMvcConfig.NOT_FOUND();
 		}
 	}
+	
+	/**
+	 * ユーザIDによる削除
+	 * @param user_id ユーザID
+	 */
+	@Override
+	public void delete_byUserId(UserIdStatus user_id) {
+		// 削除
+		if( this.dao.delete_byUserId(user_id) <= WebConsts.ERROR_DB_STATUS ) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+	}
 
 	/**
 	 * 全て選択
@@ -115,6 +153,10 @@ public class EnterServiceUse implements EnterService {
 	@Override
 	public List<EnterModel> getAll() {
 		// 全選択
+		List<EnterModel> list = this.dao.getAll();
+		if(list.isEmpty()) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
 		return this.dao.getAll();
 	}
 
@@ -126,7 +168,11 @@ public class EnterServiceUse implements EnterService {
 	@Override
 	public EnterModel select(EnterIdStatus id) {
 		// IDによる選択
-		return this.dao.select(id);
+		EnterModel model = this.dao.select(id);
+		if(model == null) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return model;
 	}
 	
 	/**
@@ -137,7 +183,11 @@ public class EnterServiceUse implements EnterService {
 	@Override
 	public EnterIdStatus selectId_byUserId(UserIdStatus userId) {
 		// ユーザIDによるID取得
-		return this.dao.selectId_byUserId(userId);
+		EnterIdStatus enterId = this.dao.selectId_byUserId(userId);
+		if(enterId == null) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return enterId;
 	}
 
 	/**
@@ -172,5 +222,4 @@ public class EnterServiceUse implements EnterService {
 		// ルームIDによる数の取得
 		return this.dao.getCount_roomId(roomId);
 	}
-
 }

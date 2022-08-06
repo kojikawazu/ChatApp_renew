@@ -1,5 +1,6 @@
 package com.example.demo.common.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,7 @@ public class RoomServiceUse implements RoomService {
 	public void update(RoomModel model) {
 		// 更新
 		if( this.dao.update(model) <= WebConsts.ERROR_DB_STATUS ) {
-			throw WebMvcConfig.NOT_FOUND();
+			throw WebMvcConfig.NOT_DATA_UPDATE();
 		}
 	}
 	
@@ -77,7 +78,21 @@ public class RoomServiceUse implements RoomService {
 	public void updateUserId_byUserId(UserIdStatus userId, UserIdStatus newId) {
 		// 更新
 		if( this.dao.updateUserId_byUserId(userId, newId) <= WebConsts.ERROR_DB_STATUS ) {
-			throw WebMvcConfig.NOT_FOUND();
+			throw WebMvcConfig.NOT_DATA_UPDATE();
+		}
+	}
+	
+	/**
+	 * 更新日付の更新
+	 * @param updated 更新日付
+	 * @param id      入室ID
+	 * @throws        更新されない場合
+	 */
+	@Override
+	public void updateUpdated_byId(LocalDateTime updated, RoomIdStatus id) {
+		// 更新
+		if( this.dao.updateUpdated_byId(updated, id) <= WebConsts.ERROR_DB_STATUS ) {
+			throw WebMvcConfig.NOT_DATA_UPDATE();
 		}
 	}
 
@@ -100,7 +115,11 @@ public class RoomServiceUse implements RoomService {
 	@Override
 	public List<RoomModel> getAll() {
 		// 全選択
-		return this.dao.getAll();
+		List<RoomModel> list = this.dao.getAll();
+		if(list.isEmpty()) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return list;
 	}
 	
 	/**
@@ -110,7 +129,11 @@ public class RoomServiceUse implements RoomService {
 	@Override
 	public List<RoomModelEx> getAll_plusUserName_EnterCnt() {
 		// 全選択+ユーザー名+入室数を選択
-		return this.dao.getAll_plusUserName_EnterCnt();
+		List<RoomModelEx> list = this.dao.getAll_plusUserName_EnterCnt();
+		if(list.isEmpty()) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return list;
 	}
 
 	/**
@@ -121,7 +144,11 @@ public class RoomServiceUse implements RoomService {
 	@Override
 	public RoomModel select(RoomIdStatus id) {
 		// IDによる選択
-		return this.dao.select(id);
+		RoomModel model = this.dao.select(id);
+		if(model == null) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return model;
 	}
 	
 	/**
@@ -132,7 +159,11 @@ public class RoomServiceUse implements RoomService {
 	@Override
 	public RoomModelEx select_plusUserName_EnterCnt(RoomIdStatus id) {
 		// IDによる選択+ユーザー名+入室数を選択
-		return this.dao.select_plusUserName(id);
+		RoomModelEx model = this.dao.select_plusUserName(id);
+		if(model == null) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return model;
 	}
 
 	/**
