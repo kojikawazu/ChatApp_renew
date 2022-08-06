@@ -158,6 +158,25 @@ public class RoomDaoSql implements RoomDao {
 				newId.getId(), 
 				userId.getId());
 	}
+	
+	/**
+	 * 更新日付の更新
+	 * @param updated 更新日付
+	 * @param id      ルームID
+	 * @return 0以下 失敗 それ以外 成功
+	 */
+	@Override
+	public int updateUpdated_byId(LocalDateTime updated, RoomIdStatus id) {
+		// 更新
+		if(id == null || updated == null) return WebConsts.ERROR_NUMBER;
+		
+		return jdbcTemp.update(
+				"UPDATE chat_room SET "
+				+ "updated = ?  "
+				+ "WHERE id = ?",
+				updated, 
+				id.getId());
+	}
 
 	/**
 	 * 削除処理
@@ -260,7 +279,7 @@ public class RoomDaoSql implements RoomDao {
 	@Override
 	public RoomModel select(RoomIdStatus id) {
 		// IDによるデータ取得
-		if(id == null) return new RoomModel(null);
+		if(id == null) return null;
 		
 		RoomModel model = null;
 		try {
@@ -278,7 +297,7 @@ public class RoomDaoSql implements RoomDao {
 					((Timestamp)result.get("updated")).toLocalDateTime());
 		} catch(EmptyResultDataAccessException ex) {
 			ex.printStackTrace();
-			model = new RoomModel(null);
+			model = null;
 		}
 		return model;
 	}
@@ -293,7 +312,7 @@ public class RoomDaoSql implements RoomDao {
 	@Override
 	public RoomModelEx select_plusUserName(RoomIdStatus id) {
 		// IDによるデータ取得
-		if(id == null) return new RoomModelEx(null);
+		if(id == null) return null;
 		
 		RoomModelEx model = null;
 		try {
@@ -329,7 +348,7 @@ public class RoomDaoSql implements RoomDao {
 			
 		} catch(EmptyResultDataAccessException ex) {
 			ex.printStackTrace();
-			model = new RoomModelEx(null);
+			model = null;
 		}
 		return model;
 	}

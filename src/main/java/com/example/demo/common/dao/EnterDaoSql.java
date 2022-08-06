@@ -21,7 +21,6 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.EnterModel;
-import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.status.EnterIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
@@ -59,11 +58,14 @@ public class EnterDaoSql implements EnterDao {
 		
 		try {
 			this.jdbcTemp.update(
-					"INSERT INTO chat_enter(room_id, user_id, manager_id, created) VALUES(?,?,?,?)",
+					"INSERT INTO chat_enter("
+					+ "room_id, user_id, manager_id, created, updated) "
+					+ "VALUES(?,?,?,?,?)",
 					model.getRoom_id(),
 					model.getUser_id(),
 					model.getManager_id(),
-					model.getCreated());
+					model.getCreated(),
+					model.getUpdated());
 		} catch(DataAccessException ex) {
 			ex.printStackTrace();
 		}
@@ -80,7 +82,9 @@ public class EnterDaoSql implements EnterDao {
 		if(model == null)	return new EnterIdStatus(WebConsts.ERROR_NUMBER);
 		
 		KeyHolder keyHolder = new GeneratedKeyHolder();
-		String sql = "INSERT INTO chat_enter(room_id, user_id, manager_id, created) VALUES(?,?,?,?)";
+		String sql = "INSERT INTO chat_enter("
+				+ "room_id, user_id, manager_id, created, updated) "
+				+ "VALUES(?,?,?,?,?)";
 		Timestamp timestamp = Timestamp.valueOf(model.getCreated());
 		int return_key = 0;
 		
@@ -94,6 +98,7 @@ public class EnterDaoSql implements EnterDao {
 		                   ps.setInt(2, model.getUser_id());
 		                   ps.setInt(3, model.getManager_id());
 		                   ps.setTimestamp(4, timestamp);
+		                   ps.setTimestamp(5, timestamp);
 		                   return ps;
 		               }
 		           }, keyHolder);
@@ -116,11 +121,14 @@ public class EnterDaoSql implements EnterDao {
 		if(model == null)	return WebConsts.ERROR_NUMBER;
 		
 		return jdbcTemp.update(
-				"UPDATE chat_enter SET room_id = ?, user_id = ?, manager_id = ?, created = ? WHERE id = ?",
+				"UPDATE chat_enter SET "
+				+ "room_id = ?, user_id = ?, manager_id = ?, created = ?, updated = ? "
+				+ "WHERE id = ?",
 				model.getRoom_id(),
 				model.getUser_id(),
 				model.getManager_id(),
 				model.getCreated(),
+				model.getUpdated(),
 				model.getId());
 	}
 	
@@ -139,7 +147,9 @@ public class EnterDaoSql implements EnterDao {
 			user_id == null) return WebConsts.ERROR_NUMBER;
 		
 		return jdbcTemp.update(
-				"UPDATE chat_enter SET room_id = ?, manager_id = ?, created = ? WHERE user_id = ?",
+				"UPDATE chat_enter SET "
+				+ "room_id = ?, manager_id = ?, updated = ? "
+				+ "WHERE user_id = ?",
 				room_id.getId(),
 				manager_id.getId(),
 				LocalDateTime.now(),
@@ -158,9 +168,30 @@ public class EnterDaoSql implements EnterDao {
 		if(managerId == null || id == null)	return WebConsts.ERROR_NUMBER;
 		
 		return jdbcTemp.update(
-				"UPDATE chat_enter SET manager_id = ?, created = ? WHERE id = ?",
+				"UPDATE chat_enter SET "
+				+ "manager_id = ?, updated = ? "
+				+ "WHERE id = ?",
 				managerId.getId(),
 				LocalDateTime.now(),
+				id.getId());
+	}
+	
+	/**
+	 * 更新日付の更新
+	 * @param updated 更新日付
+	 * @param id      入室ID
+	 * @return 0以下 失敗 それ以外 成功
+	 */
+	@Override
+	public int updateUpdated_byId(LocalDateTime updated, EnterIdStatus id) {
+		// 更新日付の更新
+		if(updated == null || id == null)	return WebConsts.ERROR_NUMBER;
+		
+		return jdbcTemp.update(
+				"UPDATE chat_enter SET "
+				+ "updated = ? "
+				+ "WHERE id = ?",
+				updated,
 				id.getId());
 	}
 
@@ -178,6 +209,20 @@ public class EnterDaoSql implements EnterDao {
 				"DELETE FROM chat_enter WHERE id = ?", 
 				id.getId());
 	}
+	
+	/**
+	 * ユーザIDによる削除処理
+	 * @param  user_id ユーザID
+	 * @return 0以下 失敗 それ以外 成功
+	 */
+	public int delete_byUserId(UserIdStatus user_id) {
+		// 削除
+		if(user_id == null)	return WebConsts.ERROR_NUMBER;
+		
+		return this.jdbcTemp.update(
+				"DELETE FROM chat_enter WHERE user_id = ?", 
+				user_id.getId());
+	}
 
 	/**
 	 * 全選択
@@ -189,7 +234,7 @@ public class EnterDaoSql implements EnterDao {
 		
 		List<EnterModel> list = new ArrayList<EnterModel>();
 		try {
-			String sql = "SELECT id, room_id, user_id, manager_id, created FROM chat_enter";
+			String sql = "SELECT * FROM chat_enter";
 			List<Map<String, Object>> resultList = jdbcTemp.queryForList(sql);
 			
 			for( Map<String, Object> result : resultList ) {
@@ -198,7 +243,9 @@ public class EnterDaoSql implements EnterDao {
 						new RoomIdStatus((int)result.get("room_id")),
 						new UserIdStatus((int)result.get("user_id")),
 						new UserIdStatus((int)result.get("manager_id")),
-						((Timestamp)result.get("created")).toLocalDateTime());
+						((Timestamp)result.get("created")).toLocalDateTime(),
+						((Timestamp)result.get("updated")).toLocalDateTime()
+						);
 				list.add(model);
 			}
 		} catch(DataAccessException ex) {
@@ -216,11 +263,11 @@ public class EnterDaoSql implements EnterDao {
 	@Override
 	public EnterModel select(EnterIdStatus id) {
 		// IDによるデータ取得
-		if(id == null)	return new EnterModel(null);
+		if(id == null)	return null;
 		
 		EnterModel model = new EnterModel(null);
 		try {
-			String sql = "SELECT id, room_id, user_id, manager_id, created FROM chat_enter WHERE id = ?";
+			String sql = "SELECT * FROM chat_enter WHERE id = ?";
 			Map<String, Object> result = jdbcTemp.queryForMap(sql, id.getId());
 				
 			model = new EnterModel(
@@ -228,10 +275,12 @@ public class EnterDaoSql implements EnterDao {
 					new RoomIdStatus((int)result.get("room_id")),
 					new UserIdStatus((int)result.get("user_id")),
 					new UserIdStatus((int)result.get("manager_id")),
-					((Timestamp)result.get("created")).toLocalDateTime());
+					((Timestamp)result.get("created")).toLocalDateTime(),
+					((Timestamp)result.get("updated")).toLocalDateTime()
+					);
 		} catch(EmptyResultDataAccessException ex) {
 			ex.printStackTrace();
-			model = new EnterModel(null);
+			model = null;
 		}
 		
 		return model;
@@ -245,7 +294,7 @@ public class EnterDaoSql implements EnterDao {
 	@Override
 	public EnterIdStatus selectId_byUserId(UserIdStatus userId) {
 		// ユーザIDによるID取得
-		if(userId == null) 	return new EnterIdStatus(WebConsts.ERROR_NUMBER);
+		if(userId == null) 	return null;
 		
 		int id = 0;
 		try {
@@ -255,6 +304,7 @@ public class EnterDaoSql implements EnterDao {
 		} catch(EmptyResultDataAccessException ex) {
 			ex.printStackTrace();
 			id = WebConsts.ERROR_NUMBER;
+			return null;
 		}
 		return new EnterIdStatus(id);
 	}

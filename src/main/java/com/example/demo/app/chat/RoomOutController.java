@@ -12,6 +12,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.CommentModel;
 import com.example.demo.app.entity.EnterModel;
+import com.example.demo.app.entity.LoginModel;
+import com.example.demo.app.exception.DatabaseUpdateException;
+import com.example.demo.app.exception.NotFoundException;
 import com.example.demo.app.form.RoomOutForm;
 import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
@@ -85,29 +88,106 @@ public class RoomOutController implements SuperChatController {
 			RedirectAttributes redirectAttributes) {
 		this.appLogger.start("退室受信...");
 		
+		LoginIdStatus login_id = null;
+		EnterIdStatus enter_id = null;
+		EnterModel enterModel  = null;
+		UserIdStatus user_id   = null;
+		RoomIdStatus room_id   = null;
+		LoginModel loginModel  = null;
+		
 		// 情報取得
-		EnterIdStatus  enter_id   = new EnterIdStatus(roomOutForm.getEnter_id());
-		EnterModel     enterModel = this.enterService.select(enter_id);
-		UserIdStatus   user_id    = new UserIdStatus(enterModel.getUser_id());
-		RoomIdStatus   room_id    = new RoomIdStatus(enterModel.getRoom_id());
-		LoginIdStatus  login_id   = this.loginService.selectId_byUserId(user_id);
-		
-		// 退室情報の通知
-		this.setComment(user_id, room_id);
-		
-		// ログイン情報のルームIDの初期化
-		this.initRoomId_byUserId(user_id);
+		try {
+			login_id     = new LoginIdStatus(roomOutForm.getLogin_id());
+			enter_id     = new EnterIdStatus(roomOutForm.getEnter_id());
+			enterModel   = this.enterService.select(enter_id);
+			user_id      = new UserIdStatus(enterModel.getUser_id());
+			room_id      = new RoomIdStatus(enterModel.getRoom_id());
+			loginModel   = this.loginService.select_byUserId(user_id);	
+		} catch(NotFoundException ex) {
+			// 情報取得なし
+			// [ERROR]
+			this.appLogger.info("throw: " + ex);
+			this.setRedirect(login_id, redirectAttributes);
+			return WebConsts.URL_REDIRECT_ROOM_INDEX;
+		}
 		
 		// 入室情報の削除
 		this.deleteEnterInfo(enter_id);
 		
+		// 退室処理チェック
+		if( !this.isRoomOut(loginModel) ) {
+			this.setRedirect(login_id, redirectAttributes);
+			return WebConsts.URL_REDIRECT_ROOM_INDEX;
+		}
+		
+		// ---------------------------------------------------------------------------------
+		// まだ入室中の場合
+		
+		// ログイン情報のルームIDの初期化
+		this.initRoomId_byUserId(user_id);
+		
+		// 退室情報の通知
+		this.setComment(user_id, room_id);
+		
 		// リダイレクト設定
-		String encryptNumber = CommonEncript.encrypt(login_id.getId());
-		redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
-		this.sessionLoginId.setLoginId(encryptNumber);
+		this.setRedirect(login_id, redirectAttributes);
 
 		this.appLogger.successed("退室成功");
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
+	}
+	
+	/**
+	 * 退室できるかチェック
+	 * @param loginModel サインインモデル
+	 * @return true 退室可能 false 退室不可
+	 */
+	private boolean isRoomOut(LoginModel loginModel) {
+		if(loginModel.getRoom_id() == 0) {
+			// 既に強制退室されている
+			this.appLogger.info("既に退室していた： loginId: " + loginModel.getId());
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * ログイン情報のルームIDの初期化
+	 * @param user_id ユーザーID
+	 */
+	private void initRoomId_byUserId(UserIdStatus user_id) {
+		this.appLogger.start("ログイン情報のルームIDの初期化...");
+		
+		try {
+			this.loginService.updateRoomId_byUserId(
+					new RoomIdStatus(0), 
+					user_id);
+		} catch(DatabaseUpdateException ex) {
+			// 更新不可
+			// [ERROR]
+			this.appLogger.info("throw: " + ex);
+			return ;
+		}
+		
+		this.appLogger.successed("ログイン情報のルームIDの初期化成功: userId: " + user_id.getId());
+	}
+	
+	/**
+	 * 入室情報の削除
+	 * @param enter_id 入室ID
+	 */
+	private void deleteEnterInfo(EnterIdStatus enter_id) {
+		this.appLogger.start("入室情報の削除...");
+		
+		try {
+			this.enterService.delete(enter_id);
+		} catch(NotFoundException ex) {
+			// 削除不可
+			// [ERROR]
+			this.appLogger.info("throw: " + ex);
+			return ;
+		}
+		
+		this.appLogger.successed("入室情報の削除成功: enterId: " + enter_id.getId());
 	}
 	
 	/**
@@ -129,29 +209,14 @@ public class RoomOutController implements SuperChatController {
 	}
 	
 	/**
-	 * ログイン情報のルームIDの初期化
-	 * @param user_id ユーザーID
+	 * リダイレクト設定
+	 * @param login_id
+	 * @param redirectAttributes
 	 */
-	private void initRoomId_byUserId(UserIdStatus user_id) {
-		this.appLogger.start("ログイン情報のルームIDの初期化...");
-		
-		this.loginService.updateRoomId_byUserId(
-				new RoomIdStatus(0), 
-				user_id);
-		
-		this.appLogger.successed("ログイン情報のルームIDの初期化成功: userId: " + user_id.getId());
-	}
-	
-	/**
-	 * 入室情報の削除
-	 * @param enter_id 入室ID
-	 */
-	private void deleteEnterInfo(EnterIdStatus enter_id) {
-		this.appLogger.start("入室情報の削除...");
-		
-		this.enterService.delete(enter_id);
-		
-		this.appLogger.successed("入室情報の削除成功: enterId: " + enter_id.getId());
-		
+	private void setRedirect(LoginIdStatus login_id, RedirectAttributes redirectAttributes) {
+		// ログインIDの設定
+		String encryptNumber = CommonEncript.encrypt(login_id.getId());
+		redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
+		this.sessionLoginId.setLoginId(encryptNumber);
 	}
 }

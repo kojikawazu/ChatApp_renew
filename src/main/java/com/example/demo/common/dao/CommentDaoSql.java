@@ -103,7 +103,6 @@ public class CommentDaoSql implements CommentDao {
 			return_key = WebConsts.ERROR_NUMBER;
 		}
 		
-		
 		return new CommentIdStatus(return_key);
 	}
 
@@ -232,7 +231,7 @@ public class CommentDaoSql implements CommentDao {
 	@Override
 	public CommentModel select(CommentIdStatus id) {
 		// IDによるデータ取得
-		if(id == null)	return new CommentModel(null);
+		if(id == null)	return null;
 		
 		CommentModel model = new CommentModel(null);
 		try {
@@ -247,7 +246,7 @@ public class CommentDaoSql implements CommentDao {
 					((Timestamp)result.get("created")).toLocalDateTime());		
 		} catch(EmptyResultDataAccessException ex) {
 			ex.printStackTrace();
-			model = new CommentModel(null);
+			model = null;
 		}
 		return model;
 	}

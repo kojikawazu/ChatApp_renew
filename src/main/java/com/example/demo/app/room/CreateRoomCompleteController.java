@@ -111,7 +111,7 @@ public class CreateRoomCompleteController implements SuperRoomController {
 				new LoginIdStatus(roomCreateForm.getLogin_id()));
 		RoomIdStatus room_id  = this.setRoom(loginModel, roomCreateForm);
 		
-		// ログイン情報のルーム番号の更新
+		// サインイン情報のルーム番号の更新
 		this.updateLoginInfo_roomId(room_id, roomCreateForm);
 		
 		// 入室情報の生成
@@ -131,7 +131,7 @@ public class CreateRoomCompleteController implements SuperRoomController {
 	
 	/**
 	 * ルーム追加処理
-	 * @param loginModel     ログインモデル
+	 * @param loginModel     サインインモデル
 	 * @param roomCreateForm ルーム生成フォーム
 	 * @return               ルームID
 	 */
@@ -153,24 +153,24 @@ public class CreateRoomCompleteController implements SuperRoomController {
 	}
 	
 	/**
-	 * ログイン情報のルーム番号の更新
+	 * サインイン情報のルーム番号の更新
 	 * @param room_id
 	 * @param roomCreateForm
 	 */
 	private void updateLoginInfo_roomId(RoomIdStatus room_id, RoomCreateForm roomCreateForm) {
-		this.appLogger.start("ログイン情報のルーム番号の更新...");
+		this.appLogger.start("サインイン情報のルーム番号の更新...");
 		
 		this.loginService.updateRoomId_byId(
 				room_id, 
 				new LoginIdStatus(roomCreateForm.getLogin_id()));
 		
-		this.appLogger.info("ログイン情報のルーム番号の更新: roomId:  " + room_id.getId());
-		this.appLogger.info("ログイン情報のルーム番号の更新: loginId: " + roomCreateForm.getLogin_id());
+		this.appLogger.info("サインイン情報のルーム番号の更新: roomId:  " + room_id.getId());
+		this.appLogger.info("サインイン情報のルーム番号の更新: loginId: " + roomCreateForm.getLogin_id());
 	}
 	
 	/**
 	 * 入室情報の追加
-	 * @param loginModel     ログインモデル
+	 * @param loginModel     サインインモデル
 	 * @param roomCreateForm ルーム生成フォーム
 	 * @param room_id        ルームID
 	 * @return               入室ID
@@ -182,6 +182,7 @@ public class CreateRoomCompleteController implements SuperRoomController {
 				room_id,
 				new UserIdStatus(loginModel.getUser_id()),
 				new UserIdStatus(loginModel.getUser_id()),
+				LocalDateTime.now(),
 				LocalDateTime.now());
 		EnterIdStatus enterIdStatus = this.enterService.save_returnId(enterModel);
 		
@@ -191,7 +192,7 @@ public class CreateRoomCompleteController implements SuperRoomController {
 	
 	/**
 	 * 部屋生成コメントの追加
-	 * @param loginModel ログインモデル
+	 * @param loginModel サインインモデル
 	 * @param room_id    ルームID
 	 */
 	private void setComment_createroom(LoginModel loginModel, RoomIdStatus room_id) {

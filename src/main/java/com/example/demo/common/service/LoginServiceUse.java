@@ -61,12 +61,13 @@ public class LoginServiceUse implements LoginService {
 	/**
 	 * 更新
 	 * @param model ログインモデル
+	 * @throws 更新されない場合
 	 */
 	@Override
 	public void update(LoginModel model) {
 		// 更新
 		if( this.dao.update(model) <= WebConsts.ERROR_DB_STATUS ) {
-			throw WebMvcConfig.NOT_FOUND();
+			throw WebMvcConfig.NOT_DATA_UPDATE();
 		}
 	}
 	
@@ -75,13 +76,14 @@ public class LoginServiceUse implements LoginService {
 	 * @param roomId ルームID
 	 * @param id     ログインID
 	 * @return 更新日時
+	 * @throws 更新されない場合 
 	 */
 	@Override
 	public LocalDateTime updateRoomId_byId(RoomIdStatus roomId, LoginIdStatus id) {
 		// ルームID更新
 		LocalDateTime now = LocalDateTime.now();
-		if( this.dao.updateRoomId_byId(roomId, id, now) <= WebConsts.ERROR_DB_STATUS ) {
-			throw WebMvcConfig.NOT_FOUND();
+		if( this.dao.updateRoomId_byId(roomId, id) <= WebConsts.ERROR_DB_STATUS ) {
+			throw WebMvcConfig.NOT_DATA_UPDATE();
 		}
 		return now;
 	}
@@ -91,13 +93,14 @@ public class LoginServiceUse implements LoginService {
 	 * @param roomId ルームID
 	 * @param userId ユーザID
 	 * @return 更新日時
+	 * @throws 更新されない場合
 	 */
 	@Override
 	public LocalDateTime updateRoomId_byUserId(RoomIdStatus roomId, UserIdStatus userId) {
 		// ユーザIDによるルームIDの更新
 		LocalDateTime now = LocalDateTime.now();
-		if( this.dao.updateRoomId_byUserId(roomId, userId, now) <= WebConsts.ERROR_DB_STATUS ) {
-			throw WebMvcConfig.NOT_FOUND();
+		if( this.dao.updateRoomId_byUserId(roomId, userId) <= WebConsts.ERROR_DB_STATUS ) {
+			throw WebMvcConfig.NOT_DATA_UPDATE();
 		}
 		return now;
 	}
@@ -107,13 +110,14 @@ public class LoginServiceUse implements LoginService {
 	 * @param roomId   ルームID
 	 * @param changeId 新しいルームID
 	 * @return 更新日時
+	 * @throws 更新されない場合
 	 */
 	@Override
 	public LocalDateTime updateRoomId_byRoomId(RoomIdStatus roomId, RoomIdStatus changeId) {
 		// ルームIDによるルームIDの更新
 		LocalDateTime now = LocalDateTime.now();
-		if( this.dao.updateRoomId_byRoomId(roomId, changeId, now) <= WebConsts.ERROR_DB_STATUS ) {
-			throw WebMvcConfig.NOT_FOUND();
+		if( this.dao.updateRoomId_byRoomId(roomId, changeId) <= WebConsts.ERROR_DB_STATUS ) {
+			throw WebMvcConfig.NOT_DATA_UPDATE();
 		}
 		return now;
 	}
@@ -122,11 +126,12 @@ public class LoginServiceUse implements LoginService {
 	 * 更新日付だけの更新
 	 * @param updated 更新日付
 	 * @param id      ログインID
+	 * @throws 更新されない場合
 	 */
 	@Override
 	public void updateUpdated_byId(LocalDateTime updated, LoginIdStatus id) {
 		if( this.dao.updateUpdated_byId(updated, id) <= WebConsts.ERROR_DB_STATUS ) {
-			throw WebMvcConfig.NOT_FOUND();
+			throw WebMvcConfig.NOT_DATA_UPDATE();
 		}
 	}
 
@@ -149,7 +154,11 @@ public class LoginServiceUse implements LoginService {
 	@Override
 	public List<LoginModel> getAll() {
 		// 全選択
-		return this.dao.getAll();
+		List<LoginModel> list = this.dao.getAll();
+		if(list.isEmpty()) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return list;
 	}
 
 	/**
@@ -160,7 +169,11 @@ public class LoginServiceUse implements LoginService {
 	@Override
 	public LoginModel select(LoginIdStatus id) {
 		// IDによる選択
-		return this.dao.select(id);
+		LoginModel model = this.dao.select(id);
+		if(model == null) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return model;
 	}
 
 	/**
@@ -171,7 +184,11 @@ public class LoginServiceUse implements LoginService {
 	@Override
 	public List<LoginModel> selectList_byRoomId(RoomIdStatus roomId) {
 		// ルームIDによる選択
-		return this.dao.selectList_byRoomId(roomId);
+		List<LoginModel> list = this.dao.selectList_byRoomId(roomId);
+		if(list.isEmpty()) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return list;
 	}
 	
 	/**
@@ -182,7 +199,11 @@ public class LoginServiceUse implements LoginService {
 	@Override
 	public List<LoginModelEx> selectList_plusUserName_byRoomId(RoomIdStatus roomId) {
 		// ルームIDによる選択+ユーザー名選択
-		return this.dao.selectList_plusUserName_byRoomId(roomId);
+		List<LoginModelEx> list = this.dao.selectList_plusUserName_byRoomId(roomId);
+		if(list.isEmpty()) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return list;
 	}
 	
 	/**
@@ -193,7 +214,11 @@ public class LoginServiceUse implements LoginService {
 	@Override
 	public LoginIdStatus selectId_byUserId(UserIdStatus userId) {
 		// ユーザIDによるID取得
-		return this.dao.selectId_byUserId(userId);
+		LoginIdStatus loginId = this.dao.selectId_byUserId(userId);
+		if(loginId == null) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return loginId;
 	}
 	
 	/**
@@ -204,7 +229,11 @@ public class LoginServiceUse implements LoginService {
 	@Override
 	public LoginModel select_byUserId(UserIdStatus userId) {
 		// ユーザIDによる取得
-		return this.dao.select_byuserId(userId);
+		LoginModel model = this.dao.select_byuserId(userId);
+		if(model == null) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return model;
 	}
 	
 	/**
@@ -215,7 +244,11 @@ public class LoginServiceUse implements LoginService {
 	@Override
 	public RoomIdStatus selectRoomId_byUserId(UserIdStatus userId) {
 		// ユーザIDによるルームIDの取得
-		return this.dao.selectRoomId_byUserId(userId);
+		RoomIdStatus roomId = this.dao.selectRoomId_byUserId(userId);
+		if(roomId == null) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return roomId;
 	}
 
 	/**

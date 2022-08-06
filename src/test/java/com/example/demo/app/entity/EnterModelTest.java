@@ -31,6 +31,7 @@ class EnterModelTest {
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertEquals(test.getManager_id(), 0);
 		Assertions.assertNotNull(test.getCreated());
+		Assertions.assertNotNull(test.getUpdated());
 	}
 	
 	/**
@@ -44,6 +45,7 @@ class EnterModelTest {
 						new RoomIdStatus(0), 
 						new UserIdStatus(0), 
 						new UserIdStatus(0),
+						now,
 						now);
 		
 		Assertions.assertEquals(test.getId(), 0);
@@ -51,6 +53,7 @@ class EnterModelTest {
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertEquals(test.getManager_id(), 0);
 		Assertions.assertNotNull(test.getCreated());
+		Assertions.assertNotNull(test.getUpdated());
 	}
 
 	/**
@@ -64,6 +67,7 @@ class EnterModelTest {
 				null, 
 				null, 
 				null,
+				now,
 				now);
 
 		Assertions.assertEquals(test.getId(), 0);
@@ -71,6 +75,7 @@ class EnterModelTest {
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertEquals(test.getManager_id(), 0);
 		Assertions.assertNotNull(test.getCreated());
+		Assertions.assertNotNull(test.getUpdated());
 	}
 	
 	/**
@@ -84,6 +89,7 @@ class EnterModelTest {
 						new RoomIdStatus(2), 
 						new UserIdStatus(3), 
 						new UserIdStatus(4),
+						now,
 						now);
 		
 		
@@ -94,6 +100,7 @@ class EnterModelTest {
 		Assertions.assertEquals(test.getUser_id(), 3);
 		Assertions.assertEquals(test.getManager_id(), 4);
 		Assertions.assertNotNull(test.getCreated());
+		Assertions.assertNotNull(test.getUpdated());
 	}
 	
 	/**
@@ -106,6 +113,7 @@ class EnterModelTest {
 						new RoomIdStatus(0), 
 						new UserIdStatus(0), 
 						new UserIdStatus(0),
+						now,
 						now);
 		
 		Assertions.assertEquals(test.getId(), 0);
@@ -113,5 +121,6 @@ class EnterModelTest {
 		Assertions.assertEquals(test.getUser_id(), 0);
 		Assertions.assertEquals(test.getManager_id(), 0);
 		Assertions.assertNotNull(test.getCreated());
+		Assertions.assertNotNull(test.getUpdated());
 	}
 }

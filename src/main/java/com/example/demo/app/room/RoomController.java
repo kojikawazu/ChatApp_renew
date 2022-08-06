@@ -1,7 +1,5 @@
 package com.example.demo.app.room;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,6 @@ import com.example.demo.app.config.WebFunctions;
 import com.example.demo.app.entity.LoginModel;
 import com.example.demo.app.entity.RoomModelEx;
 import com.example.demo.app.entity.UserModel;
-import com.example.demo.app.form.RoomUserForm;
 import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.LoginService;
@@ -78,7 +75,7 @@ public class RoomController implements SuperRoomController {
 	
 	/**
 	 * ホーム受信
-	 * @param login_id      ログインID
+	 * @param login_id      サインインID
 	 * @param model         モデル
 	 * @param noticeSuccess 成功通知 
 	 * @param noticeError   失敗通知
@@ -106,9 +103,9 @@ public class RoomController implements SuperRoomController {
 		this.appLogger.info("復号化... loginId: " + login_id);
 		
 		if( login_id > 0 ) {
-			// ログインチェック
+			// サインインチェック
 			if(!this.isLogin(login_id, model)) {
-				// ログイン情報なし
+				// サインイン情報なし
 				return WebConsts.URL_REDIRECT_ROOM_INDEX;
 			}
 		} else if( login_id < 0 ) {
@@ -119,7 +116,7 @@ public class RoomController implements SuperRoomController {
 			return WebConsts.URL_REDIRECT_ROOM_INDEX;
 		}
 		
-		// ログインID設定
+		// サインインID設定
 		model.addAttribute(WebConsts.BIND_LOGIN_ID, login_id);
 		
 		// ルームリスト拡張版取得
@@ -136,21 +133,21 @@ public class RoomController implements SuperRoomController {
 	
 	
 	/**
-	 * ログイン中か確認
-	 * @param login_id ログインID
+	 * サインイン中か確認
+	 * @param login_id サインインID
 	 * @param model    モデル
-	 * @return         true ログイン中 false ログイン情報なし
+	 * @return         true サインイン中 false サインイン情報なし
 	 */
 	private boolean isLogin(int login_id, Model model) {
 		boolean is_check = false;
 		
-		// ログインチェック
+		// サインインチェック
 		LoginIdStatus loginIdStatus = new LoginIdStatus(login_id);
 		
-		// ログイン情報チェック
+		// サインイン情報チェック
 		if( !this.loginService.isSelect_byId(loginIdStatus) ) {
 			// [ERROR]
-			this.appLogger.error("ログイン情報なし : loginId: " + login_id);
+			this.appLogger.error("サインイン情報なし : loginId: " + login_id);
 			login_id = 0;
 			model.addAttribute(WebConsts.BIND_LOGIN_ID, login_id);
 			return is_check;
@@ -160,7 +157,7 @@ public class RoomController implements SuperRoomController {
 		
 		// 更新日付チェック
 		if(!WebFunctions.checkDiffMinutes(
-				loginModel.getUpdated(), 1)) {
+				loginModel.getUpdated(), 30)) {
 			// [ERROR]
 			this.appLogger.error("更新日からだいぶ経っている : loginId: " + login_id);
 			this.loginService.delete(loginIdStatus);
@@ -170,9 +167,9 @@ public class RoomController implements SuperRoomController {
 			return is_check;
 		}
 		
-		// ログイン情報あり
-		this.appLogger.info("ログイン中 : loginId: " + login_id);
-		// ログイン情報設定
+		// サインイン情報あり
+		this.appLogger.info("サインイン中 : loginId: " + login_id);
+		// サインイン情報設定
 		UserModel userModel = this.userService.selectModel_subLoginId(new LoginIdStatus(login_id));
 		model.addAttribute(WebConsts.BIND_USER_MODEL, userModel);
 		is_check = true;

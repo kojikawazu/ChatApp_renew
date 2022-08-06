@@ -23,6 +23,7 @@ public class EnterModel implements SuperModel {
 	private UserIdStatus user_id;		/** ユーザID */
 	private UserIdStatus manager_id;	/** ホストID */
 	private LocalDateTime created;		/** 生成日時 */
+	private LocalDateTime updated;		/** 更新日時 */
 	
 	/**
 	 * コンストラクタ
@@ -32,13 +33,15 @@ public class EnterModel implements SuperModel {
 	 * @param manager_id ホストID
 	 * @param max_sum    入室数
 	 * @param created    生成日時
+	 * @param updated    更新日付
 	 */
 	public EnterModel(
 			EnterIdStatus id,
 			RoomIdStatus room_id,
 			UserIdStatus user_id,
 			UserIdStatus manager_id,
-			LocalDateTime created) {
+			LocalDateTime created,
+			LocalDateTime updated) {
 		
 		this.id = (id == null ?
 				new EnterIdStatus(0) :
@@ -59,6 +62,10 @@ public class EnterModel implements SuperModel {
 		this.created = (created == null ?
 				LocalDateTime.now() :
 				created);
+		
+		this.updated = (updated == null ?
+				LocalDateTime.now() :
+				updated);
 	}
 	
 	/**
@@ -68,12 +75,14 @@ public class EnterModel implements SuperModel {
 	 * @param manager_id ホストID
 	 * @param max_sum    入室数
 	 * @param created    生成日時
+	 * @param updated    更新日付
 	 */
 	public EnterModel(
 			RoomIdStatus room_id,
 			UserIdStatus user_id,
 			UserIdStatus manager_id,
-			LocalDateTime created) {
+			LocalDateTime created,
+			LocalDateTime updated) {
 		this.id = new EnterIdStatus(0);
 		
 		this.room_id = (room_id == null ?
@@ -91,6 +100,10 @@ public class EnterModel implements SuperModel {
 		this.created = (created == null ?
 				LocalDateTime.now() :
 				created);
+		
+		this.updated = (updated == null ?
+				LocalDateTime.now() :
+				updated);
 	}
 	
 	/**
@@ -105,12 +118,14 @@ public class EnterModel implements SuperModel {
 			this.user_id 	= new UserIdStatus(0);
 			this.manager_id = new UserIdStatus(0);
 			this.created 	= LocalDateTime.now();
+			this.updated    = LocalDateTime.now();
 		} else {
 			this.id 		= new EnterIdStatus(model.getId());
 			this.room_id 	= new RoomIdStatus(model.getRoom_id());
 			this.user_id 	= new UserIdStatus(model.getUser_id());
 			this.manager_id = new UserIdStatus(model.getManager_id());
 			this.created 	= model.created;
+			this.updated    = model.updated;
 		}
 	}
 
@@ -152,5 +167,13 @@ public class EnterModel implements SuperModel {
 
 	protected void setCreated(LocalDateTime created) {
 		this.created = created;
+	}
+	
+	public LocalDateTime getUpdated() {
+		return updated;
+	}
+
+	protected void setUpdated(LocalDateTime updated) {
+		this.updated = updated;
 	}
 }

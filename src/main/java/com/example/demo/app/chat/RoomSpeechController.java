@@ -10,12 +10,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.app.config.WebConsts;
+import com.example.demo.app.config.WebFunctions;
 import com.example.demo.app.entity.CommentModel;
+import com.example.demo.app.entity.EnterModel;
+import com.example.demo.app.entity.LoginModel;
+import com.example.demo.app.exception.DatabaseUpdateException;
+import com.example.demo.app.exception.NotFoundException;
 import com.example.demo.app.form.UserSpeechForm;
 import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.CommentService;
+import com.example.demo.common.service.EnterService;
+import com.example.demo.common.service.LoginService;
 import com.example.demo.common.service.RoomService;
+import com.example.demo.common.status.EnterIdStatus;
+import com.example.demo.common.status.LoginIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
 import com.example.demo.common.word.ChatCommentWord;
@@ -34,23 +43,37 @@ public class RoomSpeechController implements SuperChatController {
 	 */
 	private CommentService commentService;
 	private RoomService    roomService;
+	private LoginService   loginService;
+	private EnterService   enterService;
 	
 	/**
 	 * ログクラス
 	 */
 	private ChatAppLogger appLogger = ChatAppLogger.getInstance();
 	
+	/** チャット投稿OK */
+	private static final boolean SPEECH_OK = true;
+	
+	/** チャット投稿NG */
+	private static final boolean SPEECH_NG = false;
+	
 	/**
 	 * コンストラクタ
 	 * @param roomService     ルームサービス
 	 * @param commentService  コメントサービス
+	 * @param loginService    ログインサービス
+	 * @param enterService    入室サービス
 	 */
 	@Autowired
 	public RoomSpeechController(
 			RoomService    roomService,
-			CommentService commentService) {
+			CommentService commentService,
+			LoginService   loginService,
+			EnterService   enterService) {
 		this.roomService    = roomService;
 		this.commentService = commentService;
+		this.loginService   = loginService;
+		this.enterService   = enterService;
 	}
 	
 	/**
@@ -78,9 +101,11 @@ public class RoomSpeechController implements SuperChatController {
 		// コメント情報追加
 		this.setSpeech(userSpeechForm);
 		
+		// 時間更新
+		this.updateTimed(userSpeechForm);
+		
 		// コメント追加後にリダイレクト
-		String encryptNumber = CommonEncript.encrypt(userSpeechForm.getEnter_id());
-		redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_ENTER_ID, encryptNumber);
+		this.setRedirect(userSpeechForm, redirectAttributes);
 		
 		this.appLogger.successed("コメント成功");
 		return WebConsts.URL_REDIRECT_CHAT_INDEX;
@@ -102,7 +127,7 @@ public class RoomSpeechController implements SuperChatController {
 			// [ERROR]
 			// コメント追加なしでリダイレクト
 			this.appLogger.info("コメントなし");
-			return false;
+			return SPEECH_NG;
 		}
 		
 		// 部屋あるかチェック
@@ -110,18 +135,47 @@ public class RoomSpeechController implements SuperChatController {
 			// [ERROR]
 			// 部屋なしでリダイレクト
 			this.appLogger.info("部屋なし");
-			return false;
+			return SPEECH_NG;
+		}
+		
+		// 更新日付チェック
+		EnterIdStatus enterId = null;
+		EnterModel enterModel = null;
+		LoginModel loginModel = null;
+		try {
+			enterId    = new EnterIdStatus(userSpeechForm.getEnter_id());
+			enterModel = this.enterService.select(enterId);
+			loginModel = this.loginService.select_byUserId(new UserIdStatus(userSpeechForm.getUser_id()));
+		} catch(NotFoundException ex) {
+			// 情報取得なし
+			// [ERROR]
+			this.appLogger.info("throw: " + ex);
+			return SPEECH_NG;
+		}
+		
+		if(loginModel.getRoom_id() == 0) {
+			// [ERROR]
+			// 強制退室されていた
+			this.appLogger.info("強制退室済");
+			return SPEECH_NG;
+		}
+		
+		if( !WebFunctions.checkDiffHour(enterModel.getUpdated(), 30) ) {
+			// [ERROR]
+			// 更新日付だいぶ経っている
+			this.appLogger.info("更新日付切れ");
+			return SPEECH_NG;
 		}
 		
 		this.appLogger.successed("チャット投稿チェックOK");
-		return true;
+		return SPEECH_OK;
 	}
 	
 	/**
 	 * 【コメント追加処理】
-	 * @param userSpeechForm
+	 * @param userSpeechForm 投稿フォーム
 	 */
-	public void setSpeech(UserSpeechForm userSpeechForm) {
+	private void setSpeech(UserSpeechForm userSpeechForm) {
 		this.appLogger.start("投稿情報の追加");
 		
 		CommentModel commentModel = new CommentModel(
@@ -132,5 +186,40 @@ public class RoomSpeechController implements SuperChatController {
 		this.commentService.save(commentModel);
 		
 		this.appLogger.successed("投稿情報の追加成功");
+	}
+	
+	/**
+	 * 時間更新
+	 * @param userSpeechForm 投稿フォーム
+	 */
+	private void updateTimed(UserSpeechForm userSpeechForm) {
+		this.appLogger.start("入室IDの更新日付の更新");
+		
+		try {
+			LocalDateTime now         = LocalDateTime.now();
+			EnterIdStatus enterId     = new EnterIdStatus(userSpeechForm.getEnter_id());
+			EnterModel    enterModel  = this.enterService.select(enterId);
+			RoomIdStatus  roomId      = new RoomIdStatus(enterModel.getRoom_id());
+			
+			this.enterService.updateUpdated_byId(now, enterId);
+			this.roomService.updateUpdated_byId(now, roomId);
+		} catch(DatabaseUpdateException ex) {
+			// 更新不可
+			// [ERROR]
+			this.appLogger.info("throw: " + ex);
+			return ;
+		}
+		
+		this.appLogger.successed("入室IDの更新日付の更新成功");
+	}
+	
+	/**
+	 * リダイレクト設定
+	 * @param userSpeechForm      投稿フォーム
+	 * @param redirectAttributes  リダイレクト
+	 */
+	private void setRedirect(UserSpeechForm userSpeechForm, RedirectAttributes redirectAttributes) {
+		String encryptNumber = CommonEncript.encrypt(userSpeechForm.getEnter_id());
+		redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_ENTER_ID, encryptNumber);
 	}
 }

@@ -64,7 +64,7 @@ public class CommentServiceUse implements CommentService {
 	public void update(CommentModel model) {
 		// 更新
 		if( this.dao.update(model) <= WebConsts.ERROR_DB_STATUS ) {
-			throw WebMvcConfig.NOT_FOUND();
+			throw WebMvcConfig.NOT_DATA_UPDATE();
 		}
 	}
 
@@ -99,7 +99,11 @@ public class CommentServiceUse implements CommentService {
 	@Override
 	public List<CommentModel> getAll() {
 		// 全選択
-		return this.dao.getAll();
+		List<CommentModel> list = this.dao.getAll();
+		if(list.isEmpty()) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return list;
 	}
 	
 	/**
@@ -109,7 +113,11 @@ public class CommentServiceUse implements CommentService {
 	@Override
 	public List<CommentModelEx> getAll_plusUserName() {
 		// 全選択+ユーザー名を選択
-		return this.dao.getAll_plusUserName();
+		List<CommentModelEx> list = this.dao.getAll_plusUserName();
+		if(list.isEmpty()) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return list;
 	}
 
 	/**
@@ -120,7 +128,11 @@ public class CommentServiceUse implements CommentService {
 	@Override
 	public CommentModel select(CommentIdStatus id) {
 		// IDによる選択
-		return this.dao.select(id);
+		CommentModel model = this.dao.select(id);
+		if(model == null) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return model;
 	}
 	
 	/**
@@ -131,7 +143,11 @@ public class CommentServiceUse implements CommentService {
 	@Override
 	public List<CommentModel> select_byRoomId(RoomIdStatus roomId) {
 		// 選択
-		return this.dao.select_byRoomId(roomId);
+		List<CommentModel> list = this.dao.select_byRoomId(roomId);
+		if(list.isEmpty()) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return list;
 	}
 	
 	/**
@@ -142,7 +158,11 @@ public class CommentServiceUse implements CommentService {
 	@Override
 	public List<CommentModelEx> select_plusUserName_byRoomId(RoomIdStatus roomId) {
 		// 選択+ユーザー名選択
-		return this.dao.select_plusUserName_byRoomId(roomId);
+		List<CommentModelEx> list = this.dao.select_plusUserName_byRoomId(roomId);
+		if(list.isEmpty()) {
+			throw WebMvcConfig.NOT_FOUND();
+		}
+		return list;
 	}
 
 	/**

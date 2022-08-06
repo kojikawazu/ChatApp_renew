@@ -1,9 +1,9 @@
 package com.example.demo.common.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.demo.app.entity.EnterModel;
-import com.example.demo.common.number.RoomMaxNumber;
 import com.example.demo.common.status.EnterIdStatus;
 import com.example.demo.common.status.RoomIdStatus;
 import com.example.demo.common.status.UserIdStatus;
@@ -24,7 +24,11 @@ public interface EnterDao {
 	
 	int updateManagerId_byId(UserIdStatus managerId, EnterIdStatus id);
 	
+	int updateUpdated_byId(LocalDateTime updated, EnterIdStatus id);
+	
 	int delete(EnterIdStatus id);
+	
+	int delete_byUserId(UserIdStatus user_id);
 	
 	List<EnterModel> getAll();
 	
