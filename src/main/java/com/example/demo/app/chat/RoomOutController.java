@@ -5,8 +5,10 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.app.config.WebConsts;
@@ -58,6 +60,15 @@ public class RoomOutController implements SuperChatController {
 	/** 退室された通知 */
 	private final String NOTICE_LEFT_THE_ROOM = "退室されました。";
 	
+	private final String NOTICE_LEAVE_LEFT_THE_ROOM = "一定時間を過ぎましたので、退室しました。";
+	
+	/** 退室OK */
+	private static final boolean ROOMOUT_OK = true;
+	
+	/** 退室NG */
+	private static final boolean ROOMOUT_NG = false;
+	
+	
 	/**
 	 * コンストラクタ
 	 * @param commentService
@@ -75,7 +86,7 @@ public class RoomOutController implements SuperChatController {
 	}
 	
 	/**
-	 * 【ログアウト受信】
+	 * 【ログアウト受信(POST)】
 	 * @param roomOutForm        ログアウトフォーム
 	 * @param model              モデル
 	 * @param redirectAttributes リダイレクト
@@ -86,7 +97,7 @@ public class RoomOutController implements SuperChatController {
 			RoomOutForm roomOutForm,
 			Model model,
 			RedirectAttributes redirectAttributes) {
-		this.appLogger.start("退室受信...");
+		this.appLogger.start("[POST]退室受信...");
 		
 		LoginIdStatus login_id = null;
 		EnterIdStatus enter_id = null;
@@ -102,7 +113,7 @@ public class RoomOutController implements SuperChatController {
 			enterModel   = this.enterService.select(enter_id);
 			user_id      = new UserIdStatus(enterModel.getUser_id());
 			room_id      = new RoomIdStatus(enterModel.getRoom_id());
-			loginModel   = this.loginService.select_byUserId(user_id);	
+			loginModel   = this.loginService.select(login_id);
 		} catch(NotFoundException ex) {
 			// 情報取得なし
 			// [ERROR]
@@ -132,7 +143,82 @@ public class RoomOutController implements SuperChatController {
 		// リダイレクト設定
 		this.setRedirect(login_id, redirectAttributes);
 
-		this.appLogger.successed("退室成功");
+		this.appLogger.successed("[POST]退室成功");
+		return WebConsts.URL_REDIRECT_ROOM_INDEX;
+	}
+	
+	/**
+	 * 【ログアウト受信(GET)】
+	 * @param e_enterId          入室ID
+	 * @param e_loginId          ログインID
+	 * @param model              モデル
+	 * @param redirectAttributes リダイレクト
+	 * @return Webパス(redirect:/room)
+	 */
+	@GetMapping
+	public String indexGET(
+			@RequestParam(value = WebConsts.BIND_ENCRYPT_ENTER_ID, 
+				required = false, 
+				defaultValue = "wfssM4JI4nk=") String e_enterId,
+			@RequestParam(value = WebConsts.BIND_ENCRYPT_LOGIN_ID, 
+				required = false, 
+				defaultValue = "wfssM4JI4nk=") String e_loginId,
+			Model model,
+			RedirectAttributes redirectAttributes) {
+		this.appLogger.start("[GET]退室受信...");
+		
+		int enterIdInt = Integer.parseInt(CommonEncript.decrypt(e_enterId));
+		this.appLogger.info("復号化... enterId: " + enterIdInt);
+		EnterIdStatus enter_id = new EnterIdStatus(enterIdInt);
+		
+		int loginIdInt = Integer.parseInt(CommonEncript.decrypt(e_loginId));
+		this.appLogger.info("復号化... loginId: " + loginIdInt);
+		LoginIdStatus login_id = new LoginIdStatus(loginIdInt);
+		
+		EnterModel enterModel  = null;
+		UserIdStatus user_id   = null;
+		RoomIdStatus room_id   = null;
+		LoginModel loginModel  = null;
+		
+		// 情報取得
+		try {
+			enterModel   = this.enterService.select(enter_id);
+			user_id      = new UserIdStatus(enterModel.getUser_id());
+			room_id      = new RoomIdStatus(enterModel.getRoom_id());
+			loginModel   = this.loginService.select(login_id);
+		} catch(NotFoundException ex) {
+			// 情報取得なし
+			// [ERROR]
+			this.appLogger.info("throw: " + ex);
+			this.setRedirect(login_id, redirectAttributes);
+			return WebConsts.URL_REDIRECT_ROOM_INDEX;
+		}
+		
+		// 入室情報の削除
+		this.deleteEnterInfo(enter_id);
+		
+		// 退室処理チェック
+		if( !this.isRoomOut(loginModel) ) {
+			this.setRedirect(login_id, redirectAttributes);
+			return WebConsts.URL_REDIRECT_ROOM_INDEX;
+		}
+		
+		// ---------------------------------------------------------------------------------
+		// まだ入室中の場合
+		
+		// ログイン情報のルームIDの初期化
+		this.initRoomId_byUserId(user_id);
+		
+		// 退室情報の通知
+		this.setComment(user_id, room_id);
+		
+		// リダイレクト設定
+		this.setRedirect(login_id, redirectAttributes);
+		
+		// エラー内容登録
+		redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, NOTICE_LEAVE_LEFT_THE_ROOM);
+
+		this.appLogger.successed("[GET]退室成功");
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
 	}
 	
@@ -142,12 +228,12 @@ public class RoomOutController implements SuperChatController {
 	 * @return true 退室可能 false 退室不可
 	 */
 	private boolean isRoomOut(LoginModel loginModel) {
-		if(loginModel.getRoom_id() == 0) {
+		if(loginModel.getRoom_id() == WebConsts.ZERO_NUMBER) {
 			// 既に強制退室されている
 			this.appLogger.info("既に退室していた： loginId: " + loginModel.getId());
-			return false;
+			return ROOMOUT_NG;
 		}
-		return true;
+		return ROOMOUT_OK;
 	}
 	
 	/**

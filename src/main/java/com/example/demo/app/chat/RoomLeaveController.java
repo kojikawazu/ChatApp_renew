@@ -56,6 +56,12 @@ public class RoomLeaveController implements SuperChatController {
 	/** 強制退室通知 */
 	private final String NOTICE_FORCE_LEFT_THE_ROOM = "さんを強制退室させました。";
 	
+	/** 強制退室OK */
+	private static final boolean LEAVE_OK = true;
+	
+	/** 強制退室NG */
+	private static final boolean LEAVE_NG = false;
+	
 	/**
 	 * コンストラクタ
 	 * @param userService
@@ -143,11 +149,11 @@ public class RoomLeaveController implements SuperChatController {
 	private boolean isLeave(RoomLeaveForm roomLeaveForm) {
 		
 		// 強制退室対象がいるかチェック
-		if(roomLeaveForm.getIn_id() == 0) {
+		if(roomLeaveForm.getIn_id() == WebConsts.ZERO_NUMBER) {
 			// [ERROR]
 			// 強制退室対象がいない
 			this.appLogger.error("強制退室失敗");
-			return false;
+			return LEAVE_NG;
 		}
 		
 		try {
@@ -156,20 +162,20 @@ public class RoomLeaveController implements SuperChatController {
 			LoginModel loginModel = this.loginService.select(loginId);
 			
 			// 初期化済か確認
-			if(loginModel.getRoom_id() == 0) {
+			if(loginModel.getRoom_id() == WebConsts.ZERO_NUMBER) {
 				// [ERROR]
 				// 初期化済
 				this.appLogger.error("退室済だった");
-				return false;
+				return LEAVE_NG;
 			}
 		} catch(NotFoundException ex) {
 			// 情報なし
 			// [ERROR]
 			this.appLogger.info("throw: " + ex);
-			return false;
+			return LEAVE_NG;
 		}
 		
-		return true;
+		return LEAVE_OK;
 	}
 	
 	/**
