@@ -25,7 +25,7 @@ public class WebFunctions {
 	 * 時間、日付のdiffチェック(分単位)
 	 * @param targetTime     チェック日付対象
 	 * @param minutes        分単位
-	 * @return  true 日付過ぎてる false 日付過ぎてない
+	 * @return  true 日付過ぎてない false 日付過ぎてる
 	 */
 	public static final boolean checkDiffMinutes(LocalDateTime targetTime, int minutes) {
 		LocalDateTime now       = LocalDateTime.now();

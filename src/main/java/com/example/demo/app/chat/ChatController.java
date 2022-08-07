@@ -1,5 +1,6 @@
 package com.example.demo.app.chat;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.app.config.WebConsts;
+import com.example.demo.app.config.WebFunctions;
 import com.example.demo.app.entity.CommentModelEx;
 import com.example.demo.app.entity.EnterModel;
 import com.example.demo.app.entity.LoginModel;
@@ -67,6 +69,17 @@ public class ChatController {
 	/** 強制退室通知 */
 	private final String NOTICE_FORCE_LEFT_THE_ROOM = "強制退室されました。";
 	
+	/** チャットNG */
+	private final boolean CHAT_NG = false; 
+	
+	private final boolean CHAT_OK = true;
+	
+	/** ゲスト側タイマー時間 */
+	private final int CHAT_GUEST_TIMER = 30;
+	
+	/** ホスト側タイマー時間 */
+	private final int CHAT_HOST_TIMER  = 30;
+	
 	/**
 	 * コンストラクタ
 	 * @param userService
@@ -107,11 +120,12 @@ public class ChatController {
 			RedirectAttributes redirectAttributes) {
 		this.appLogger.start("チャットルーム受信... enterId: " + e_enterId);
 		
+		// 入室IDの復号化
 		int enter_id = Integer.parseInt(CommonEncript.decrypt(e_enterId));
 		this.appLogger.info("復号化... enterId: " + enter_id);
 		EnterIdStatus enterIdStatus = new EnterIdStatus(enter_id);
 		
-		// エラーチェック
+		// DBエラーチェック
 		if( !this.enterService.isSelect_byId(enterIdStatus) ) {
 			// [ERROR]
 			// 入室IDがない場合、ルーム画面へリダイレクト
@@ -122,12 +136,27 @@ public class ChatController {
 			return WebConsts.URL_REDIRECT_ROOM_INDEX;
 		}
 		
+		// DBエラーチェックOK
 		EnterModel enterModel = this.enterService.select(enterIdStatus);
 		if( !this.isEnterCheck(enterModel, redirectAttributes) ) {
 			// [ERROR]
 			// 入室NGな場合、ルーム画面へリダイレクト
 			this.appLogger.error("入室NG...ルーム画面へ");
 			return WebConsts.URL_REDIRECT_ROOM_INDEX;
+		}
+		
+		if(enterModel.getUser_id() == enterModel.getManager_id()) {
+			// ホスト側チェック
+			if( !this.checkHostTimeout(enterModel, redirectAttributes) ) {
+				this.appLogger.info("[ホスト側] 部屋閉鎖");
+				return WebConsts.URL_REDIRECT_CHAT_ROOMCLOSE_INDEX;
+			}
+		} else {
+			// ゲスト側チェック
+			if( !this.checkGuestTimeout(enterModel, redirectAttributes) ) {
+				this.appLogger.info("[ゲスト側] タイムアウト退室");
+				return WebConsts.URL_REDIRECT_CHAT_ROOMOUT_INDEX;
+			}
 		}
 		
 		// ビュー画面へ設定
@@ -153,6 +182,8 @@ public class ChatController {
 		// エラーチェック
 		UserIdStatus  user_id       = new UserIdStatus(enterModel.getUser_id());
 		RoomIdStatus room_id_check1 = new RoomIdStatus(enterModel.getRoom_id());
+		
+		// 部屋の存在チェック
 		if( !this.roomService.isSelect_byId(room_id_check1) ) {
 			// [ERROR]
 			this.appLogger.error("既に閉鎖: roomId: " + enterModel.getRoom_id());
@@ -176,9 +207,8 @@ public class ChatController {
 				this.appLogger.info("throw: " + ex);
 			}
 			
-			
 			redirectAttributes.addFlashAttribute(WebConsts.BIND_NOTICE_ERROR, NOTICE_ROOM_CLOSE);
-			return false;
+			return CHAT_NG;
 		}
 		
 		try {
@@ -202,17 +232,73 @@ public class ChatController {
 				redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptNumber);
 				this.sessionLoginId.setLoginId(encryptNumber);
 				
-				return false;
+				return CHAT_NG;
 			}
 		} catch(NotFoundException ex) {
 			// 情報取得なし
 			// [ERROR]
 			this.appLogger.info("throw: " + ex);
-			return false;
+			return CHAT_NG;
 		}
 		
 		this.appLogger.successed("入室OK");
-		return true;
+		return CHAT_OK;
+	}
+	
+	/**
+	 * ホストタイムアウトチェック
+	 * @param enterModel          入室モデル
+	 * @param redirectAttributes  リダイレクト
+	 * @return true OK false NG
+	 */
+	private boolean checkHostTimeout(EnterModel enterModel, RedirectAttributes redirectAttributes) {
+		if( !WebFunctions.checkDiffMinutes(enterModel.getUpdated(), CHAT_HOST_TIMER) ) {
+			// 日付過ぎてる
+			// 部屋閉鎖させる
+			
+			EnterIdStatus enterId = new EnterIdStatus(enterModel.getId());
+			UserIdStatus  userId  = new UserIdStatus(enterModel.getUser_id());
+			LoginIdStatus loginId = this.loginService.selectId_byUserId(userId);
+			
+			// 入室IDをリダイレクト
+			String encryptEnterNumber = CommonEncript.encrypt(String.valueOf(enterId.getId()));
+			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_ENTER_ID, encryptEnterNumber);
+			
+			// ログインIDをリダイレクト
+			String encryptLoginNumber = CommonEncript.encrypt(String.valueOf(loginId.getId()));
+			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptLoginNumber);
+			
+			return CHAT_NG;
+		}
+		return CHAT_OK;
+	}
+	
+	/**
+	 * ゲストタイムアウトチェック
+	 * @param enterModel         入室モデル
+	 * @param redirectAttributes リダイレクト
+	 * @return true OK false NG
+	 */
+	private boolean checkGuestTimeout(EnterModel enterModel, RedirectAttributes redirectAttributes) {
+		if( !WebFunctions.checkDiffMinutes(enterModel.getUpdated(), CHAT_GUEST_TIMER) ) {
+			// 日付過ぎてる
+			// 退室させる
+			
+			EnterIdStatus enterId = new EnterIdStatus(enterModel.getId());
+			UserIdStatus  userId  = new UserIdStatus(enterModel.getUser_id());
+			LoginIdStatus loginId = this.loginService.selectId_byUserId(userId);
+			
+			// 入室IDをリダイレクト
+			String encryptEnterNumber = CommonEncript.encrypt(String.valueOf(enterId.getId()));
+			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_ENTER_ID, encryptEnterNumber);
+			
+			// ログインIDをリダイレクト
+			String encryptLoginNumber = CommonEncript.encrypt(String.valueOf(loginId.getId()));
+			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_LOGIN_ID, encryptLoginNumber);
+			
+			return CHAT_NG;
+		}
+		return CHAT_OK;
 	}
 	
 	/**

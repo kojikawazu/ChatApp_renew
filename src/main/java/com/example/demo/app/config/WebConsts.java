@@ -10,6 +10,8 @@ public class WebConsts {
 	/** エラー番号 */
 	public static final int ERROR_NUMBER = -1;
 	
+	public static final int ZERO_NUMBER  = 0;
+	
 	/** チェック処理判定結果(OK) */
 	public static final boolean CHECK_COMMON_OK = true;
 		
@@ -76,25 +78,29 @@ public class WebConsts {
 	
 	// ---------------------------------------------------------------------------
 	
-	public static final String URL_MANAGER_INDEX = "manager/index"; 
+	public static final String URL_MANAGER_INDEX		= "manager/index"; 
 	
-	public static final String URL_ROOM_INDEX = "room/index";
+	public static final String URL_ROOM_INDEX			= "room/index";
 	
-	public static final String URL_CHAT_INDEX = "chat/index";
+	public static final String URL_CHAT_INDEX			= "chat/index";
 	
-	public static final String URL_USER_FORGOT_FORM = "user/forgot_form";
+	public static final String URL_USER_FORGOT_FORM		= "user/forgot_form";
 	
-	public static final String URL_USER_FORGOT_CONFIRM = "user/forgot_confirm";
+	public static final String URL_USER_FORGOT_CONFIRM	= "user/forgot_confirm";
 	
-	public static final String URL_USER_SIGNUP_FORM = "user/signup_form";
+	public static final String URL_USER_SIGNUP_FORM		= "user/signup_form";
 	
-	public static final String URL_USER_SIGNUP_CONFIRM = "user/signup_confirm";
+	public static final String URL_USER_SIGNUP_CONFIRM	= "user/signup_confirm";
 	
-	public static final String URL_ROOM_CREATE_FORM = "room/create_room";
+	public static final String URL_ROOM_CREATE_FORM		= "room/create_room";
 	
-	public static final String URL_REDIRECT_ROOM_INDEX = "redirect:/room";
+	public static final String URL_REDIRECT_ROOM_INDEX	= "redirect:/room";
 	
-	public static final String URL_REDIRECT_CHAT_INDEX = "redirect:/chat";
+	public static final String URL_REDIRECT_CHAT_INDEX	= "redirect:/chat";
+	
+	public static final String URL_REDIRECT_CHAT_ROOMOUT_INDEX = "redirect:/outroom";
+	
+	public static final String URL_REDIRECT_CHAT_ROOMCLOSE_INDEX = "redirect:/closeroom";
 	
 	// ---------------------------------------------------------------------------
 

@@ -57,6 +57,9 @@ public class RoomSpeechController implements SuperChatController {
 	/** チャット投稿NG */
 	private static final boolean SPEECH_NG = false;
 	
+	/** 投稿タイマー時間 */
+	private static final int SPEECH_TIMER = 30;
+	
 	/**
 	 * コンストラクタ
 	 * @param roomService     ルームサービス
@@ -93,8 +96,7 @@ public class RoomSpeechController implements SuperChatController {
 		// エラーチェック
 		if( !this.isSpeech(userSpeechForm, model) ) {
 			// コメント追加NGでリダイレクト
-			String encryptNumber = CommonEncript.encrypt(userSpeechForm.getEnter_id());
-			redirectAttributes.addAttribute(WebConsts.BIND_ENCRYPT_ENTER_ID, encryptNumber);
+			this.setRedirect(userSpeechForm, redirectAttributes);
 			return WebConsts.URL_REDIRECT_CHAT_INDEX;
 		}
 		
@@ -153,14 +155,15 @@ public class RoomSpeechController implements SuperChatController {
 			return SPEECH_NG;
 		}
 		
-		if(loginModel.getRoom_id() == 0) {
+		if(loginModel.getRoom_id() == WebConsts.ZERO_NUMBER) {
 			// [ERROR]
 			// 強制退室されていた
 			this.appLogger.info("強制退室済");
 			return SPEECH_NG;
 		}
 		
-		if( !WebFunctions.checkDiffHour(enterModel.getUpdated(), 30) ) {
+		// 時間が超過してないか確認
+		if( !WebFunctions.checkDiffMinutes(enterModel.getUpdated(), SPEECH_TIMER) ) {
 			// [ERROR]
 			// 更新日付だいぶ経っている
 			this.appLogger.info("更新日付切れ");

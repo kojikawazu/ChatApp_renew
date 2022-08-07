@@ -3,8 +3,10 @@ package com.example.demo.app.chat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.app.config.WebConsts;
@@ -83,7 +85,7 @@ public class RoomCloseController implements SuperChatController {
 			RoomOutForm roomOutForm,
 			Model model,
 			RedirectAttributes redirectAttributes) {
-		this.appLogger.start("部屋閉鎖受信...");
+		this.appLogger.start("[POST]部屋閉鎖受信...");
 		
 		EnterIdStatus enter_id   = null;
 		EnterModel    enterModel = null;
@@ -119,7 +121,59 @@ public class RoomCloseController implements SuperChatController {
 		// リダイレクト設定
 		this.setRedirect(login_id, redirectAttributes);
 		
-		this.appLogger.successed("部屋閉鎖成功");
+		this.appLogger.successed("[POST]部屋閉鎖成功");
+		return WebConsts.URL_REDIRECT_ROOM_INDEX;
+	}
+	
+	@GetMapping
+	public String indexGET(
+			@RequestParam(value = WebConsts.BIND_ENCRYPT_ENTER_ID, 
+				required = false, 
+				defaultValue = "wfssM4JI4nk=") String e_enterId,
+			@RequestParam(value = WebConsts.BIND_ENCRYPT_LOGIN_ID, 
+				required = false, 
+				defaultValue = "wfssM4JI4nk=") String e_loginId,
+			Model model,
+			RedirectAttributes redirectAttributes) {
+		this.appLogger.start("[GET]部屋閉鎖受信...");
+		
+		int enterIdInt = Integer.parseInt(CommonEncript.decrypt(e_enterId));
+		this.appLogger.info("復号化... enterId: " + enterIdInt);
+		EnterIdStatus enter_id = new EnterIdStatus(enterIdInt);
+		
+		int loginIdInt = Integer.parseInt(CommonEncript.decrypt(e_loginId));
+		this.appLogger.info("復号化... loginId: " + loginIdInt);
+		LoginIdStatus login_id = new LoginIdStatus(loginIdInt);
+		
+		EnterModel    enterModel = null;
+		RoomIdStatus  room_id    = null;
+		
+		// 情報取得
+		try {
+			enterModel = this.enterService.select(enter_id);
+			room_id    = new RoomIdStatus(enterModel.getRoom_id());
+		} catch(NotFoundException ex) {
+			// 情報取得できなかった
+			this.appLogger.info("throw: " + ex);
+			return WebConsts.URL_REDIRECT_ROOM_INDEX;
+		}
+		
+		// ログイン情報のルームIDの初期化
+		this.initRoomId_byRoomId(room_id);
+		
+		// コメント情報の削除(ルームID)
+		this.deleteComment_byRoomId(room_id);
+		
+		// 自身の入室情報の削除
+		this.deleteEnterInfo(enter_id);
+		
+		// ルーム情報の削除
+		this.deleteRoomInfo(room_id);
+		
+		// リダイレクト設定
+		this.setRedirect(login_id, redirectAttributes);
+		
+		this.appLogger.successed("[GET]部屋閉鎖成功");
 		return WebConsts.URL_REDIRECT_ROOM_INDEX;
 	}
 	
