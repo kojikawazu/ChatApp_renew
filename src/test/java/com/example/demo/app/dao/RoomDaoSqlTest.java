@@ -259,7 +259,7 @@ class RoomDaoSqlTest {
 		String sql = "SELECT chat_room.*,chat_user.name AS user_name,"
 				+ "CAST(("
 				+ "SELECT COUNT(*) FROM chat_enter WHERE chat_enter.room_id = chat_room.id"
-				+ ") AS INTEGER) AS enter_cnt "
+				+ ") AS SIGNED INTEGER) AS enter_cnt "
 				+ "FROM chat_room LEFT OUTER JOIN chat_user ON "
 				+ "chat_room.user_id = chat_user.id";
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -270,7 +270,7 @@ class RoomDaoSqlTest {
 		result.put("max_roomsum",		max.getNumber());
 		result.put("user_id",			userId.getId());
 		result.put("user_name", 		userName.getString());
-		result.put("enter_cnt",	 		enterCnt.getNumber());
+		result.put("enter_cnt",	 		(long)enterCnt.getNumber());
 		result.put("created",			timestamp);
 		result.put("updated",			timestamp);
 		List<Map<String, Object>> resultList =  new ArrayList<Map<String, Object>>();

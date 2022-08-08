@@ -306,13 +306,7 @@ class UserDaoSqlTest {
 		
 		
 		UserModel test = this.userDaoSql.select(userId);
-		Assertions.assertEquals(test.getId(), 			0);
-		Assertions.assertEquals(test.getName(), 		"");
-		Assertions.assertEquals(test.getEmail(), 		"");
-		Assertions.assertEquals(test.getPasswd(), 		"");
-		Assertions.assertEquals(test.getForgot_passwd(), "");
-		Assertions.assertNotNull(test.getCreated());
-		Assertions.assertNotNull(test.getUpdated());
+		Assertions.assertNull(test);
 	}
 	
 	/**
