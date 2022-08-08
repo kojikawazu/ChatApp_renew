@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.app.config.WebConsts;
 import com.example.demo.app.entity.LoginModel;
+import com.example.demo.app.exception.NotFoundException;
 import com.example.demo.app.form.UserLoginForm;
 import com.example.demo.common.encrypt.CommonEncript;
 import com.example.demo.common.log.ChatAppLogger;
@@ -59,6 +60,9 @@ public class SigninController implements SuperUserController {
 	
 	/** 既にログイン中のメッセージ */
 	private static final String SIGNIN_MESSAGE_ERROR_ALREADY_LOGIN = "既にログインされています。";
+	
+	/** セッションログイン中か? true: yes false no */
+	private boolean sessionLoginFlg = false;
 	
 	/**
 	 * コンストラクタ
@@ -149,14 +153,25 @@ public class SigninController implements SuperUserController {
 			
 			return new UserIdStatus(WebConsts.ERROR_NUMBER);
 		}
+		
+		// ---------------------------------------------------------------
 		// エラーなし
 		
-		UserIdStatus userIdStatus = this.userService.selectId_byNameEmailPasswd(
-			new UserNameEmailPassword(
-				userLoginForm.getName(), 
-				userLoginForm.getEmail(), 
-				userLoginForm.getPasswd())
-			);
+		UserIdStatus userIdStatus = null;
+		try {
+			// ユーザー取得
+			userIdStatus = this.userService.selectId_byNameEmailPasswd(
+				new UserNameEmailPassword(
+					userLoginForm.getName(), 
+					userLoginForm.getEmail(), 
+					userLoginForm.getPasswd())
+				);
+		} catch(NotFoundException ex) {
+			// ユーザー情報なし
+			// [ERROR]
+			this.appLogger.info("throw: " + ex);
+			return new UserIdStatus(WebConsts.ERROR_NUMBER);
+		}
 		
 		// サインイン内容チェック
 		if( userIdStatus.isError() ) {
@@ -172,13 +187,25 @@ public class SigninController implements SuperUserController {
 		
 		// ログイン情報チェック
 		if( this.loginService.isSelect_byUserId(userIdStatus) ) {
-			// [ERROR]
-			this.appLogger.error("ログイン情報が既に存在する。 : userId: " + userIdStatus.getId());
-			redirectAttributes.addFlashAttribute(
-					WebConsts.BIND_NOTICE_ERROR, 
-					SIGNIN_MESSAGE_ERROR_ALREADY_LOGIN);
-			
-			return new UserIdStatus(WebConsts.ERROR_NUMBER);
+			try {
+				// セッションチェック
+				LoginModel loginModel = this.loginService.select_byUserId(userIdStatus);
+				int sessionLoginId = Integer.parseInt(CommonEncript.decrypt(this.sessionLoginId.getLoginId()));
+				if(sessionLoginId != loginModel.getId()) {
+					// セッションログインIDと一致しない
+					// [ERROR]
+					this.appLogger.error("ログイン情報が既に存在する。 : userId: " + userIdStatus.getId());
+					redirectAttributes.addFlashAttribute(
+							WebConsts.BIND_NOTICE_ERROR, 
+							SIGNIN_MESSAGE_ERROR_ALREADY_LOGIN);
+					return new UserIdStatus(WebConsts.ERROR_NUMBER);
+				}
+				
+				// セッションログイン中だった
+				this.sessionLoginFlg = true;
+			} catch(NotFoundException ex) {
+				this.appLogger.info("throw: " + ex);
+			}
 		}
 		
 		this.appLogger.successed("サインインチェックOK");
@@ -193,13 +220,21 @@ public class SigninController implements SuperUserController {
 	private LoginIdStatus addSignin(UserIdStatus userStatus) {
 		this.appLogger.start("サインイン登録...");
 		
-		LoginModel loginModel = new LoginModel(
-				 new RoomIdStatus(0),
-				 userStatus,
-				 LocalDateTime.now(),
-				 LocalDateTime.now()
-				 );
-		LoginIdStatus loginIdStatus = this.loginService.save_returnId(loginModel);
+		LoginIdStatus loginIdStatus = null;
+		if(this.sessionLoginFlg) {
+			// セッションログイン中
+			int sessionLoginId = Integer.parseInt(CommonEncript.decrypt(this.sessionLoginId.getLoginId()));
+			loginIdStatus = new LoginIdStatus(sessionLoginId);
+		} else {
+			// セッションログインなし
+			LoginModel loginModel = new LoginModel(
+					 new RoomIdStatus(0),
+					 userStatus,
+					 LocalDateTime.now(),
+					 LocalDateTime.now()
+					 );
+			loginIdStatus = this.loginService.save_returnId(loginModel);
+		}
 		
 		this.appLogger.successed("サインイン登録成功: loginId: " + loginIdStatus.getId());
 		return loginIdStatus;

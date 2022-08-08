@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.app.config.WebConsts;
+import com.example.demo.app.exception.DatabaseUpdateException;
 import com.example.demo.app.form.UserForgotForm;
 import com.example.demo.common.log.ChatAppLogger;
 import com.example.demo.common.service.UserService;
@@ -91,11 +92,15 @@ public class ForgotCompleteController implements SuperUserController {
 	private void updatePassword(UserForgotForm userForgotForm) {
 		this.appLogger.start("パスワード変更...");
 		
-		this.userService.update_passwd(
+		try {
+			this.userService.update_passwd(
 				new UserNameEmailPassword(
-						userForgotForm.getName(), 
-						userForgotForm.getEmail(), 
-						userForgotForm.getNew_passwd()));
+					userForgotForm.getName(), 
+					userForgotForm.getEmail(), 
+					userForgotForm.getNew_passwd()));	
+		} catch(DatabaseUpdateException ex) {
+			this.appLogger.info("throw: " + ex);
+		}
 		
 		this.appLogger.successed("パスワード変更成功");
 	}
